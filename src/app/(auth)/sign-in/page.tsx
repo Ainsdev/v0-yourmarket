@@ -18,7 +18,7 @@ export default function SignInPage() {
   });
 
   return (
-    <main className="max-w-lg mx-auto my-4 bg-popover p-10">
+    <main className="max-w-lg mx-auto my-4 bg-popover p-10 backdrop-blur">
       <h1 className="text-2xl font-bold text-center">
         Inicia sesion en YourMarket
       </h1>
