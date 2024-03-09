@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { stores } from "./stores";
 
 export const users = sqliteTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -8,7 +9,11 @@ export const users = sqliteTable("user", {
   name: text("name"),
   oAuthProvider: text("oauth_provider"),
   oAuthId: text("oauth_id").default(""),
-  avatar : text("avatar"),
+  avatar: text("avatar"),
+  memberStoreId: text("store_id").references(() => stores.id),
+  storeId: text("store_id")
+    .default("")
+    .references(() => stores.id),
 });
 
 export const sessions = sqliteTable("session", {

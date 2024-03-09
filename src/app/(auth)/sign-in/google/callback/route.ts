@@ -20,6 +20,7 @@ export async function GET(request: Request): Promise<Response> {
     state !== storedState ||
     !storedCodeVerifier
   ) {
+    console.log("invalid code or state");
     return new Response(null, {
       status: 400,
       headers: { Location: "/sign-in" },
@@ -31,38 +32,44 @@ export async function GET(request: Request): Promise<Response> {
       code,
       storedCodeVerifier
     );
+    console.log("TOKENS", { tokens });
     //GET USER INFO
     const googleUserRes = await fetch(
-      'https://www.googleapis.com/oauth2/v1/userinfo',
+      "https://www.googleapis.com/oauth2/v1/userinfo",
       {
         headers: {
           Authorization: `Bearer ${tokens.accessToken}`,
         },
       }
     );
-    const googleUser = (await googleUserRes.json());
+    const googleUser = await googleUserRes.json();
+    console.log("GOOGLE USER", { googleUser });
     //CHECK IF USER EXISTS
-    const existingUser = await db
+    const checkUser = await db
       .select()
       .from(users)
       .where(eq(users.email, googleUser.email));
 
-    const user = existingUser[0];
-
-    // const avatar = googleUser.picture ? googleUser.picture : null;
+    const existingUser = checkUser[0];
+    console.log("USER", { existingUser });
+    const avatar = googleUser.picture ? googleUser.picture : "";
     //CREATE USER and session IF NOT EXISTS
-    if (!user) {
+    if (!existingUser) {
+      console.log("creating new user");
       const userId = generateId(21);
       await db.insert(users).values({
         id: userId,
         oAuthProvider: "google",
-        oAuthId: googleUser.sub,
+        oAuthId: googleUser.id,
         name: googleUser.name,
         email: googleUser.email,
-        // avatar,
+        avatar: avatar,
       });
+      console.log("USER CREATED in DB", { userId });
       const session = await lucia.createSession(userId, {});
+      console.log("SESSION CREATED", { session });
       const sessionCookie = lucia.createSessionCookie(session.id);
+      console.log("SESSION COOKIE SETTED", { sessionCookie });
       cookies().set(
         sessionCookie.name,
         sessionCookie.value,
@@ -73,18 +80,23 @@ export async function GET(request: Request): Promise<Response> {
         headers: { Location: "/dashboard" },
       });
     }
-    //
-    if (user.oAuthId !== googleUser.sub && user.oAuthProvider !== "google") {
+    // UPDATE USER IF EXISTS
+    if (existingUser.oAuthId !== googleUser.sub) {
+      console.log("updating user");
       await db
         .update(users)
         .set({
-          oAuthId: googleUser.sub,
+          oAuthId: googleUser.id,
           oAuthProvider: "google",
+          avatar: avatar,
         })
-        .where(eq(users.id, user.id));
+        .where(eq(users.id, existingUser.id));
     }
-    const session = await lucia.createSession(user.id, {});
+    //CREATE SESSION if user exists
+    const session = await lucia.createSession(existingUser.id, {});
+    console.log("SESSION CREATED", { session });
     const sessionCookie = lucia.createSessionCookie(session.id);
+    console.log("SESSION COOKIE SETTED", { sessionCookie });
     cookies().set(
       sessionCookie.name,
       sessionCookie.value,
@@ -95,6 +107,7 @@ export async function GET(request: Request): Promise<Response> {
       headers: { Location: "/dashboard" },
     });
   } catch (e) {
+    console.log("ERROR", { e });
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code
@@ -103,9 +116,16 @@ export async function GET(request: Request): Promise<Response> {
       });
     }
 
-    return new Response(JSON.stringify({ message: "internal server error" }), {
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({
+        message: {
+          message: e,
+          status: 500,
+        },
+      }),
+      {
+        status: 500,
+      }
+    );
   }
 }
-
