@@ -29,7 +29,9 @@ export const stores = sqliteTable(
     mainCategories: integer("main_categories"),
     creatorUserId: text("user_id")
       .notNull()
-      .references((): AnySQLiteColumn => users.id),
+      .references((): AnySQLiteColumn => users.id, {
+        onDelete: "restrict",
+      }),
     //
     createdAt: text("created_at")
       .notNull()

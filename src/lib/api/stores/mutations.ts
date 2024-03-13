@@ -32,7 +32,7 @@ export const updateStore = async (id: StoreId, store: UpdateStoreParams) => {
     const [s] =  await db
      .update(stores)
      .set({...newStore, updatedAt: new Date().toISOString().slice(0, 19).replace("T", " ") })
-     .where(and(eq(stores.id, storeId!), eq(stores.userId, session?.user.id!)))
+     .where(and(eq(stores.id, storeId!), eq(stores.creatorUserId, session?.user.id!)))
      .returning();
     return { store: s };
   } catch (err) {
@@ -46,7 +46,7 @@ export const deleteStore = async (id: StoreId) => {
   const { session } = await getUserAuth();
   const { id: storeId } = storeIdSchema.parse({ id });
   try {
-    const [s] =  await db.delete(stores).where(and(eq(stores.id, storeId!), eq(stores.userId, session?.user.id!)))
+    const [s] =  await db.delete(stores).where(and(eq(stores.id, storeId!), eq(stores.creatorUserId, session?.user.id!)))
     .returning();
     return { store: s };
   } catch (err) {

@@ -24,6 +24,7 @@ export const lucia = new Lucia(adapter, {
       email: attributes.email,
       name: attributes.name,
       username: attributes.username,
+      store_id: attributes.store_id,
     };
   },
 });
@@ -46,6 +47,7 @@ interface DatabaseUserAttributes {
   username: string;
   email: string;
   name: string;
+  store_id: string;
 }
 
 export const validateRequest = cache(

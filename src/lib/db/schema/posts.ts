@@ -14,7 +14,9 @@ export const posts = sqliteTable("posts", {
   name: text("name").notNull(),
   price: integer("price").notNull(),
   images: text("images", { mode: "json" }).notNull(),
-  storeId: text("store_id").notNull(),
+  storeId: text("store_id")
+    .notNull()
+    .references(() => stores.id, { onDelete: "cascade" }),
   createdAt: text("created_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),

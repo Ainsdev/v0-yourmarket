@@ -40,7 +40,7 @@ export async function signInAction(
     }
 
     const validPassword = await new Argon2id().verify(
-      existingUser.hashedPassword,
+      existingUser.hashedPassword!,
       data.password,
     );
     if (!validPassword) {
