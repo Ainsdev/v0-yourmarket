@@ -35,7 +35,7 @@ export const checkAuth = async () => {
   if (!session) redirect('/sign-in')
 }
 
-export const genericError = { error: 'Error, please try again.' }
+export const genericError = { error: 'Error, Intenta de nuevo' }
 
 export const setAuthCookie = (cookie: Cookie) => {
   // cookies().set(cookie.name, cookie.value, cookie.attributes); // <- suggested approach from the docs, but does not work with `next build` locally
@@ -43,7 +43,7 @@ export const setAuthCookie = (cookie: Cookie) => {
 }
 
 const getErrorMessage = (errors: any): string => {
-  if (errors.email) return 'Invalid Email'
+  if (errors.email) return 'Email invalido'
   if (errors.password) return 'Invalid Password - ' + errors.password[0]
   return '' // return a default error message or an empty string
 }

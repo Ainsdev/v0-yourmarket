@@ -10,26 +10,20 @@ export const users = sqliteTable("user", {
   oAuthProvider: text("oauth_provider"),
   oAuthId: text("oauth_id").default(""),
   avatar: text("avatar"),
-  memberStoreId: text("store_id")
-    // .notNull()
-    .references(() => stores.id, {
-      onDelete: "set default",
-      // onUpdate: "set null",
-    })
-    .default(""),
-  storeId: text("store_id")
-    // .notNull()
-    .references(() => stores.id, {
-      onDelete: "set default",
-      // onUpdate: "set null",
-    })
-    .default(""),
+  memberStoreId: text("member_store_id").references(() => stores.id, {
+    onDelete: "set default",
+    // onUpdate: "set null",
+  }),
+  storeId: text("store_id").references(() => stores.id, {
+    onDelete: "set default",
+    // onUpdate: "set null",
+  }),
 });
 
 export const sessions = sqliteTable("session", {
   id: text("id").notNull().primaryKey(),
   userId: text("user_id")
-    // .notNull()
+    .notNull()
     .references(() => users.id),
   expiresAt: integer("expires_at").notNull(),
 });

@@ -56,7 +56,7 @@ const SubmitButton = () => {
   const { pending } = useFormStatus();
   return (
     <Button className="w-full" type="submit" disabled={pending}>
-      {pending ? <AnimatedSpinner /> : "Crear Cuenta"}
+      {pending ? "Creando..." : "Crear Cuenta"}
     </Button>
   );
 };

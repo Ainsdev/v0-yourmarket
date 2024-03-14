@@ -69,7 +69,7 @@ export async function signUpAction(
 
   const hashedPassword = await new Argon2id().hash(data.password);
   const userId = generateId(15);
-
+  
   try {
     await db.insert(users).values({
       id: userId,
@@ -77,6 +77,7 @@ export async function signUpAction(
       hashedPassword,
     });
   } catch (e) {
+    console.error(e);
     return genericError;
   }
 
