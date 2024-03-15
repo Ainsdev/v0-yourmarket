@@ -14,6 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
 
+
+import { Checkbox } from "@/components/ui/checkbox"
+
 import {
   Select,
   SelectContent,
@@ -22,10 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { type Post, insertPostParams, UpdatePostParams } from "@/lib/db/schema/posts";
-
+import { type Post, insertPostParams } from "@/lib/db/schema/posts";
+import {
+  createPostAction,
+  deletePostAction,
+  updatePostAction,
+} from "@/lib/actions/posts";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
-import { createPost, updatePost } from "@/lib/api/posts/mutations";
 
 const PostForm = ({
   stores,
@@ -38,7 +44,7 @@ const PostForm = ({
 }: {
   post?: Post | null;
   stores: Store[];
-  storeId?: StoreId;
+  storeId?: StoreId
   openModal?: (post?: Post) => void;
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
@@ -47,16 +53,17 @@ const PostForm = ({
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Post>(insertPostParams);
   const editing = !!post?.id;
-
+  
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
   const router = useRouter();
   const backpath = useBackPath("posts");
 
+
   const onSuccess = (
     action: Action,
-    data?: { error: string; values: Post }
+    data?: { error: string; values: Post },
   ) => {
     const failed = Boolean(data?.error);
     if (failed) {
@@ -76,10 +83,7 @@ const PostForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
-    const postParsed = await insertPostParams.safeParseAsync({
-      storeId,
-      ...payload,
-    });
+    const postParsed = await insertPostParams.safeParseAsync({ storeId, ...payload });
     if (!postParsed.success) {
       setErrors(postParsed?.error.flatten().fieldErrors);
       return;
@@ -88,34 +92,29 @@ const PostForm = ({
     closeModal && closeModal();
     const values = postParsed.data;
     const pendingPost: Post = {
-      updatedAt:
-        post?.updatedAt ??
-        new Date().toISOString().slice(0, 19).replace("T", " "),
-      createdAt:
-        post?.createdAt ??
-        new Date().toISOString().slice(0, 19).replace("T", " "),
+      updatedAt: post?.updatedAt ?? new Date().toISOString().slice(0, 19).replace("T", " "),
+      createdAt: post?.createdAt ?? new Date().toISOString().slice(0, 19).replace("T", " "),
       id: post?.id ?? "",
       ...values,
     };
     try {
       startMutation(async () => {
-        addOptimistic &&
-          addOptimistic({
-            data: pendingPost,
-            action: editing ? "update" : "create",
-          });
+        addOptimistic && addOptimistic({
+          data: pendingPost,
+          action: editing ? "update" : "create",
+        });
 
         const error = editing
-          ? await updatePost(post.id, values as UpdatePostParams)
-          : await createPost(values);
+          ? await updatePostAction({ ...values, id: post.id })
+          : await createPostAction(values);
 
         const errorFormatted = {
           error: error ?? "Error",
-          values: pendingPost,
+          values: pendingPost 
         };
         onSuccess(
           editing ? "update" : "create",
-          error ? errorFormatted : undefined
+          error ? errorFormatted : undefined,
         );
       });
     } catch (e) {
@@ -128,11 +127,11 @@ const PostForm = ({
   return (
     <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
       {/* Schema fields start */}
-      <div>
+              <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.name ? "text-destructive" : ""
+            errors?.name ? "text-destructive" : "",
           )}
         >
           Name
@@ -149,11 +148,91 @@ const PostForm = ({
           <div className="h-6" />
         )}
       </div>
-      <div>
+        <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.price ? "text-destructive" : ""
+            errors?.description ? "text-destructive" : "",
+          )}
+        >
+          Description
+        </Label>
+        <Input
+          type="text"
+          name="description"
+          className={cn(errors?.description ? "ring ring-destructive" : "")}
+          defaultValue={post?.description ?? ""}
+        />
+        {errors?.description ? (
+          <p className="text-xs text-destructive mt-2">{errors.description[0]}</p>
+        ) : (
+          <div className="h-6" />
+        )}
+      </div>
+<div>
+        <Label
+          className={cn(
+            "mb-2 inline-block",
+            errors?.active ? "text-destructive" : "",
+          )}
+        >
+          Active
+        </Label>
+        <br />
+        <Checkbox defaultChecked={post?.active} name={'active'} className={cn(errors?.active ? "ring ring-destructive" : "")} />
+        {errors?.active ? (
+          <p className="text-xs text-destructive mt-2">{errors.active[0]}</p>
+        ) : (
+          <div className="h-6" />
+        )}
+      </div>
+        <div>
+        <Label
+          className={cn(
+            "mb-2 inline-block",
+            errors?.brand ? "text-destructive" : "",
+          )}
+        >
+          Brand
+        </Label>
+        <Input
+          type="text"
+          name="brand"
+          className={cn(errors?.brand ? "ring ring-destructive" : "")}
+          defaultValue={post?.brand ?? ""}
+        />
+        {errors?.brand ? (
+          <p className="text-xs text-destructive mt-2">{errors.brand[0]}</p>
+        ) : (
+          <div className="h-6" />
+        )}
+      </div>
+        <div>
+        <Label
+          className={cn(
+            "mb-2 inline-block",
+            errors?.images ? "text-destructive" : "",
+          )}
+        >
+          Images
+        </Label>
+        <Input
+          type="text"
+          name="images"
+          className={cn(errors?.images ? "ring ring-destructive" : "")}
+          defaultValue={post?.images ?? ""}
+        />
+        {errors?.images ? (
+          <p className="text-xs text-destructive mt-2">{errors.images[0]}</p>
+        ) : (
+          <div className="h-6" />
+        )}
+      </div>
+        <div>
+        <Label
+          className={cn(
+            "mb-2 inline-block",
+            errors?.price ? "text-destructive" : "",
           )}
         >
           Price
@@ -170,39 +249,57 @@ const PostForm = ({
           <div className="h-6" />
         )}
       </div>
-
-      {storeId ? null : (
         <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.storeId ? "text-destructive" : ""
-            )}
-          >
-            Store
-          </Label>
-          <Select defaultValue={post?.storeId} name="storeId">
-            <SelectTrigger
-              className={cn(errors?.storeId ? "ring ring-destructive" : "")}
-            >
-              <SelectValue placeholder="Select a store" />
-            </SelectTrigger>
-            <SelectContent>
-              {stores?.map((store) => (
-                <SelectItem key={store.id} value={store.id.toString()}>
-                  {store.id}
-                  {/* TODO: Replace with a field from the store model */}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors?.storeId ? (
-            <p className="text-xs text-destructive mt-2">{errors.storeId[0]}</p>
-          ) : (
-            <div className="h-6" />
+        <Label
+          className={cn(
+            "mb-2 inline-block",
+            errors?.gender ? "text-destructive" : "",
           )}
-        </div>
-      )}
+        >
+          Gender
+        </Label>
+        <Input
+          type="text"
+          name="gender"
+          className={cn(errors?.gender ? "ring ring-destructive" : "")}
+          defaultValue={post?.gender ?? ""}
+        />
+        {errors?.gender ? (
+          <p className="text-xs text-destructive mt-2">{errors.gender[0]}</p>
+        ) : (
+          <div className="h-6" />
+        )}
+      </div>
+
+      {storeId ? null : <div>
+        <Label
+          className={cn(
+            "mb-2 inline-block",
+            errors?.storeId ? "text-destructive" : "",
+          )}
+        >
+          Store
+        </Label>
+        <Select defaultValue={post?.storeId} name="storeId">
+          <SelectTrigger
+            className={cn(errors?.storeId ? "ring ring-destructive" : "")}
+          >
+            <SelectValue placeholder="Select a store" />
+          </SelectTrigger>
+          <SelectContent>
+          {stores?.map((store) => (
+            <SelectItem key={store.id} value={store.id.toString()}>
+              {store.id}{/* TODO: Replace with a field from the store model */}
+            </SelectItem>
+           ))}
+          </SelectContent>
+        </Select>
+        {errors?.storeId ? (
+          <p className="text-xs text-destructive mt-2">{errors.storeId[0]}</p>
+        ) : (
+          <div className="h-6" />
+        )}
+      </div> }
       {/* Schema fields end */}
 
       {/* Save Button */}
