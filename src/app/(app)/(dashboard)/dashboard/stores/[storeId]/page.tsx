@@ -50,8 +50,8 @@ export default function NamePage() {
       </Card>
       <div className="space-y-4 md:col-span-2">
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-bold tracking-tight">Products</h1>
-          <Button size="sm">New product</Button>
+          <h1 className="text-lg font-bold tracking-tight">Mas Vistos</h1>
+          <Button size="sm">Agregar Producto</Button>
         </div>
         <div className="grid items-start gap-6">
           <Card>

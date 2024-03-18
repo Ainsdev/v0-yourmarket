@@ -8,10 +8,11 @@ import { cn } from "@/lib/utils";
 import { type Store, CompleteStore } from "@/lib/db/schema/stores";
 import Modal from "@/components/shared/Modal";
 
-import { useOptimisticStores } from "@/app/(app)/stores/useOptimisticStores";
+
 import { Button } from "@/components/ui/button";
 import StoreForm from "./StoreForm";
 import { PlusIcon } from "lucide-react";
+import { useOptimisticStores } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
 
 type TOpenModal = (store?: Store) => void;
 

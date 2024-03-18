@@ -25,9 +25,17 @@ export const lucia = new Lucia(adapter, {
       name: attributes.name,
       username: attributes.username,
       store_id: attributes.store_id,
+      avatar: attributes.avatar
     };
   },
 });
+interface DatabaseUserAttributes {
+  username: string;
+  email: string;
+  name: string;
+  store_id: string;
+  avatar: string;
+}
 
 //OAUTH
 export const google = new Google(
@@ -43,12 +51,6 @@ declare module "lucia" {
   }
 }
 
-interface DatabaseUserAttributes {
-  username: string;
-  email: string;
-  name: string;
-  store_id: string;
-}
 
 export const validateRequest = cache(
   async (): Promise<

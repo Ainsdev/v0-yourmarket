@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
 
 import { type Action, cn } from "@/lib/utils";
-import { type TAddOptimistic } from "@/app/(app)/stores/useOptimisticStores";
+
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ import {
   deleteStoreAction,
   updateStoreAction,
 } from "@/lib/actions/stores";
+import { TAddOptimistic } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
 
 
 const StoreForm = ({

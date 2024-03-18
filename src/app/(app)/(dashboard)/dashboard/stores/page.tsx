@@ -13,6 +13,12 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
+import { Suspense } from "react";
+import Loading from "@/app/loading";
+import StoreList from "@/components/stores/StoreList";
+import { getStores } from "@/lib/api/stores/queries";
+import { DrawerDialog } from "@/components/DrawerDialog";
+
 
 export default function StorePage() {
   return (
@@ -47,14 +53,15 @@ export default function StorePage() {
           Proximamente
         </Button>
       </Alert>
-      <Button
-        className="w-1/3 self-end"
-        onClick={() => {
-          window.location.href = "/dashboard/stores/new";
-        }}
+      <DrawerDialog
+        button={<Button>Crear Tienda</Button>}
+        dialogTitle={"Crea tu tienda"}
+        dialogDescription={"Es sencillo"}
       >
-        Crear Tienda
-      </Button>
+        <div className="p-4">
+          <p>asd</p>
+        </div>
+      </DrawerDialog>
       <section
         id="dashboard-stores-page-stores"
         aria-labelledby="dashboard-stores-page-stores-heading"

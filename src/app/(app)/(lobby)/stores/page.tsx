@@ -13,7 +13,7 @@ export default async function StoresPage() {
     <main>
       <div className="relative">
         <div className="flex justify-between">
-          <h1 className="font-semibold text-2xl my-2">Stores</h1>
+          <h1 className="font-semibold text-2xl my-2">Stire</h1>
         </div>
         <Stores />
       </div>
