@@ -26,24 +26,23 @@ import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 export function DrawerDialog({
   children,
-  button,
   dialogTitle,
   dialogDescription,
+  open,
+  setOpen,
 }: {
   children: React.ReactNode;
-  button: React.ReactNode;
   dialogTitle: string;
   dialogDescription: string;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [open, setOpen] = React.useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  // const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = false
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          {button}
-        </DialogTrigger>
         <DialogContent className="w-screen max-h-[80vh] overflow-y-scroll">
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
@@ -57,10 +56,7 @@ export function DrawerDialog({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        {button}
-      </DrawerTrigger>
-      <DrawerContent className="max-h-[90vh]">
+      <DrawerContent className="max-h-[90vh] w-full">
         <DrawerHeader className="text-left">
           <DrawerTitle>{dialogTitle}</DrawerTitle>
           <DrawerDescription>{dialogDescription}</DrawerDescription>

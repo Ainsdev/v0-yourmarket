@@ -8,15 +8,12 @@ import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
 
 import { type Action, cn } from "@/lib/utils";
 
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
 
-
-import { Checkbox } from "@/components/ui/checkbox"
-
+import { Checkbox } from "@/components/ui/checkbox";
 
 import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
 import {
@@ -25,10 +22,16 @@ import {
   updateStoreAction,
 } from "@/lib/actions/stores";
 import { TAddOptimistic } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { regions } from "@/config/regions";
 
 const StoreForm = ({
-  
   store,
   openModal,
   closeModal,
@@ -36,7 +39,7 @@ const StoreForm = ({
   postSuccess,
 }: {
   store?: Store | null;
-  
+
   openModal?: (store?: Store) => void;
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
@@ -45,17 +48,17 @@ const StoreForm = ({
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Store>(insertStoreParams);
   const editing = !!store?.id;
-  
+
   const [isDeleting, setIsDeleting] = useState(false);
+  const [regionValue, setRegion] = useState("");
   const [pending, startMutation] = useTransition();
 
   const router = useRouter();
   const backpath = useBackPath("stores");
 
-
   const onSuccess = (
     action: Action,
-    data?: { error: string; values: Store },
+    data?: { error: string; values: Store }
   ) => {
     const failed = Boolean(data?.error);
     if (failed) {
@@ -75,7 +78,7 @@ const StoreForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
-    const storeParsed = await insertStoreParams.safeParseAsync({  ...payload });
+    const storeParsed = await insertStoreParams.safeParseAsync({ ...payload });
     if (!storeParsed.success) {
       setErrors(storeParsed?.error.flatten().fieldErrors);
       return;
@@ -84,30 +87,43 @@ const StoreForm = ({
     closeModal && closeModal();
     const values = storeParsed.data;
     const pendingStore: Store = {
-      updatedAt: store?.updatedAt ?? new Date().toISOString().slice(0, 19).replace("T", " "),
-      createdAt: store?.createdAt ?? new Date().toISOString().slice(0, 19).replace("T", " "),
+      updatedAt:
+        store?.updatedAt ??
+        new Date().toISOString().slice(0, 19).replace("T", " "),
+      createdAt:
+        store?.createdAt ??
+        new Date().toISOString().slice(0, 19).replace("T", " "),
       id: store?.id ?? "",
       userId: store?.userId ?? "",
       ...values,
     };
     try {
       startMutation(async () => {
-        addOptimistic && addOptimistic({
-          data: pendingStore,
-          action: editing ? "update" : "create",
-        });
+        addOptimistic &&
+          addOptimistic({
+            data: pendingStore,
+            action: editing ? "update" : "create",
+          });
 
         const error = editing
-          ? await updateStoreAction({ ...values, id: store.id })
-          : await createStoreAction(values);
+          ? await updateStoreAction({
+              ...values,
+              id: store.id,
+              slug: values.name.toLowerCase().replace(" ", "-"),
+            })
+          : await createStoreAction({
+              ...values,
+              active: true,
+              slug: values.name.toLowerCase().replace(" ", "-"),
+            });
 
         const errorFormatted = {
           error: error ?? "Error",
-          values: pendingStore 
+          values: pendingStore,
         };
         onSuccess(
           editing ? "update" : "create",
-          error ? errorFormatted : undefined,
+          error ? errorFormatted : undefined
         );
       });
     } catch (e) {
@@ -118,16 +134,20 @@ const StoreForm = ({
   };
 
   return (
-    <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
+    <form
+      action={handleSubmit}
+      onChange={handleChange}
+      className={"space-y-4 p-4"}
+    >
       {/* Schema fields start */}
-              <div>
+      <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.name ? "text-destructive" : "",
+            errors?.name ? "text-destructive" : ""
           )}
         >
-          Name
+          Nombre de la tienda
         </Label>
         <Input
           type="text"
@@ -141,14 +161,14 @@ const StoreForm = ({
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.description ? "text-destructive" : "",
+            errors?.description ? "text-destructive" : ""
           )}
         >
-          Description
+          Descripción
         </Label>
         <Input
           type="text"
@@ -157,33 +177,18 @@ const StoreForm = ({
           defaultValue={store?.description ?? ""}
         />
         {errors?.description ? (
-          <p className="text-xs text-destructive mt-2">{errors.description[0]}</p>
+          <p className="text-xs text-destructive mt-2">
+            {errors.description[0]}
+          </p>
         ) : (
           <div className="h-6" />
         )}
       </div>
-<div>
+      {/* <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.active ? "text-destructive" : "",
-          )}
-        >
-          Active
-        </Label>
-        <br />
-        <Checkbox defaultChecked={store?.active} name={'active'} className={cn(errors?.active ? "ring ring-destructive" : "")} />
-        {errors?.active ? (
-          <p className="text-xs text-destructive mt-2">{errors.active[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.image ? "text-destructive" : "",
+            errors?.image ? "text-destructive" : ""
           )}
         >
           Image
@@ -199,33 +204,48 @@ const StoreForm = ({
         ) : (
           <div className="h-6" />
         )}
-      </div>
-        <div>
+      </div> */}
+      <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.region ? "text-destructive" : "",
+            errors?.region ? "text-destructive" : ""
           )}
         >
           Region
         </Label>
-        <Input
-          type="text"
+        <Select
           name="region"
-          className={cn(errors?.region ? "ring ring-destructive" : "")}
+          onValueChange={(value) => {
+            setRegion(value);
+          }}
           defaultValue={store?.region ?? ""}
-        />
+        >
+          <SelectTrigger className="w-[280px]">
+            <SelectValue
+              defaultValue={store?.region ?? ""}
+              placeholder="Selecciona una region"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {regions.map((region) => (
+              <SelectItem key={region.region} value={region.region}>
+                {region.region}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors?.region ? (
           <p className="text-xs text-destructive mt-2">{errors.region[0]}</p>
         ) : (
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.city ? "text-destructive" : "",
+            errors?.city ? "text-destructive" : ""
           )}
         >
           City
@@ -242,32 +262,11 @@ const StoreForm = ({
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
             "mb-2 inline-block",
-            errors?.slug ? "text-destructive" : "",
-          )}
-        >
-          Slug
-        </Label>
-        <Input
-          type="text"
-          name="slug"
-          className={cn(errors?.slug ? "ring ring-destructive" : "")}
-          defaultValue={store?.slug ?? ""}
-        />
-        {errors?.slug ? (
-          <p className="text-xs text-destructive mt-2">{errors.slug[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.mainCategories ? "text-destructive" : "",
+            errors?.mainCategories ? "text-destructive" : ""
           )}
         >
           Main Categories
@@ -279,7 +278,9 @@ const StoreForm = ({
           defaultValue={store?.mainCategories ?? ""}
         />
         {errors?.mainCategories ? (
-          <p className="text-xs text-destructive mt-2">{errors.mainCategories[0]}</p>
+          <p className="text-xs text-destructive mt-2">
+            {errors.mainCategories[0]}
+          </p>
         ) : (
           <div className="h-6" />
         )}

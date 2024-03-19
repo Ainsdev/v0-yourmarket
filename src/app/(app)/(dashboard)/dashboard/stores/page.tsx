@@ -1,5 +1,3 @@
-"use client";
-
 import { Link, RocketIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -19,6 +17,15 @@ import StoreList from "@/components/stores/StoreList";
 import { getStores } from "@/lib/api/stores/queries";
 import { DrawerDialog } from "@/components/DrawerDialog";
 
+const Stores = async () => {
+  const { stores } = await getStores();
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <StoreList stores={stores} />
+    </Suspense>
+  );
+};
 
 export default function StorePage() {
   return (
@@ -53,7 +60,7 @@ export default function StorePage() {
           Proximamente
         </Button>
       </Alert>
-      <DrawerDialog
+      {/* <DrawerDialog
         button={<Button>Crear Tienda</Button>}
         dialogTitle={"Crea tu tienda"}
         dialogDescription={"Es sencillo"}
@@ -61,13 +68,14 @@ export default function StorePage() {
         <div className="p-4">
           <p>asd</p>
         </div>
-      </DrawerDialog>
+      </DrawerDialog> */}
       <section
         id="dashboard-stores-page-stores"
         aria-labelledby="dashboard-stores-page-stores-heading"
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
-        <Card>
+        <Stores />
+        {/* <Card>
           <div className="flex items-center p-4 gap-4">
             <Image
               alt="Image"
@@ -90,7 +98,7 @@ export default function StorePage() {
           <CardFooter>
             <Button size="sm">Manage</Button>
           </CardFooter>
-        </Card>
+        </Card> */}
       </section>
     </Shell>
   );

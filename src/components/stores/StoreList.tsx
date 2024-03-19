@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import StoreForm from "./StoreForm";
 import { PlusIcon } from "lucide-react";
 import { useOptimisticStores } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
+import { DrawerDialog } from "../DrawerDialog";
 
 type TOpenModal = (store?: Store) => void;
 
@@ -37,10 +38,11 @@ export default function StoreList({
 
   return (
     <div>
-      <Modal
+      <DrawerDialog
         open={open}
         setOpen={setOpen}
-        title={activeStore ? "Edit Store" : "Create Store"}
+        dialogTitle={activeStore ? "Edita tu Tienda" : "Crea tu tienda"}
+        dialogDescription="Es facil y rapido"
       >
         <StoreForm
           store={activeStore}
@@ -49,7 +51,7 @@ export default function StoreList({
           closeModal={closeModal}
           
         />
-      </Modal>
+      </DrawerDialog>
       <div className="absolute right-0 top-0 ">
         <Button onClick={() => openModal()} variant={"outline"}>
           +
@@ -101,7 +103,7 @@ const Store = ({
       </div>
       <Button variant={"link"} asChild>
         <Link href={ basePath + "/" + store.id }>
-          Edit
+          Editar
         </Link>
       </Button>
     </li>
@@ -112,14 +114,14 @@ const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className="text-center">
       <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">
-        No stores
+        No tienes tiendas
       </h3>
       <p className="mt-1 text-sm text-muted-foreground">
-        Get started by creating a new store.
+        Empieza creando una tienda
       </p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Stores </Button>
+          <PlusIcon className="h-4" /> Crear Tienda </Button>
       </div>
     </div>
   );

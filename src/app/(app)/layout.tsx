@@ -13,7 +13,7 @@ export default async function AppLayout({
   return (
     <main>
       <div className="flex h-screen">
-        <Sidebar />
+        {/* <Sidebar /> */}
         <main className="flex-1 md:p-8 pt-2 p-8 overflow-y-auto">
           <Header user={user} />
           {children}
