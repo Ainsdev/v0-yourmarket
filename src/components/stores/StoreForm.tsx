@@ -248,14 +248,25 @@ const StoreForm = ({
             errors?.city ? "text-destructive" : ""
           )}
         >
-          City
+          Comuna
         </Label>
-        <Input
-          type="text"
-          name="city"
-          className={cn(errors?.city ? "ring ring-destructive" : "")}
-          defaultValue={store?.city ?? ""}
-        />
+        <Select name="city" defaultValue={store?.city ?? ""}>
+          <SelectTrigger className="w-[280px]">
+            <SelectValue
+              defaultValue={store?.city ?? ""}
+              placeholder="Selecciona una comuna"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {regions
+              .find((r) => r.region === regionValue)
+              ?.comunas.map((city) => (
+                <SelectItem key={city} value={city}>
+                  {city}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
         {errors?.city ? (
           <p className="text-xs text-destructive mt-2">{errors.city[0]}</p>
         ) : (
