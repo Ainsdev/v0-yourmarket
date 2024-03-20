@@ -4,7 +4,15 @@ import { useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 import { type Action, cn } from "@/lib/utils";
 
@@ -12,9 +20,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
-
-import { Checkbox } from "@/components/ui/checkbox";
-
 import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
 import {
   createStoreAction,
@@ -30,6 +35,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { regions } from "@/config/regions";
+import { productCategories } from "@/config/categories";
+import { useForm } from "react-hook-form";
+
+const FormSchema = insertStoreParams;
 
 const StoreForm = ({
   store,
@@ -45,8 +54,18 @@ const StoreForm = ({
   addOptimistic?: TAddOptimistic;
   postSuccess?: () => void;
 }) => {
-  const { errors, hasErrors, setErrors, handleChange } =
-    useValidatedForm<Store>(insertStoreParams);
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: store?.name ?? "",
+      description: store?.description ?? "",
+      image: store?.image ?? "",
+      region: store?.region ?? "",
+      city: store?.city ?? "",
+      mainCategories: store?.mainCategories ?? 0,
+    },
+  });
+  // const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Store>(insertStoreParams);
   const editing = !!store?.id;
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -74,18 +93,8 @@ const StoreForm = ({
     }
   };
 
-  const handleSubmit = async (data: FormData) => {
-    setErrors(null);
-
-    const payload = Object.fromEntries(data.entries());
-    const storeParsed = await insertStoreParams.safeParseAsync({ ...payload });
-    if (!storeParsed.success) {
-      setErrors(storeParsed?.error.flatten().fieldErrors);
-      return;
-    }
-
+  const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
     closeModal && closeModal();
-    const values = storeParsed.data;
     const pendingStore: Store = {
       updatedAt:
         store?.updatedAt ??
@@ -95,7 +104,7 @@ const StoreForm = ({
         new Date().toISOString().slice(0, 19).replace("T", " "),
       id: store?.id ?? "",
       userId: store?.userId ?? "",
-      ...values,
+      ...data,
     };
     try {
       startMutation(async () => {
@@ -107,14 +116,14 @@ const StoreForm = ({
 
         const error = editing
           ? await updateStoreAction({
-              ...values,
+              ...data,
               id: store.id,
-              slug: values.name.toLowerCase().replace(" ", "-"),
+              slug: data.name.toLowerCase().replace(" ", "-"),
             })
           : await createStoreAction({
-              ...values,
+              ...data,
               active: true,
-              slug: values.name.toLowerCase().replace(" ", "-"),
+              slug: data.name.toLowerCase().replace(" ", "-"),
             });
 
         const errorFormatted = {
@@ -128,230 +137,183 @@ const StoreForm = ({
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
-        setErrors(e.flatten().fieldErrors);
+        toast.error("Algo salio mal, revisa tus datos.");
       }
     }
   };
 
   return (
-    <form
-      action={handleSubmit}
-      onChange={handleChange}
-      className={"space-y-4 p-4"}
-    >
-      {/* Schema fields start */}
-      <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.name ? "text-destructive" : ""
-          )}
-        >
-          Nombre de la tienda
-        </Label>
-        <Input
-          type="text"
+    <Form {...form}>
+      <form className={"space-y-4 p-4"}>
+        {/* Schema fields start */}
+        <FormField
+          control={form.control}
           name="name"
-          className={cn(errors?.name ? "ring ring-destructive" : "")}
-          defaultValue={store?.name ?? ""}
-        />
-        {errors?.name ? (
-          <p className="text-xs text-destructive mt-2">{errors.name[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-      <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.description ? "text-destructive" : ""
+          render={({ field }) => (
+            <FormItem id="name" className="w-full">
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input id="name" placeholder="YourMarket" type="text" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        >
-          Descripción
-        </Label>
-        <Input
-          type="text"
+        />
+        <FormField
+          control={form.control}
           name="description"
-          className={cn(errors?.description ? "ring ring-destructive" : "")}
-          defaultValue={store?.description ?? ""}
+          render={({ field }) => (
+            <FormItem id="description" className="w-full">
+              <FormLabel>Descripcion</FormLabel>
+              <FormControl>
+                <Input id="description" placeholder="Descripcion" type="text" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors?.description ? (
-          <p className="text-xs text-destructive mt-2">
-            {errors.description[0]}
-          </p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-      {/* <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.image ? "text-destructive" : ""
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Region</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  setRegion(value);
+                  field.onChange(value);
+                }}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Selecciona una region" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {regions.map((region) => (
+                    <SelectItem key={region.region} value={region.region}>
+                      {region.region}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
           )}
-        >
-          Image
-        </Label>
-        <Input
-          type="text"
-          name="image"
-          className={cn(errors?.image ? "ring ring-destructive" : "")}
-          defaultValue={store?.image ?? ""}
         />
-        {errors?.image ? (
-          <p className="text-xs text-destructive mt-2">{errors.image[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div> */}
-      <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.region ? "text-destructive" : ""
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ciudad</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(value)}
+                name="city"
+                defaultValue={store?.city ?? ""}
+              >
+                <SelectTrigger className="w-[280px]">
+                  <SelectValue
+                    defaultValue={store?.city ?? ""}
+                    placeholder="Selecciona una comuna"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {regions
+                    .find((r) => r.region === regionValue)
+                    ?.comunas.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
           )}
-        >
-          Region
-        </Label>
-        <Select
-          name="region"
-          onValueChange={(value) => {
-            setRegion(value);
-          }}
-          defaultValue={store?.region ?? ""}
-        >
-          <SelectTrigger className="w-[280px]">
-            <SelectValue
-              defaultValue={store?.region ?? ""}
-              placeholder="Selecciona una region"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            {regions.map((region) => (
-              <SelectItem key={region.region} value={region.region}>
-                {region.region}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors?.region ? (
-          <p className="text-xs text-destructive mt-2">{errors.region[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-      <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.city ? "text-destructive" : ""
-          )}
-        >
-          Comuna
-        </Label>
-        <Select name="city" defaultValue={store?.city ?? ""}>
-          <SelectTrigger className="w-[280px]">
-            <SelectValue
-              defaultValue={store?.city ?? ""}
-              placeholder="Selecciona una comuna"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            {regions
-              .find((r) => r.region === regionValue)
-              ?.comunas.map((city) => (
-                <SelectItem key={city} value={city}>
-                  {city}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-        {errors?.city ? (
-          <p className="text-xs text-destructive mt-2">{errors.city[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-      <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.mainCategories ? "text-destructive" : ""
-          )}
-        >
-          Main Categories
-        </Label>
-        <Input
-          type="text"
+        />
+        <FormField
+          control={form.control}
           name="mainCategories"
-          className={cn(errors?.mainCategories ? "ring ring-destructive" : "")}
-          defaultValue={store?.mainCategories ?? ""}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Categoria</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(value)}
+                name="mainCategories"
+                defaultValue={
+                  productCategories.find(
+                    (category) => category.id === store?.mainCategories
+                  )?.title
+                }
+              >
+                <SelectTrigger className="w-[280px]">
+                  <SelectValue
+                    defaultValue={store?.mainCategories ?? 0}
+                    placeholder="Selecciona una categoria"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {productCategories.map((category) => (
+                    <SelectItem key={category.title} value={category.title}>
+                      {category.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors?.mainCategories ? (
-          <p className="text-xs text-destructive mt-2">
-            {errors.mainCategories[0]}
-          </p>
+        {/* Schema fields end */}
+
+        {/* Save Button */}
+        {editing ? (
+          <Button
+            type="submit"
+            disabled={pending}
+            onClick={form.handleSubmit(handleSubmit)}
+          >
+            {pending ? "Guardando..." : "Guardar"}
+          </Button>
         ) : (
-          <div className="h-6" />
+          <Button
+            type="submit"
+            disabled={pending}
+            onClick={form.handleSubmit(handleSubmit)}
+          >
+            {pending ? "Creando..." : "Crear"}
+          </Button>
         )}
-      </div>
-      {/* Schema fields end */}
+        {/* Delete Button */}
+        {editing ? (
+          <Button
+            type="button"
+            disabled={isDeleting || pending}
+            variant={"destructive"}
+            onClick={() => {
+              setIsDeleting(true);
+              closeModal && closeModal();
+              startMutation(async () => {
+                addOptimistic &&
+                  addOptimistic({ action: "delete", data: store });
+                const error = await deleteStoreAction(store.id);
+                setIsDeleting(false);
+                const errorFormatted = {
+                  error: error ?? "Error",
+                  values: store,
+                };
 
-      {/* Save Button */}
-      <SaveButton errors={hasErrors} editing={editing} />
-
-      {/* Delete Button */}
-      {editing ? (
-        <Button
-          type="button"
-          disabled={isDeleting || pending || hasErrors}
-          variant={"destructive"}
-          onClick={() => {
-            setIsDeleting(true);
-            closeModal && closeModal();
-            startMutation(async () => {
-              addOptimistic && addOptimistic({ action: "delete", data: store });
-              const error = await deleteStoreAction(store.id);
-              setIsDeleting(false);
-              const errorFormatted = {
-                error: error ?? "Error",
-                values: store,
-              };
-
-              onSuccess("delete", error ? errorFormatted : undefined);
-            });
-          }}
-        >
-          Delet{isDeleting ? "ing..." : "e"}
-        </Button>
-      ) : null}
-    </form>
+                onSuccess("delete", error ? errorFormatted : undefined);
+              });
+            }}
+          >
+            {isDeleting ? "Eliminando..." : "Eliminar"}
+          </Button>
+        ) : null}
+      </form>
+    </Form>
   );
 };
 
 export default StoreForm;
-
-const SaveButton = ({
-  editing,
-  errors,
-}: {
-  editing: Boolean;
-  errors: boolean;
-}) => {
-  const { pending } = useFormStatus();
-  const isCreating = pending && editing === false;
-  const isUpdating = pending && editing === true;
-  return (
-    <Button
-      type="submit"
-      className="mr-2"
-      disabled={isCreating || isUpdating || errors}
-      aria-disabled={isCreating || isUpdating || errors}
-    >
-      {editing
-        ? `Sav${isUpdating ? "ing..." : "e"}`
-        : `Creat${isCreating ? "ing..." : "e"}`}
-    </Button>
-  );
-};
