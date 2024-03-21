@@ -26,7 +26,6 @@ import {
   deleteStoreAction,
   updateStoreAction,
 } from "@/lib/actions/stores";
-import { TAddOptimistic } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
 import {
   Select,
   SelectContent,
@@ -37,21 +36,27 @@ import {
 import { regions } from "@/config/regions";
 import { productCategories } from "@/config/categories";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const FormSchema = insertStoreParams;
+const FormSchema = insertStoreParams.pick({
+  name: true,
+  description: true,
+  image: true,
+  region: true,
+  city: true,
+  mainCategories: true,
+});
 
 const StoreForm = ({
   store,
   openModal,
   closeModal,
-  addOptimistic,
   postSuccess,
 }: {
   store?: Store | null;
 
   openModal?: (store?: Store) => void;
   closeModal?: () => void;
-  addOptimistic?: TAddOptimistic;
   postSuccess?: () => void;
 }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -82,13 +87,13 @@ const StoreForm = ({
     const failed = Boolean(data?.error);
     if (failed) {
       openModal && openModal(data?.values);
-      toast.error(`Failed to ${action}`, {
+      toast.error(`Error al ${action}`, {
         description: data?.error ?? "Error",
       });
     } else {
       router.refresh();
       postSuccess && postSuccess();
-      toast.success(`Store ${action}d!`);
+      toast.success(`Tienda ${action}!`);
       if (action === "delete") router.push(backpath);
     }
   };
@@ -104,36 +109,45 @@ const StoreForm = ({
         new Date().toISOString().slice(0, 19).replace("T", " "),
       id: store?.id ?? "",
       userId: store?.userId ?? "",
+      active: true,
+      slug: data.name.toLowerCase().replace(" ", "-"),
       ...data,
     };
     try {
       startMutation(async () => {
-        addOptimistic &&
-          addOptimistic({
-            data: pendingStore,
-            action: editing ? "update" : "create",
+        //Editing
+        if(editing){
+          const error = await updateStoreAction({
+            ...data,
+            id: store?.id ?? "",
+            active: true,
+            slug: data.name.toLowerCase().replace(" ", "-"),
           });
-
-        const error = editing
-          ? await updateStoreAction({
-              ...data,
-              id: store.id,
-              slug: data.name.toLowerCase().replace(" ", "-"),
-            })
-          : await createStoreAction({
-              ...data,
-              active: true,
-              slug: data.name.toLowerCase().replace(" ", "-"),
-            });
-
-        const errorFormatted = {
-          error: error ?? "Error",
-          values: pendingStore,
-        };
-        onSuccess(
-          editing ? "update" : "create",
-          error ? errorFormatted : undefined
-        );
+          const errorFormatted = {
+            error: error ?? "Error",
+            values: pendingStore,
+          };
+          onSuccess(
+            editing ? "update" : "create",
+            error ? errorFormatted : undefined
+          );
+        }
+        //Creating
+        else{
+          const error = await createStoreAction({
+            ...data,
+            active: true,
+            slug: data.name.toLowerCase().replace(" ", "-"),
+          });
+          const errorFormatted = {
+            error: error ?? "Error",
+            values: pendingStore,
+          };
+          onSuccess(
+            editing ? "update" : "create",
+            error ? errorFormatted : undefined
+          );
+        }
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
@@ -295,15 +309,12 @@ const StoreForm = ({
               setIsDeleting(true);
               closeModal && closeModal();
               startMutation(async () => {
-                addOptimistic &&
-                  addOptimistic({ action: "delete", data: store });
                 const error = await deleteStoreAction(store.id);
                 setIsDeleting(false);
                 const errorFormatted = {
                   error: error ?? "Error",
                   values: store,
                 };
-
                 onSuccess("delete", error ? errorFormatted : undefined);
               });
             }}

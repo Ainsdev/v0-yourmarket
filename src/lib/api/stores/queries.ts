@@ -26,7 +26,6 @@ export const getStoreById = async (id: StoreId) => {
   return { store: s };
 };
 
-
 export const getStoreByIdWithPosts = async (id: StoreId) => {
   const { session } = await getUserAuth();
   const { id: storeId } = storeIdSchema.parse({ id });
@@ -42,4 +41,13 @@ export const getStoreByIdWithPosts = async (id: StoreId) => {
     .map((p) => p.post) as CompletePost[];
 
   return { store: s, posts: sp };
+};
+
+export const checkNameExists = async (name: string) => {
+  const { session } = await getUserAuth();
+  const rows = await db
+    .select()
+    .from(stores)
+    .where(and(eq(stores.name, name), eq(stores.userId, session?.user.id!)));
+  return { exists: rows.length > 0 };
 };
