@@ -116,7 +116,7 @@ const StoreForm = ({
     try {
       startMutation(async () => {
         //Editing
-        if(editing){
+        if (editing) {
           const error = await updateStoreAction({
             ...data,
             id: store?.id ?? "",
@@ -133,7 +133,7 @@ const StoreForm = ({
           );
         }
         //Creating
-        else{
+        else {
           const error = await createStoreAction({
             ...data,
             active: true,
@@ -167,7 +167,12 @@ const StoreForm = ({
             <FormItem id="name" className="w-full">
               <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input id="name" placeholder="YourMarket" type="text" />
+                <Input
+                  required
+                  id="name"
+                  placeholder="YourMarket"
+                  type="text"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -180,7 +185,12 @@ const StoreForm = ({
             <FormItem id="description" className="w-full">
               <FormLabel>Descripcion</FormLabel>
               <FormControl>
-                <Input id="description" placeholder="Descripcion" type="text" />
+                <Input
+                  required
+                  id="description"
+                  placeholder="Descripcion"
+                  type="text"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -193,6 +203,7 @@ const StoreForm = ({
             <FormItem>
               <FormLabel>Region</FormLabel>
               <Select
+                required
                 onValueChange={(value) => {
                   setRegion(value);
                   field.onChange(value);
@@ -222,6 +233,7 @@ const StoreForm = ({
             <FormItem>
               <FormLabel>Ciudad</FormLabel>
               <Select
+                required
                 onValueChange={(value) => field.onChange(value)}
                 name="city"
                 defaultValue={store?.city ?? ""}
@@ -253,6 +265,7 @@ const StoreForm = ({
             <FormItem>
               <FormLabel>Categoria</FormLabel>
               <Select
+                required
                 onValueChange={(value) => field.onChange(value)}
                 name="mainCategories"
                 defaultValue={
