@@ -1,3 +1,5 @@
+import { FileWithPath } from "react-dropzone";
+
 export interface Category {
   id: number;
   title: string;
@@ -23,4 +25,8 @@ export interface Option {
   label: string;
   value: string;
   icon?: React.ComponentType<{ className?: string }>;
+}
+
+export type FileWithPreview = FileWithPath & {
+  preview: string
 }

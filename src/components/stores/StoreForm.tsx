@@ -12,6 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  UncontrolledFormMessage,
 } from "@/components/ui/form";
 
 import { type Action, cn } from "@/lib/utils";
@@ -37,6 +38,12 @@ import { regions } from "@/config/regions";
 import { productCategories } from "@/config/categories";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { generateReactHelpers } from "@uploadthing/react/hooks";
+import { OurFileRouter } from "@/app/api/uploadthing/core";
+import { FileDialog } from "../file-dialog";
+import { Zoom } from "../zoom-image";
+import Image from "next/image";
+import { FileWithPreview } from "@/lib/types";
 
 const FormSchema = insertStoreParams.pick({
   name: true,
@@ -46,6 +53,7 @@ const FormSchema = insertStoreParams.pick({
   city: true,
   mainCategories: true,
 });
+const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const StoreForm = ({
   store,
@@ -76,6 +84,8 @@ const StoreForm = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [regionValue, setRegion] = useState("");
   const [pending, startMutation] = useTransition();
+  const { isUploading, startUpload } = useUploadThing("profileImage");
+  const [files, setFiles] = useState<FileWithPreview[] | null>(null)
 
   const router = useRouter();
   const backpath = useBackPath("stores");
@@ -258,6 +268,39 @@ const StoreForm = ({
             </FormItem>
           )}
         />
+        <FormItem className="flex w-full flex-col gap-1.5">
+          <FormLabel>Images</FormLabel>
+          {files?.length ? (
+            <div className="flex items-center gap-2">
+              {files.map((file, i) => (
+                <Zoom key={i}>
+                  <Image
+                    src={file.preview}
+                    alt={file.name}
+                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                    width={80}
+                    height={80}
+                  />
+                </Zoom>
+              ))}
+            </div>
+          ) : null}
+          <FormControl>
+            <FileDialog
+              setValue={form.setValue}
+              name="image"
+              maxFiles={3}
+              maxSize={1024 * 1024 * 4}
+              files={files}
+              setFiles={setFiles} 
+              isUploading={isUploading}
+              disabled={pending}
+            />
+          </FormControl>
+          <UncontrolledFormMessage
+            message={form.formState.errors.image?.message}
+          />
+        </FormItem>
         <FormField
           control={form.control}
           name="mainCategories"
