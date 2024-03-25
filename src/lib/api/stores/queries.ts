@@ -44,10 +44,10 @@ export const getStoreByIdWithPosts = async (id: StoreId) => {
 };
 
 export const checkNameExists = async (name: string) => {
-  const { session } = await getUserAuth();
+  // const { session } = await getUserAuth();
   const rows = await db
     .select()
     .from(stores)
-    .where(and(eq(stores.name, name), eq(stores.userId, session?.user.id!)));
+    .where(and(eq(stores.name, name)));
   return { exists: rows.length > 0 };
 };

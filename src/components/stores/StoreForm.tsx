@@ -12,13 +12,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { type Action, cn } from "@/lib/utils";
+import { type Action, cn, isArrayOfFile } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBackPath } from "@/components/shared/BackButton";
 import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
-import { deleteStoreAction } from "@/lib/actions/stores";
+import {
+  createStoreAction,
+  deleteStoreAction,
+  updateStoreAction,
+} from "@/lib/actions/stores";
 import {
   Select,
   SelectContent,
@@ -34,6 +38,7 @@ import { generateReactHelpers } from "@uploadthing/react/hooks";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
+import { checkNameExists } from "@/lib/api/stores/queries";
 
 function getImageData(event: ChangeEvent<HTMLInputElement>) {
   // FileList is immutable, so we need to create a new one
@@ -65,7 +70,7 @@ const FormSchema = z.object({
   mainCategories: z.number().min(1, { message: "Selecciona una categoria" }),
 });
 
-// const { useUploadThing } = generateReactHelpers<OurFileRouter>();
+const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const StoreForm = ({
   store,
@@ -96,8 +101,10 @@ const StoreForm = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [regionValue, setRegion] = useState("");
   const [pending, startMutation] = useTransition();
-  // const { isUploading, startUpload } = useUploadThing("profileImage");
+  //Images
+  const { isUploading, startUpload } = useUploadThing("profileImage");
   const [preview, setPreview] = useState(store?.image || "");
+  const [file, setFile] = useState<FileList | null>(null);
 
   const router = useRouter();
   const backpath = useBackPath("stores");
@@ -136,45 +143,61 @@ const StoreForm = ({
       ...data,
     };
     try {
-      //Do mutations
+      //Check if name exists
+      const nameExists = await checkNameExists(data.name);
+      if (nameExists) {
+        return new Error("El nombre de la tienda ya existe");
+      }
       startMutation(async () => {
-        //Editing
-        // if (editing) {
-        //   const error = await updateStoreAction({
-        //     ...data,
-        //     id: store?.id ?? "",
-        //     active: true,
-        //     slug: data.name.toLowerCase().replace(" ", "-"),
-        //   });
-        //   const errorFormatted = {
-        //     error: error ?? "Error",
-        //     values: pendingStore,
-        //   };
-        //   onSuccess(
-        //     editing ? "update" : "create",
-        //     error ? errorFormatted : undefined
-        //   );
-        // }
-        // //Creating
-        // else {
-        //   const error = await createStoreAction({
-        //     ...data,
-        //     active: true,
-        //     slug: data.name.toLowerCase().replace(" ", "-"),
-        //   });
-        //   const errorFormatted = {
-        //     error: error ?? "Error",
-        //     values: pendingStore,
-        //   };
-        //   onSuccess(
-        //     editing ? "update" : "create",
-        //     error ? errorFormatted : undefined
-        //   );
-        // }
-        //Toast con los datos de la tienda
-        toast.success("Tienda creada exitosamente", {
-          description: JSON.stringify(pendingStore),
-        });
+        //Uploading image
+        if (isArrayOfFile(file) && file.length > 0) {
+          startUpload(file)
+            .then((res) => {
+              const formattedImages = res?.map((image) => ({
+                id: image.key,
+                name: image.key.split("_")[1] ?? image.key,
+                url: image.url,
+              }));
+              return formattedImages ?? null;
+            })
+            .then(async (images) => {
+              //Editing
+              if (editing) {
+                const error = await updateStoreAction({
+                  ...data,
+                  id: store?.id ?? "",
+                  active: true,
+                  slug: data.name.toLowerCase().replace(" ", "-"),
+                  image: images ? images[0].url : store?.image,
+                });
+                const errorFormatted = {
+                  error: error ?? "Error",
+                  values: pendingStore,
+                };
+                onSuccess(
+                  editing ? "update" : "create",
+                  error ? errorFormatted : undefined
+                );
+              }
+              // //Creating
+              else {
+                const error = await createStoreAction({
+                  ...data,
+                  active: true,
+                  slug: data.name.toLowerCase().replace(" ", "-"),
+                  image: images ? images[0].url : "",
+                });
+                const errorFormatted = {
+                  error: error ?? "Error",
+                  values: pendingStore,
+                };
+                onSuccess(
+                  editing ? "update" : "create",
+                  error ? errorFormatted : undefined
+                );
+              }
+            });
+        }
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
@@ -343,6 +366,7 @@ const StoreForm = ({
                     onChange={(event) => {
                       const { files, displayUrl } = getImageData(event);
                       setPreview(displayUrl);
+                      setFile(files);
                       onChange(displayUrl);
                     }}
                   />
