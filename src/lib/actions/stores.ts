@@ -17,6 +17,7 @@ import {
 
 const handleErrors = (e: unknown) => {
   const errMsg = "Error, please try again.";
+  console.error(e);
   if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
   if (e && typeof e === "object" && "error" in e) {
     const errAsStr = e.error as string;

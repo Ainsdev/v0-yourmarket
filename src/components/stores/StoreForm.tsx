@@ -1,32 +1,24 @@
 import { z } from "zod";
 
-import { useState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
+import { ChangeEvent, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  UncontrolledFormMessage,
 } from "@/components/ui/form";
 
 import { type Action, cn } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
 import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
-import {
-  createStoreAction,
-  deleteStoreAction,
-  updateStoreAction,
-} from "@/lib/actions/stores";
+import { deleteStoreAction } from "@/lib/actions/stores";
 import {
   Select,
   SelectContent,
@@ -40,20 +32,40 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateReactHelpers } from "@uploadthing/react/hooks";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
-import { FileDialog } from "../file-dialog";
-import { Zoom } from "../zoom-image";
-import Image from "next/image";
-import { FileWithPreview } from "@/lib/types";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Separator } from "../ui/separator";
 
-const FormSchema = insertStoreParams.pick({
-  name: true,
-  description: true,
-  image: true,
-  region: true,
-  city: true,
-  mainCategories: true,
+function getImageData(event: ChangeEvent<HTMLInputElement>) {
+  // FileList is immutable, so we need to create a new one
+  const dataTransfer = new DataTransfer();
+
+  // Add newly uploaded images
+  Array.from(event.target.files!).forEach((image) =>
+    dataTransfer.items.add(image)
+  );
+
+  const files = dataTransfer.files;
+  const displayUrl = URL.createObjectURL(event.target.files![0]);
+
+  return { files, displayUrl };
+}
+
+const FormSchema = z.object({
+  name: z
+    .string()
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message: "Solo se admiten caracteres alfanumericos",
+    })
+    .min(5, { message: "Debe ser entre 5 y 20 caracteres" })
+    .max(20, { message: "Debe ser entre 5 y 20 caracteres" }),
+  description: z.string().max(80),
+  image: z.string(),
+  region: z.string().min(1, { message: "Selecciona una region" }),
+  city: z.string().min(1, { message: "Selecciona una comuna" }),
+  mainCategories: z.number().min(1, { message: "Selecciona una categoria" }),
 });
-const { useUploadThing } = generateReactHelpers<OurFileRouter>();
+
+// const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const StoreForm = ({
   store,
@@ -84,8 +96,8 @@ const StoreForm = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [regionValue, setRegion] = useState("");
   const [pending, startMutation] = useTransition();
-  const { isUploading, startUpload } = useUploadThing("profileImage");
-  const [files, setFiles] = useState<FileWithPreview[] | null>(null)
+  // const { isUploading, startUpload } = useUploadThing("profileImage");
+  const [preview, setPreview] = useState(store?.image || "");
 
   const router = useRouter();
   const backpath = useBackPath("stores");
@@ -124,40 +136,45 @@ const StoreForm = ({
       ...data,
     };
     try {
+      //Do mutations
       startMutation(async () => {
         //Editing
-        if (editing) {
-          const error = await updateStoreAction({
-            ...data,
-            id: store?.id ?? "",
-            active: true,
-            slug: data.name.toLowerCase().replace(" ", "-"),
-          });
-          const errorFormatted = {
-            error: error ?? "Error",
-            values: pendingStore,
-          };
-          onSuccess(
-            editing ? "update" : "create",
-            error ? errorFormatted : undefined
-          );
-        }
-        //Creating
-        else {
-          const error = await createStoreAction({
-            ...data,
-            active: true,
-            slug: data.name.toLowerCase().replace(" ", "-"),
-          });
-          const errorFormatted = {
-            error: error ?? "Error",
-            values: pendingStore,
-          };
-          onSuccess(
-            editing ? "update" : "create",
-            error ? errorFormatted : undefined
-          );
-        }
+        // if (editing) {
+        //   const error = await updateStoreAction({
+        //     ...data,
+        //     id: store?.id ?? "",
+        //     active: true,
+        //     slug: data.name.toLowerCase().replace(" ", "-"),
+        //   });
+        //   const errorFormatted = {
+        //     error: error ?? "Error",
+        //     values: pendingStore,
+        //   };
+        //   onSuccess(
+        //     editing ? "update" : "create",
+        //     error ? errorFormatted : undefined
+        //   );
+        // }
+        // //Creating
+        // else {
+        //   const error = await createStoreAction({
+        //     ...data,
+        //     active: true,
+        //     slug: data.name.toLowerCase().replace(" ", "-"),
+        //   });
+        //   const errorFormatted = {
+        //     error: error ?? "Error",
+        //     values: pendingStore,
+        //   };
+        //   onSuccess(
+        //     editing ? "update" : "create",
+        //     error ? errorFormatted : undefined
+        //   );
+        // }
+        //Toast con los datos de la tienda
+        toast.success("Tienda creada exitosamente", {
+          description: JSON.stringify(pendingStore),
+        });
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
@@ -168,7 +185,11 @@ const StoreForm = ({
 
   return (
     <Form {...form}>
-      <form className={"space-y-4 p-4"}>
+      <form
+        className={
+          "space-y-4 p-4 flex flex-col justify-start items-start md:px-12 lg:px-24 xl:px-48"
+        }
+      >
         {/* Schema fields start */}
         <FormField
           control={form.control}
@@ -206,101 +227,71 @@ const StoreForm = ({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Region</FormLabel>
-              <Select
-                required
-                onValueChange={(value) => {
-                  setRegion(value);
-                  field.onChange(value);
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-[280px]">
-                    <SelectValue placeholder="Selecciona una region" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {regions.map((region) => (
-                    <SelectItem key={region.region} value={region.region}>
-                      {region.region}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ciudad</FormLabel>
-              <Select
-                required
-                onValueChange={(value) => field.onChange(value)}
-                name="city"
-                defaultValue={store?.city ?? ""}
-              >
-                <SelectTrigger className="w-[280px]">
-                  <SelectValue
-                    defaultValue={store?.city ?? ""}
-                    placeholder="Selecciona una comuna"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {regions
-                    .find((r) => r.region === regionValue)
-                    ?.comunas.map((city) => (
-                      <SelectItem key={city} value={city}>
-                        {city}
+        <Separator className="w-full" />
+        <div className="flex items-center justify-center gap-2 w-full">
+          <FormField
+            control={form.control}
+            name="region"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Region</FormLabel>
+                <Select
+                  required
+                  onValueChange={(value) => {
+                    setRegion(value);
+                    field.onChange(value);
+                  }}
+                >
+                  <FormControl>
+                    <SelectTrigger className="">
+                      <SelectValue placeholder="Selecciona una region" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {regions.map((region) => (
+                      <SelectItem key={region.region} value={region.region}>
+                        {region.region}
                       </SelectItem>
                     ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormItem className="flex w-full flex-col gap-1.5">
-          <FormLabel>Images</FormLabel>
-          {files?.length ? (
-            <div className="flex items-center gap-2">
-              {files.map((file, i) => (
-                <Zoom key={i}>
-                  <Image
-                    src={file.preview}
-                    alt={file.name}
-                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
-                    width={80}
-                    height={80}
-                  />
-                </Zoom>
-              ))}
-            </div>
-          ) : null}
-          <FormControl>
-            <FileDialog
-              setValue={form.setValue}
-              name="image"
-              maxFiles={3}
-              maxSize={1024 * 1024 * 4}
-              files={files}
-              setFiles={setFiles} 
-              isUploading={isUploading}
-              disabled={pending}
-            />
-          </FormControl>
-          <UncontrolledFormMessage
-            message={form.formState.errors.image?.message}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </FormItem>
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Ciudad</FormLabel>
+                <Select
+                  required
+                  onValueChange={(value) => field.onChange(value)}
+                  name="city"
+                  defaultValue={store?.city ?? ""}
+                >
+                  <SelectTrigger className="">
+                    <SelectValue
+                      defaultValue={store?.city ?? ""}
+                      placeholder="Selecciona una comuna"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {regions
+                      .find((r) => r.region === regionValue)
+                      ?.comunas.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="mainCategories"
@@ -335,11 +326,49 @@ const StoreForm = ({
             </FormItem>
           )}
         />
+        <Separator />
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field: { onChange, value, ...rest } }) => (
+            <FormItem>
+              <FormLabel>Imagen</FormLabel>
+              <FormControl>
+                <div className="flex flex-col items-center justify-center gap-4 p-2">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    className="rounded-full"
+                    {...rest}
+                    onChange={(event) => {
+                      const { files, displayUrl } = getImageData(event);
+                      setPreview(displayUrl);
+                      onChange(displayUrl);
+                    }}
+                  />
+                  {preview ? (
+                    <div className="">
+                      <Avatar className="w-24 h-24">
+                        <AvatarImage src={preview} alt="@imagen-perfil" />
+                        <AvatarFallback>IMG</AvatarFallback>
+                      </Avatar>
+                    </div>
+                  ) : null}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="h-4" />
+
         {/* Schema fields end */}
 
         {/* Save Button */}
         {editing ? (
           <Button
+            className="w-full"
+            size={"lg"}
             type="submit"
             disabled={pending}
             onClick={form.handleSubmit(handleSubmit)}
@@ -348,6 +377,8 @@ const StoreForm = ({
           </Button>
         ) : (
           <Button
+            className="w-full"
+            size={"lg"}
             type="submit"
             disabled={pending}
             onClick={form.handleSubmit(handleSubmit)}
@@ -358,6 +389,8 @@ const StoreForm = ({
         {/* Delete Button */}
         {editing ? (
           <Button
+            className="w-full"
+            size={"lg"}
             type="button"
             disabled={isDeleting || pending}
             variant={"destructive"}

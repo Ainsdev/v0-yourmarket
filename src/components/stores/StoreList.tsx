@@ -57,19 +57,19 @@ export default function StoreList({
           +
         </Button>
       </div>
-      {optimisticStores.length === 0 ? (
+      {/* {optimisticStores.length === 0 ? ( */}
         <EmptyState openModal={openModal} />
-      ) : (
-        <ul>
-          {optimisticStores.map((store) => (
-            <Store
-              store={store}
-              key={store.id}
-              openModal={openModal}
-            />
-          ))}
-        </ul>
-      )}
+      {/* // ) : (
+      //   <ul>
+      //     {optimisticStores.map((store) => (
+      //       <Store
+      //         store={store}
+      //         key={store.id}
+      //         openModal={openModal}
+      //       />
+      //     ))}
+      //   </ul>
+      // )} */}
     </div>
   );
 }
