@@ -15,7 +15,6 @@ import { Suspense } from "react";
 import Loading from "@/app/loading";
 import StoreList from "@/components/stores/StoreList";
 import { getStores } from "@/lib/api/stores/queries";
-import { DrawerDialog } from "@/components/DrawerDialog";
 
 const Stores = async () => {
   const { stores } = await getStores();

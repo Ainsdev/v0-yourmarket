@@ -1,5 +1,6 @@
+'use server'
 import { db } from "@/lib/db/index";
-import { eq, and, or } from "drizzle-orm";
+import { eq, and, or, exists } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
 import { type StoreId, storeIdSchema, stores } from "@/lib/db/schema/stores";
 import { posts, type CompletePost } from "@/lib/db/schema/posts";
@@ -45,9 +46,11 @@ export const getStoreByIdWithPosts = async (id: StoreId) => {
 
 export const checkNameExists = async (name: string) => {
   // const { session } = await getUserAuth();
+  const query = db.select().from(stores).where(exists(stores.name));
   const rows = await db
     .select()
     .from(stores)
-    .where(and(eq(stores.name, name)));
+    .where(exists(query)
+    
   return { exists: rows.length > 0 };
 };

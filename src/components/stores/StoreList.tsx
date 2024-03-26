@@ -46,7 +46,7 @@ export default function StoreList({
       >
         <StoreForm
           store={activeStore}
-          addOptimistic={addOptimisticStore}
+          // addOptimistic={addOptimisticStore}
           openModal={openModal}
           closeModal={closeModal}
           

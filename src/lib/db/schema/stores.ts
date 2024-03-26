@@ -10,7 +10,7 @@ import { nanoid, timestamps } from "@/lib/utils";
 
 export const stores = sqliteTable('stores', {
   id: text("id").primaryKey().$defaultFn(() => nanoid()),
-  name: text("name").notNull().unique(),
+  name: text("name").notNull(),
   description: text("description"),
   active: integer("active", { mode: "boolean" }).notNull(),
   image: text("image"),
@@ -26,7 +26,6 @@ export const stores = sqliteTable('stores', {
   updatedAt: text("updated_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
-
 }, (stores) => {
   return {
     cityIndex: uniqueIndex('city_idx').on(stores.city),

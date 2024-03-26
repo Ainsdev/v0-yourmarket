@@ -56,13 +56,11 @@ function getImageData(event: ChangeEvent<HTMLInputElement>) {
 }
 
 const FormSchema = z.object({
-  name: z
-    .string()
-    .regex(/^[a-zA-Z0-9]+$/, {
-      message: "Solo se admiten caracteres alfanumericos",
-    })
-    .min(5, { message: "Debe ser entre 5 y 20 caracteres" })
-    .max(20, { message: "Debe ser entre 5 y 20 caracteres" }),
+  name: z.string().regex(/^[a-zA-Z0-9\s]*$/, {
+    message: "Solo se admiten caracteres alfanumericos",
+  }),
+  // .min(5, { message: "Debe ser mas de 5 caracteres" })
+  // .max(20, { message: "Debe ser menos de 20 caracteres" }),
   description: z.string().max(80),
   image: z.string(),
   region: z.string().min(1, { message: "Selecciona una region" }),
@@ -128,6 +126,14 @@ const StoreForm = ({
   };
 
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const nameExists = (await checkNameExists(data.name)).exists;
+    if (nameExists) {
+      toast.error("El nombre ya existe");
+      form.setError("name", {
+        message: "El nombre ya existe",
+      });
+      return; // Add this line to exit the function and prevent the try-catch block from being activated
+    }
     closeModal && closeModal();
     const pendingStore: Store = {
       updatedAt:
@@ -142,16 +148,15 @@ const StoreForm = ({
       slug: data.name.toLowerCase().replace(" ", "-"),
       ...data,
     };
+
     try {
-      //Check if name exists
-      const nameExists = await checkNameExists(data.name);
-      if (nameExists) {
-        return new Error("El nombre de la tienda ya existe");
-      }
       startMutation(async () => {
-        //Uploading image
-        if (isArrayOfFile(file) && file.length > 0) {
-          startUpload(file)
+        //Check if name exists
+        //Uploading
+        //If there is a file
+        if (file && file.length > 0) {
+          console.log("Uploading Image");
+          startUpload(Array.from(file))
             .then((res) => {
               const formattedImages = res?.map((image) => ({
                 id: image.key,
@@ -187,6 +192,7 @@ const StoreForm = ({
                   slug: data.name.toLowerCase().replace(" ", "-"),
                   image: images ? images[0].url : "",
                 });
+
                 const errorFormatted = {
                   error: error ?? "Error",
                   values: pendingStore,
@@ -197,11 +203,47 @@ const StoreForm = ({
                 );
               }
             });
+        } else {
+          if (editing) {
+            const error = await updateStoreAction({
+              ...data,
+              id: store?.id ?? "",
+              active: true,
+              slug: data.name.toLowerCase().replace(" ", "-"),
+            });
+            const errorFormatted = {
+              error: error ?? "Error",
+              values: pendingStore,
+            };
+            onSuccess(
+              editing ? "update" : "create",
+              error ? errorFormatted : undefined
+            );
+          }
+          // //Creating
+          else {
+            const error = await createStoreAction({
+              ...data,
+              active: true,
+              slug: data.name.toLowerCase().replace(" ", "-"),
+            });
+
+            const errorFormatted = {
+              error: error ?? "Error",
+              values: pendingStore,
+            };
+            onSuccess(
+              editing ? "update" : "create",
+              error ? errorFormatted : undefined
+            );
+          }
         }
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
         toast.error("Algo salio mal, revisa tus datos.");
+      } else {
+        toast.error("Algo salio mal, intenta de nuevo.");
       }
     }
   };
@@ -226,6 +268,7 @@ const StoreForm = ({
                   id="name"
                   placeholder="YourMarket"
                   type="text"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -244,6 +287,7 @@ const StoreForm = ({
                   id="description"
                   placeholder="Descripcion"
                   type="text"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -323,7 +367,13 @@ const StoreForm = ({
               <FormLabel>Categoria</FormLabel>
               <Select
                 required
-                onValueChange={(value) => field.onChange(value)}
+                onValueChange={(value) =>
+                  field.onChange(
+                    productCategories.find(
+                      (category) => category.title === value
+                    )?.id ?? 0
+                  )
+                }
                 name="mainCategories"
                 defaultValue={
                   productCategories.find(
