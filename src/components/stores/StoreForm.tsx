@@ -406,25 +406,40 @@ const StoreForm = ({
           )}
         />
         <Separator />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Telefono</FormLabel>
-              <FormControl>
-                <Input
-                  maxLength={9}
-                  placeholder="9 1234 5678"
-                  {...field}
-                  type="tel"
-                />
-              </FormControl>
-              <FormDescription>No incluyas el +56</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex items-center justify-center gap-2 w-full">
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Telefono</FormLabel>
+                <FormControl>
+                  <Input
+                    maxLength={9}
+                    placeholder="9 1234 5678"
+                    {...field}
+                    type="tel"
+                  />
+                </FormControl>
+                <FormDescription>No incluyas el +56</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="instagram"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Instagram</FormLabel>
+                <FormControl>
+                  <Input placeholder="@instagram" {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="image"
