@@ -29,6 +29,7 @@ export const stores = sqliteTable('stores', {
 }, (stores) => {
   return {
     cityIndex: uniqueIndex('city_idx').on(stores.city),
+    
   }
 });
 
