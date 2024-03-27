@@ -6,28 +6,27 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { type Store, CompleteStore } from "@/lib/db/schema/stores";
-import Modal from "@/components/shared/Modal";
-
 
 import { Button } from "@/components/ui/button";
 import StoreForm from "./StoreForm";
-import { PlusIcon } from "lucide-react";
+import { CheckCircleIcon, LinkIcon, MapPinIcon, PlusIcon } from "lucide-react";
 import { useOptimisticStores } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
 import { DrawerDialog } from "../DrawerDialog";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "../ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Share1Icon } from "@radix-ui/react-icons";
 
 type TOpenModal = (store?: Store) => void;
 
-export default function StoreList({
-  stores,
-   
-}: {
-  stores: CompleteStore[];
-   
-}) {
-  const { optimisticStores, addOptimisticStore } = useOptimisticStores(
-    stores,
-     
-  );
+export default function StoreList({ stores }: { stores: CompleteStore[] }) {
+  const { optimisticStores, addOptimisticStore } = useOptimisticStores(stores);
   const [open, setOpen] = useState(false);
   const [activeStore, setActiveStore] = useState<Store | null>(null);
   const openModal = (store?: Store) => {
@@ -37,7 +36,7 @@ export default function StoreList({
   const closeModal = () => setOpen(false);
 
   return (
-    <div>
+    <div className="">
       <DrawerDialog
         open={open}
         setOpen={setOpen}
@@ -49,64 +48,88 @@ export default function StoreList({
           // addOptimistic={addOptimisticStore}
           openModal={openModal}
           closeModal={closeModal}
-          
         />
       </DrawerDialog>
-      <div className="absolute right-0 top-0 ">
-        <Button onClick={() => openModal()} variant={"outline"}>
-          +
-        </Button>
-      </div>
-      {/* {optimisticStores.length === 0 ? ( */}
+      {optimisticStores.length === 0 ? (
         <EmptyState openModal={openModal} />
-      {/* // ) : (
-      //   <ul>
-      //     {optimisticStores.map((store) => (
-      //       <Store
-      //         store={store}
-      //         key={store.id}
-      //         openModal={openModal}
-      //       />
-      //     ))}
-      //   </ul>
-      // )} */}
+      ) : (
+        <section className="flex flex-col justify-center items-start gap-4">
+          <Button
+          disabled={optimisticStores.length >= 2}
+          onClick={() => openModal()}>
+          <PlusIcon className="h-4" /> Crear Tienda{" "}
+        </Button>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {optimisticStores.map((store) => (
+              <Store store={store} key={store.id} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
 
-const Store = ({
-  store,
-  openModal,
-}: {
-  store: CompleteStore;
-  openModal: TOpenModal;
-}) => {
-  const optimistic = store.id === "optimistic";
-  const deleting = store.id === "delete";
-  const mutating = optimistic || deleting;
-  const pathname = usePathname();
-  const basePath = pathname.includes("stores")
-    ? pathname
-    : pathname + "/stores/";
-
-
+const Store = ({ store }: { store: CompleteStore }) => {
   return (
-    <li
-      className={cn(
-        "flex justify-between my-2",
-        mutating ? "opacity-30 animate-pulse" : "",
-        deleting ? "text-destructive" : "",
-      )}
-    >
-      <div className="w-full">
-        <div>{store.name}</div>
-      </div>
-      <Button variant={"link"} asChild>
-        <Link href={ basePath + "/" + store.id }>
-          Editar
-        </Link>
-      </Button>
-    </li>
+    <Card className="w-full">
+      <CardHeader className="p-4 grid gap-4">
+        <div className="flex items-center space-x-4">
+          <Avatar className="w-16 h-16 border">
+            <AvatarImage
+              alt="@jaredpalmer"
+              className="w-16 h-16 rounded-full object-cover"
+              src={store.image || "/placeholder.svg"}
+            />
+            <AvatarFallback>{store.name[0].toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <div className="grid gap-1.5">
+            <h2 className="text-sm font-bold leading-none">{store.name}</h2>
+            <p className="text-xs ">@{store.slug}</p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-4 p-4">
+        <div className="flex items-center space-x-2">
+          <CheckCircleIcon className="w-4 h-4 opacity-70" />
+          <span
+            className={cn(
+              "text-xs",
+              store.active ? "text-green-500" : "text-red-500"
+            )}
+          >
+            {store.active ? "Activa" : "Inactiva"}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <MapPinIcon className="w-4 h-4 opacity-70" />
+          <span className="text-xs text-muted-foreground">
+            {store.city}, {store.region}
+          </span>
+        </div>
+        <div className="flex gap-4 justify-end items-center">
+          <Button variant="link" asChild>
+            <Link
+              href={"/stores/" + store.slug}
+              className="flex items-center space-x-1"
+            >
+              <span className="text-xs flex gap-2">
+                <Share1Icon className="h-4" />
+                Compartir tienda
+              </span>
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link
+              href={"/dashboard/stores/" + store.id}
+              className="flex items-center space-x-1"
+            >
+              <span className="text-xs">Administrar tienda</span>
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -121,7 +144,8 @@ const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
       </p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> Crear Tienda </Button>
+          <PlusIcon className="h-4" /> Crear Tienda{" "}
+        </Button>
       </div>
     </div>
   );

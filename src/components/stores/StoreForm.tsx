@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -66,6 +67,8 @@ const FormSchema = z.object({
   region: z.string().min(1, { message: "Selecciona una region" }),
   city: z.string().min(1, { message: "Selecciona una comuna" }),
   mainCategories: z.number().min(1, { message: "Selecciona una categoria" }),
+  phone: z.number(),
+  instagram: z.string(),
 });
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
@@ -91,6 +94,8 @@ const StoreForm = ({
       region: store?.region ?? "",
       city: store?.city ?? "",
       mainCategories: store?.mainCategories ?? 0,
+      phone: store?.phone ?? 0,
+      instagram: store?.instagram ?? "",
     },
   });
   // const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Store>(insertStoreParams);
@@ -132,9 +137,9 @@ const StoreForm = ({
       form.setError("name", {
         message: "El nombre ya existe",
       });
+      closeModal && closeModal();
       return; // Add this line to exit the function and prevent the try-catch block from being activated
     }
-    closeModal && closeModal();
     const pendingStore: Store = {
       updatedAt:
         store?.updatedAt ??
@@ -239,6 +244,7 @@ const StoreForm = ({
           }
         }
       });
+      closeModal && closeModal();
     } catch (e) {
       if (e instanceof z.ZodError) {
         toast.error("Algo salio mal, revisa tus datos.");
@@ -400,6 +406,25 @@ const StoreForm = ({
           )}
         />
         <Separator />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefono</FormLabel>
+              <FormControl>
+                <Input
+                  maxLength={9}
+                  placeholder="9 1234 5678"
+                  {...field}
+                  type="tel"
+                />
+              </FormControl>
+              <FormDescription>No incluyas el +56</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="image"

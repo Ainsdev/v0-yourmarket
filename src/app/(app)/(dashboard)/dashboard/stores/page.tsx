@@ -71,33 +71,9 @@ export default function StorePage() {
       <section
         id="dashboard-stores-page-stores"
         aria-labelledby="dashboard-stores-page-stores-heading"
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        className="w-full"
       >
         <Stores />
-        {/* <Card>
-          <div className="flex items-center p-4 gap-4">
-            <Image
-              alt="Image"
-              className="rounded-lg"
-              height="64"
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "64/64",
-                objectFit: "cover",
-              }}
-              width="64"
-            />
-            <CardContent className="space-y-2">
-              <h3 className="text-lg font-bold">Sneaker Emporium</h3>
-              <p className="text-sm text-foregournd">
-                Your one-stop shop for the freshest kicks.
-              </p>
-            </CardContent>
-          </div>
-          <CardFooter>
-            <Button size="sm">Manage</Button>
-          </CardFooter>
-        </Card> */}
       </section>
     </Shell>
   );

@@ -19,7 +19,8 @@ export const stores = sqliteTable('stores', {
   slug: text("slug").notNull(),
   mainCategories: integer("main_categories"),
   userId: text("user_id").notNull(),
-  
+  phone: integer("phone"),
+  instagram: text("instagram"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
