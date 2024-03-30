@@ -10,7 +10,13 @@ import Modal from "@/components/shared/Modal";
 import StoreForm from "@/components/stores/StoreForm";
 import { TAddOptimistic } from "../useOptimisticStores";
 import { DrawerDialog } from "@/components/DrawerDialog";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
@@ -41,57 +47,31 @@ export default function OptimisticStore({ store }: { store: Store }) {
           closeModal={closeModal}
         />
       </DrawerDialog>
-      <div className="flex justify-between items-end mb-4">
-        <h1 className="font-semibold text-2xl">{optimisticStore.name}</h1>
-        <Button className="" onClick={() => setOpen(true)}>
-          Editar
-        </Button>
-      </div>
       <div className="flex flex-col justify-center items-center gap-4 max-w-7xl mx-auto px-4 py-6 w-full">
-        <Card className="w-full">
-          <CardHeader className="p-4">
-          <CardTitle className="p-4">
-            <h2 className="text-lg font-semibold">Informacion</h2>
-          </CardTitle>
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarFallback>SJ</AvatarFallback>
-              </Avatar>
-              <div className="grid items-start gap-1.5">
-                <h3 className="text-sm font-bold tracking-wide">
-                  Hola, Store 1
-                </h3>
-                <p className="text-sm text-gray-500 leading-none">
-                  Tu tienda se ve genial!
-                </p>
-              </div>
-            </div>
+        <Card
+          id="connect-to-stripe"
+          aria-labelledby="connect-to-stripe-heading"
+        >
+          <CardHeader className="space-y-1">
+            <CardTitle className="line-clamp-1 text-2xl">
+              {optimisticStore.name}
+            </CardTitle>
+            <CardDescription>
+              {optimisticStore.description || "Sin descripción"}
+            </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 space-y-5">
-            <div className="flex items-center justify-between space-x-4">
-              <div className="grid items-start gap-1.5">
-                <h3 className="text-sm font-semibold tracking-wide">Ventas</h3>
-                <h4 className="text-2xl font-extrabold tracking-tight leading-none">
-                  $1,249.00
-                </h4>
-              </div>
-              <Button disabled size="sm">
-                Ver Ordenes
+          <CardContent className="flex flex-col justify-between items-center gap-4 w-full">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <Button
+                onClick={() => setOpen(true)}
+                className="drop-shadow-[0_20px_50px_rgba(266,_120,_81,_0.1)] hover:drop-shadow-[0_20px_15px_rgba(266,_120,_81,_0.2)]"
+              >
+                Editar Tienda
               </Button>
-            </div>
-            <div className="flex items-center justify-between space-x-4">
-              <div className="grid items-start gap-1.5">
-                <h3 className="text-sm font-semibold tracking-wide">Reviews</h3>
-                <h4 className="text-2xl font-extrabold tracking-tight leading-none flex justify-center items-center gap-1">
-                  <StarIcon className="h-6 w-6" />
-                  4.5
-                </h4>
-              </div>
-              <Button size="sm">Ver Reviews</Button>
+              <Button variant="secondary"> Ver Tienda </Button>
             </div>
           </CardContent>
         </Card>
-      
       </div>
     </div>
   );
