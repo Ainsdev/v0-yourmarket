@@ -10,7 +10,7 @@ import { type Store, CompleteStore } from "@/lib/db/schema/stores";
 import { Button } from "@/components/ui/button";
 import StoreForm from "./StoreForm";
 import { CheckCircleIcon, LinkIcon, MapPinIcon, PlusIcon } from "lucide-react";
-import { useOptimisticStores } from "@/app/(app)/(lobby)/stores/useOptimisticStores";
+import { useOptimisticStores } from "@/app/(app)/(dashboard)/dashboard/stores/useOptimisticStores";
 import { DrawerDialog } from "../DrawerDialog";
 import {
   Card,

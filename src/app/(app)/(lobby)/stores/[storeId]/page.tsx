@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { getStoreByIdWithPosts } from "@/lib/api/stores/queries";
-import OptimisticStore from "./OptimisticStore";
+import OptimisticStore from "../../../(dashboard)/dashboard/stores/[storeId]/OptimisticStore";
 import { checkAuth } from "@/lib/auth/utils";
 import PostList from "@/components/posts/PostList";
 
