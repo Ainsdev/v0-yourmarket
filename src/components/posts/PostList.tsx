@@ -8,10 +8,11 @@ import { cn } from "@/lib/utils";
 import { type Post, CompletePost } from "@/lib/db/schema/posts";
 import Modal from "@/components/shared/Modal";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
-import { useOptimisticPosts } from "@/app/(app)/posts/useOptimisticPosts";
+
 import { Button } from "@/components/ui/button";
 import PostForm from "./PostForm";
 import { PlusIcon } from "lucide-react";
+import { useOptimisticPosts } from "@/app/(app)/(lobby)/posts/useOptimisticPosts";
 
 type TOpenModal = (post?: Post) => void;
 

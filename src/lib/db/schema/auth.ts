@@ -14,10 +14,6 @@ export const users = sqliteTable("user", {
     onDelete: "set default",
     // onUpdate: "set null",
   }),
-  storeId: text("store_id").references(() => stores.id, {
-    onDelete: "set default",
-    // onUpdate: "set null",
-  }),
 });
 
 export const sessions = sqliteTable("session", {

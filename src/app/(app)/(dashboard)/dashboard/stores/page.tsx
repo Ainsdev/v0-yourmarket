@@ -9,8 +9,6 @@ import {
   PageHeaderHeading,
 } from "@/components/shells/page-header";
 import { Shell } from "@/components/shells/shell";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import Image from "next/image";
 import { Suspense } from "react";
 import Loading from "@/app/loading";
 import StoreList from "@/components/stores/StoreList";

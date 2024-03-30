@@ -70,9 +70,9 @@ export const Header = ({ user }: { user: User | null }) => {
             />
           ) : (
             <div className="flex items-center justify-center gap-2">
-              <Button size="sm" variant="link">
+              {/* <Button size="sm" variant="link">
                 Buscas Lugar?
-              </Button>
+              </Button> */}
               <Button asChild variant="secondary">
                 <Link href="/sign-in">Iniciar Sesion</Link>
               </Button>

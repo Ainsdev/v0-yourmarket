@@ -36,7 +36,7 @@ export default function StoreList({ stores }: { stores: CompleteStore[] }) {
   const closeModal = () => setOpen(false);
 
   return (
-    <div className="">
+    <div className="w-full">
       <DrawerDialog
         open={open}
         setOpen={setOpen}
@@ -107,7 +107,7 @@ const Store = ({ store }: { store: CompleteStore }) => {
             {store.city}, {store.region}
           </span>
         </div>
-        <div className="flex gap-4 justify-end items-center">
+        <div className="flex gap-4 justify-end items-center sm:flex-col lg:flex-row">
           <Button variant="link" asChild>
             <Link
               href={"/stores/" + store.slug}
@@ -121,7 +121,7 @@ const Store = ({ store }: { store: CompleteStore }) => {
           </Button>
           <Button asChild>
             <Link
-              href={"/dashboard/stores/" + store.id}
+              href={"/stores/" + store.id}
               className="flex items-center space-x-1"
             >
               <span className="text-xs">Administrar tienda</span>

@@ -57,9 +57,13 @@ function getImageData(event: ChangeEvent<HTMLInputElement>) {
 }
 
 const FormSchema = z.object({
-  name: z.string().regex(/^[a-zA-Z0-9\s]*$/, {
-    message: "Solo se admiten caracteres alfanumericos",
-  }),
+  name: z
+    .string()
+    .regex(/^[a-zA-Z0-9\s]*$/, {
+      message: "Solo se admiten caracteres alfanumericos",
+    })
+    .min(5, { message: "Debe ser mas de 5 caracteres" })
+    .max(20, { message: "Debe ser menos de 20 caracteres" }),
   // .min(5, { message: "Debe ser mas de 5 caracteres" })
   // .max(20, { message: "Debe ser menos de 20 caracteres" }),
   description: z.string().max(80),
@@ -102,7 +106,7 @@ const StoreForm = ({
   const editing = !!store?.id;
 
   const [isDeleting, setIsDeleting] = useState(false);
-  const [regionValue, setRegion] = useState("");
+  const [regionValue, setRegion] = useState(store?.region ?? "");
   const [pending, startMutation] = useTransition();
   //Images
   const { isUploading, startUpload } = useUploadThing("profileImage");
@@ -131,6 +135,10 @@ const StoreForm = ({
   };
 
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
+    if (data.phone == 0 && data.instagram == "") {
+      toast.error("Debes ingresar un telefono o un instagram");
+      return;
+    }
     const nameExists = (await checkNameExists(data.name)).exists;
     if (nameExists) {
       toast.error("El nombre ya existe");
@@ -243,8 +251,8 @@ const StoreForm = ({
             );
           }
         }
+        closeModal && closeModal();
       });
-      closeModal && closeModal();
     } catch (e) {
       if (e instanceof z.ZodError) {
         toast.error("Algo salio mal, revisa tus datos.");
@@ -258,7 +266,7 @@ const StoreForm = ({
     <Form {...form}>
       <form
         className={
-          "space-y-4 p-4 flex flex-col justify-start items-start md:px-12 lg:px-24 xl:px-48"
+          "space-y-4 p-4 flex flex-col justify-start items-start md:px-12 lg:px-24 xl:px-48 2xl:px-96 overflow-auto"
         }
       >
         {/* Schema fields start */}
@@ -266,7 +274,7 @@ const StoreForm = ({
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem id="name" className="w-full">
+            <FormItem id="name" className="max-w-xl w-full">
               <FormLabel>Nombre</FormLabel>
               <FormControl>
                 <Input
@@ -285,7 +293,7 @@ const StoreForm = ({
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem id="description" className="w-full">
+            <FormItem id="description" className="max-w-xl w-full">
               <FormLabel>Descripcion</FormLabel>
               <FormControl>
                 <Input
@@ -300,13 +308,13 @@ const StoreForm = ({
             </FormItem>
           )}
         />
-        <Separator className="w-full" />
-        <div className="flex items-center justify-center gap-2 w-full">
+        <h3 className="text-md py-4">Elige Ubicacion Predeterminada:</h3>
+        <div className="flex items-start justify-start gap-2 w-full">
           <FormField
             control={form.control}
             name="region"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full max-w-xl">
                 <FormLabel>Region</FormLabel>
                 <Select
                   required
@@ -314,6 +322,7 @@ const StoreForm = ({
                     setRegion(value);
                     field.onChange(value);
                   }}
+                  defaultValue={store?.region ?? ""}
                 >
                   <FormControl>
                     <SelectTrigger className="">
@@ -336,7 +345,7 @@ const StoreForm = ({
             control={form.control}
             name="city"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full max-w-xl">
                 <FormLabel>Ciudad</FormLabel>
                 <Select
                   required
@@ -346,7 +355,7 @@ const StoreForm = ({
                 >
                   <SelectTrigger className="">
                     <SelectValue
-                      defaultValue={store?.city ?? ""}
+                      // defaultValue={store?.city ?? ""}
                       placeholder="Selecciona una comuna"
                     />
                   </SelectTrigger>
@@ -365,11 +374,52 @@ const StoreForm = ({
             )}
           />
         </div>
+
+        <h3 className="text-md py-4">Elige al menos un metodo de contacto:</h3>
+        <div className="flex items-start justify-start gap-2 w-full">
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem className="w-full max-w-xl">
+                <FormLabel>Telefono</FormLabel>
+                <FormControl>
+                  <Input
+                    maxLength={9}
+                    placeholder="9 1234 5678"
+                    onChange={(e) => {
+                      //Convert string to number
+                      const value = parseInt(e.target.value);
+                      field.onChange(value);
+                    }}
+                    type="tel"
+                  />
+                </FormControl>
+                <FormDescription>No incluyas el +56</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="instagram"
+            render={({ field }) => (
+              <FormItem className="w-full max-w-xl">
+                <FormLabel>Instagram</FormLabel>
+                <FormControl>
+                  <Input placeholder="@instagram" {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Separator />
         <FormField
           control={form.control}
           name="mainCategories"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="max-w-xl w-full">
               <FormLabel>Categoria</FormLabel>
               <Select
                 required
@@ -405,41 +455,6 @@ const StoreForm = ({
             </FormItem>
           )}
         />
-        <Separator />
-        <div className="flex items-center justify-center gap-2 w-full">
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Telefono</FormLabel>
-                <FormControl>
-                  <Input
-                    maxLength={9}
-                    placeholder="9 1234 5678"
-                    {...field}
-                    type="tel"
-                  />
-                </FormControl>
-                <FormDescription>No incluyas el +56</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="instagram"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Instagram</FormLabel>
-                <FormControl>
-                  <Input placeholder="@instagram" {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="image"
@@ -474,15 +489,13 @@ const StoreForm = ({
             </FormItem>
           )}
         />
-        <div className="h-4" />
-
+        <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
         {/* Schema fields end */}
-
         {/* Save Button */}
         {editing ? (
           <Button
             className="w-full"
-            size={"lg"}
+            size="default"
             type="submit"
             disabled={pending}
             onClick={form.handleSubmit(handleSubmit)}
@@ -492,7 +505,7 @@ const StoreForm = ({
         ) : (
           <Button
             className="w-full"
-            size={"lg"}
+            size="default"
             type="submit"
             disabled={pending}
             onClick={form.handleSubmit(handleSubmit)}
@@ -503,8 +516,8 @@ const StoreForm = ({
         {/* Delete Button */}
         {editing ? (
           <Button
-            className="w-full"
-            size={"lg"}
+            className="w-1/2"
+            size="sm"
             type="button"
             disabled={isDeleting || pending}
             variant={"destructive"}
@@ -525,6 +538,7 @@ const StoreForm = ({
             {isDeleting ? "Eliminando..." : "Eliminar"}
           </Button>
         ) : null}
+        </div>
       </form>
     </Form>
   );

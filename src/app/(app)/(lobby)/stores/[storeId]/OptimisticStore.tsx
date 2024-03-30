@@ -1,13 +1,15 @@
 "use client";
 
 import { useOptimistic, useState } from "react";
-import { TAddOptimistic } from "@/app/(app)/stores/useOptimisticStores";
+
 import { type Store } from "@/lib/db/schema/stores";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/Modal";
 import StoreForm from "@/components/stores/StoreForm";
+import { TAddOptimistic } from "../useOptimisticStores";
+import { DrawerDialog } from "@/components/DrawerDialog";
 
 
 export default function OptimisticStore({ 
@@ -29,19 +31,23 @@ export default function OptimisticStore({
 
   return (
     <div className="m-4">
-      <Modal open={open} setOpen={setOpen}>
+      <DrawerDialog
+        open={open}
+        setOpen={setOpen}
+        dialogTitle="Edita tu Tienda"
+        dialogDescription="Es facil y rapido"
+      >
         <StoreForm
           store={optimisticStore}
-          
-          closeModal={closeModal}
+          // addOptimistic={addOptimisticStore}
           openModal={openModal}
-          addOptimistic={updateStore}
+          closeModal={closeModal}
         />
-      </Modal>
+      </DrawerDialog>
       <div className="flex justify-between items-end mb-4">
         <h1 className="font-semibold text-2xl">{optimisticStore.name}</h1>
         <Button className="" onClick={() => setOpen(true)}>
-          Edit
+          Editar
         </Button>
       </div>
       <pre
