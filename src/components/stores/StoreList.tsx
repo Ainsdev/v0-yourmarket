@@ -121,7 +121,7 @@ const Store = ({ store }: { store: CompleteStore }) => {
           </Button>
           <Button asChild>
             <Link
-              href={"/stores/" + store.id}
+              href={"/dashboard/stores/" + store.id}
               className="flex items-center space-x-1"
             >
               <span className="text-xs">Administrar tienda</span>

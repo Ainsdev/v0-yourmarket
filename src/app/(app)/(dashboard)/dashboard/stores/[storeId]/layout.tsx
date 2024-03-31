@@ -1,25 +1,22 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation"
 
-import { Shell } from "@/components/shells/shell";
-import {
-  PageHeader,
-  PageHeaderDescription,
-  PageHeaderHeading,
-} from "@/components/shells/page-header";
-import { StoreSwitcher } from "@/components/pagers/store-switcher";
-import { StoreTabs } from "@/components/pagers/store-tabs";
+
+import { Shell } from "@/components/shells/shell"
+import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/shells/page-header"
+import { StoreSwitcher } from "@/components/pagers/store-switcher"
+import { StoreTabs } from "@/components/pagers/store-tabs"
 
 interface StoreLayoutProps extends React.PropsWithChildren {
   params: {
-    storeId: string;
-  };
+    storeId: string
+  }
 }
 
 export default async function StoreLayout({
   children,
   params,
 }: StoreLayoutProps) {
-  const storeId = Number(params.storeId);
+  const storeId = Number(params.storeId)
 
   //   const user = await currentUser()
 
@@ -45,18 +42,17 @@ export default async function StoreLayout({
   const allStores = [
     {
       id: 1,
-      name: "Store 1",
+      name: "Tienda 1",
     },
     {
       id: 2,
-      name: "Store 2",
+      name: "Tienda 2",
     },
-    {
-      id: 3,
-      name: "Store 3",
-    },
-  ];
-  const store = allStores.find((store) => store.id === storeId);
+  ]
+  const store = {
+    id: 1,
+    name: "Tienda 1",
+  }
 
   return (
     <Shell variant="sidebar">
@@ -81,5 +77,5 @@ export default async function StoreLayout({
         {children}
       </div>
     </Shell>
-  );
+  )
 }
