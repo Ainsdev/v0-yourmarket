@@ -1,9 +1,3 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { StarIcon } from "@radix-ui/react-icons";
-import { Link } from "lucide-react";
-import Image from "next/image";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
