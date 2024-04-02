@@ -9,7 +9,7 @@ import { nanoid, timestamps } from "@/lib/utils";
 
 
 export const stores = sqliteTable('stores', {
-  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   description: text("description"),
   active: integer("active", { mode: "boolean" }).notNull(),

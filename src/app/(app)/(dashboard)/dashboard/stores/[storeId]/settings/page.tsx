@@ -22,7 +22,8 @@ export default function SettingsStorePage() {
             <CardHeader>
               <CardTitle>Eliminar Tienda</CardTitle>
               <CardDescription>
-                Esta accion no se puede deshacer. Todos los productos y datos seran eliminados permanentemente.
+                Esta accion no se puede deshacer. Todos los productos y datos
+                seran eliminados permanentemente.
               </CardDescription>
             </CardHeader>
             <CardFooter>
@@ -62,6 +63,9 @@ export default function SettingsStorePage() {
             </div>
           </div>
         </CardContent>
+        <CardFooter>
+          <Button>Save Changes</Button>
+        </CardFooter>
       </Card>
     </div>
   );

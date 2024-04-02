@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { type Action, cn, isArrayOfFile } from "@/lib/utils";
+import { type Action } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ import { useBackPath } from "@/components/shared/BackButton";
 import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
 import {
   createStoreAction,
-  deleteStoreAction,
   updateStoreAction,
 } from "@/lib/actions/stores";
 import {
@@ -104,8 +103,6 @@ const StoreForm = ({
   });
   // const { errors, hasErrors, setErrors, handleChange } = useValidatedForm<Store>(insertStoreParams);
   const editing = !!store?.id;
-
-  const [isDeleting, setIsDeleting] = useState(false);
   const [regionValue, setRegion] = useState(store?.region ?? "");
   const [pending, startMutation] = useTransition();
   //Images
@@ -155,7 +152,7 @@ const StoreForm = ({
       createdAt:
         store?.createdAt ??
         new Date().toISOString().slice(0, 19).replace("T", " "),
-      id: store?.id ?? "",
+      id: store?.id as number,
       userId: store?.userId ?? "",
       active: true,
       slug: data.name.toLowerCase().replace(" ", "-"),
@@ -490,54 +487,30 @@ const StoreForm = ({
           )}
         />
         <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
-        {/* Schema fields end */}
-        {/* Save Button */}
-        {editing ? (
-          <Button
-            className="w-full"
-            size="default"
-            type="submit"
-            disabled={pending}
-            onClick={form.handleSubmit(handleSubmit)}
-          >
-            {pending ? "Guardando..." : "Guardar"}
-          </Button>
-        ) : (
-          <Button
-            className="w-full"
-            size="default"
-            type="submit"
-            disabled={pending}
-            onClick={form.handleSubmit(handleSubmit)}
-          >
-            {pending ? "Creando..." : "Crear"}
-          </Button>
-        )}
-        {/* Delete Button */}
-        {editing ? (
-          <Button
-            className="w-1/2"
-            size="sm"
-            type="button"
-            disabled={isDeleting || pending}
-            variant={"destructive"}
-            onClick={() => {
-              setIsDeleting(true);
-              closeModal && closeModal();
-              startMutation(async () => {
-                const error = await deleteStoreAction(store.id);
-                setIsDeleting(false);
-                const errorFormatted = {
-                  error: error ?? "Error",
-                  values: store,
-                };
-                onSuccess("delete", error ? errorFormatted : undefined);
-              });
-            }}
-          >
-            {isDeleting ? "Eliminando..." : "Eliminar"}
-          </Button>
-        ) : null}
+          {/* Schema fields end */}
+          {/* Save Button */}
+          {editing ? (
+            <Button
+              className="w-full"
+              size="default"
+              type="submit"
+              disabled={pending}
+              onClick={form.handleSubmit(handleSubmit)}
+            >
+              {pending ? "Guardando..." : "Guardar"}
+            </Button>
+          ) : (
+            <Button
+              className="w-full"
+              size="default"
+              type="submit"
+              disabled={pending}
+              onClick={form.handleSubmit(handleSubmit)}
+            >
+              {pending ? "Creando..." : "Crear"}
+            </Button>
+          )}
+          
         </div>
       </form>
     </Form>

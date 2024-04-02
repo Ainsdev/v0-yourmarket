@@ -26,7 +26,7 @@ export default async function StorePage({
 const Store = async ({ id }: { id: string }) => {
   await checkAuth();
 
-  const { store, posts } = await getStoreByIdWithPosts(id);
+  const { store, posts } = await getStoreByIdWithPosts(Number(id));
 
   if (!store) notFound();
   return (
