@@ -95,7 +95,7 @@ export default function OptimisticStore({ store }: { store: Store }) {
               </div>
             </CardContent>
             <CardFooter>
-              <Progress value={25} aria-label="25% increase" />
+              <Progress value={25} max={100} />
             </CardFooter>
           </Card>
           <Card className="h-36">

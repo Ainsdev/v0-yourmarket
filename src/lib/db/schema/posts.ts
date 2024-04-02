@@ -14,7 +14,7 @@ export const posts = sqliteTable('posts', {
   description: text("description"),
   active: integer("active", { mode: "boolean" }),
   brand: text("brand").notNull(),
-  images: text("images").notNull(),
+  images: text("images").notNull(), // Array of strings
   price: integer("price").notNull(),
   gender: integer("gender").notNull(),
   size: text("size").notNull(),
