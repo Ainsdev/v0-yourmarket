@@ -17,8 +17,8 @@ export const posts = sqliteTable('posts', {
   images: text("images").notNull(),
   price: integer("price").notNull(),
   gender: integer("gender").notNull(),
+  size: text("size").notNull(),
   storeId: text("store_id").notNull(),
-  
   createdAt: text("created_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
