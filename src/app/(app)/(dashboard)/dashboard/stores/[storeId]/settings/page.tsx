@@ -9,7 +9,16 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
-export default function SettingsStorePage() {
+interface SettingsStorePage {
+  params: {
+    storeId: string;
+  };
+}
+
+export default function SettingsStorePage({ params }: SettingsStorePage) {
+
+  const storeId = Number(params.storeId)
+  
   return (
     <div className="flex flex-col justify-start items-center gap-8 p-4 w-full">
       <Card className="w-full bg-destructive/20 max-w-7xl">
