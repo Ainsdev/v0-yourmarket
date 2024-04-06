@@ -43,7 +43,7 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
       </Card>
       <Card className="w-full max-w-7xl">
         <CardHeader>
-          <CardTitle>Other Settings</CardTitle>
+          <CardTitle>Otros Ajustes</CardTitle>
           <CardDescription>Customize your store settings</CardDescription>
         </CardHeader>
         <CardContent>
