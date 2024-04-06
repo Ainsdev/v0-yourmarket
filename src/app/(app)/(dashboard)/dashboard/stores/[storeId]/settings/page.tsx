@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,6 +9,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteStoreAction } from "@/lib/actions/stores";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface SettingsStorePage {
   params: {
@@ -16,9 +31,19 @@ interface SettingsStorePage {
 }
 
 export default function SettingsStorePage({ params }: SettingsStorePage) {
+  const storeId = Number(params.storeId);
+  const router = useRouter()
 
-  const storeId = Number(params.storeId)
-  
+  const clickDeleteStore = async () => {
+    try {
+      await deleteStoreAction(storeId);
+      toast.success("Tienda eliminada exitosamente");
+      router.push("/dashboard/stores");
+    } catch (e) {
+      toast.error("Algo salio mal, intenta mas tarde.");
+    }
+  };
+
   return (
     <div className="flex flex-col justify-start items-center gap-8 p-4 w-full">
       <Card className="w-full bg-destructive/20 max-w-7xl">
@@ -36,7 +61,27 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
               </CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button variant="outline">Eliminar Tienda</Button>
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <Button variant='destructive'>Eliminar</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>100% Seguro?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta accion no se puede deshacer. Todos los productos y
+                      datos seran eliminados permanentemente.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={clickDeleteStore}
+                      className="bg-destructive"
+                    >Continuar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardFooter>
           </Card>
         </CardContent>
@@ -44,36 +89,24 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
       <Card className="w-full max-w-7xl">
         <CardHeader>
           <CardTitle>Otros Ajustes</CardTitle>
-          <CardDescription>Customize your store settings</CardDescription>
+          <CardDescription>Customiza tu tienda</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 w-full">
             <div className="flex items-center justify-between gap-4">
-              <p className="font-medium">Enable Coupons</p>
-              <Switch />
+              <p className="font-medium">Activar Cupones</p>
+              <Switch disabled />
             </div>
             <div className="flex items-center gap-4">
-              <div className="font-medium">Enable Coupons</div>
+              <div className="font-medium">Customizar Estilo</div>
               <div className="ml-auto">
-                <Switch defaultChecked />
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="font-medium">Enable Coupons</div>
-              <div className="ml-auto">
-                <Switch />
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="font-medium">Enable Coupons</div>
-              <div className="ml-auto">
-                <Switch defaultChecked />
+                <Switch disabled />
               </div>
             </div>
           </div>
         </CardContent>
         <CardFooter>
-          <Button>Save Changes</Button>
+          <Button>Guardar Cambios</Button>
         </CardFooter>
       </Card>
     </div>
