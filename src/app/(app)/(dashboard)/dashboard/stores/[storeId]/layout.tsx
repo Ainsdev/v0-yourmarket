@@ -1,10 +1,8 @@
-import { notFound, redirect } from "next/navigation"
-
-
 import { Shell } from "@/components/shells/shell"
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/shells/page-header"
 import { StoreSwitcher } from "@/components/pagers/store-switcher"
 import { StoreTabs } from "@/components/pagers/store-tabs"
+import { checkAuth } from "@/lib/auth/utils"
 
 interface StoreLayoutProps extends React.PropsWithChildren {
   params: {
@@ -16,6 +14,7 @@ export default async function StoreLayout({
   children,
   params,
 }: StoreLayoutProps) {
+  await checkAuth();
   const storeId = Number(params.storeId)
 
   //   const user = await currentUser()

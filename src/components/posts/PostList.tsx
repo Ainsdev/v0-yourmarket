@@ -13,21 +13,22 @@ import { Button } from "@/components/ui/button";
 import PostForm from "./PostForm";
 import { PlusIcon } from "lucide-react";
 import { useOptimisticPosts } from "@/app/(app)/(lobby)/posts/useOptimisticPosts";
+import { DrawerDialog } from "../DrawerDialog";
 
 type TOpenModal = (post?: Post) => void;
 
 export default function PostList({
   posts,
   stores,
-  storeId 
+  storeId,
 }: {
   posts: CompletePost[];
   stores: Store[];
-  storeId?: StoreId 
+  storeId?: StoreId;
 }) {
   const { optimisticPosts, addOptimisticPost } = useOptimisticPosts(
     posts,
-    stores 
+    stores
   );
   const [open, setOpen] = useState(false);
   const [activePost, setActivePost] = useState<Post | null>(null);
@@ -39,10 +40,11 @@ export default function PostList({
 
   return (
     <div>
-      <Modal
+      <DrawerDialog
         open={open}
         setOpen={setOpen}
-        title={activePost ? "Edit Post" : "Create Post"}
+        dialogTitle={activePost ? "Edita tu Post" : "Crea tu Post"}
+        dialogDescription="Es facil y rapido"
       >
         <PostForm
           post={activePost}
@@ -50,9 +52,9 @@ export default function PostList({
           openModal={openModal}
           closeModal={closeModal}
           stores={stores}
-        storeId={storeId}
+          storeId={storeId}
         />
-      </Modal>
+      </DrawerDialog>
       <div className="absolute right-0 top-0 ">
         <Button onClick={() => openModal()} variant={"outline"}>
           +
@@ -63,11 +65,7 @@ export default function PostList({
       ) : (
         <ul>
           {optimisticPosts.map((post) => (
-            <Post
-              post={post}
-              key={post.id}
-              openModal={openModal}
-            />
+            <Post post={post} key={post.id} openModal={openModal} />
           ))}
         </ul>
       )}
@@ -86,26 +84,21 @@ const Post = ({
   const deleting = post.id === "delete";
   const mutating = optimistic || deleting;
   const pathname = usePathname();
-  const basePath = pathname.includes("posts")
-    ? pathname
-    : pathname + "/posts/";
-
+  const basePath = pathname.includes("posts") ? pathname : pathname + "/posts/";
 
   return (
     <li
       className={cn(
         "flex justify-between my-2",
         mutating ? "opacity-30 animate-pulse" : "",
-        deleting ? "text-destructive" : "",
+        deleting ? "text-destructive" : ""
       )}
     >
       <div className="w-full">
         <div>{post.name}</div>
       </div>
       <Button variant={"link"} asChild>
-        <Link href={ basePath + "/" + post.id }>
-          Edit
-        </Link>
+        <Link href={basePath + "/" + post.id}>Edit</Link>
       </Button>
     </li>
   );
@@ -115,14 +108,15 @@ const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
   return (
     <div className="text-center">
       <h3 className="mt-2 text-sm font-semibold text-secondary-foreground">
-        No posts
+        No hay publicaciones
       </h3>
       <p className="mt-1 text-sm text-muted-foreground">
-        Get started by creating a new post.
+        Crea una publicacion para que tus clientes se enteren de tus novedades.
       </p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Posts </Button>
+          <PlusIcon className="h-4" /> Comenzar{" "}
+        </Button>
       </div>
     </div>
   );

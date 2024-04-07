@@ -41,3 +41,12 @@ export function isArrayOfFile(files: unknown): files is File[] {
   if (!isArray) return false
   return files.every((file) => file instanceof File)
 }
+
+
+  export function textToArr(text: string) {
+    // CHeck if the text is an array 
+    if (!text.startsWith("[") || !text.endsWith("]")) {
+      return []
+    } 
+    return JSON.parse(text)
+  }

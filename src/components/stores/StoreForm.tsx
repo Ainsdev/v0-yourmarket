@@ -19,10 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBackPath } from "@/components/shared/BackButton";
 import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
-import {
-  createStoreAction,
-  updateStoreAction,
-} from "@/lib/actions/stores";
+import { createStoreAction, updateStoreAction } from "@/lib/actions/stores";
 import {
   Select,
   SelectContent,
@@ -134,6 +131,14 @@ const StoreForm = ({
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
     if (data.phone == 0 && data.instagram == "") {
       toast.error("Debes ingresar un telefono o un instagram");
+      data.phone == 0 &&
+        form.setError("phone", {
+          message: "Debes ingresar un telefono o un instagram",
+        });
+      data.instagram == "" &&
+        form.setError("instagram", {
+          message: "Debes ingresar un telefono o un instagram",
+        });
       return;
     }
     const nameExists = (await checkNameExists(data.name)).exists;
@@ -165,7 +170,7 @@ const StoreForm = ({
         //Uploading
         //If there is a file
         if (file && file.length > 0) {
-          console.log("Uploading Image");
+          toast.info("Estamos creando tu tienda...");
           startUpload(Array.from(file))
             .then((res) => {
               const formattedImages = res?.map((image) => ({
@@ -261,11 +266,7 @@ const StoreForm = ({
 
   return (
     <Form {...form}>
-      <form
-        className={
-          "space-y-4 p-4 flex flex-col justify-start items-start md:px-12 lg:px-24 xl:px-48 2xl:px-96 overflow-auto"
-        }
-      >
+      <form className="space-y-4 p-4 flex flex-col justify-start items-start md:px-12 lg:px-24 xl:px-48 2xl:px-96 overflow-auto">
         {/* Schema fields start */}
         <FormField
           control={form.control}
@@ -510,7 +511,6 @@ const StoreForm = ({
               {pending ? "Creando..." : "Crear"}
             </Button>
           )}
-          
         </div>
       </form>
     </Form>

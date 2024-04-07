@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,7 +32,7 @@ interface SettingsStorePage {
 
 export default function SettingsStorePage({ params }: SettingsStorePage) {
   const storeId = Number(params.storeId);
-  const router = useRouter()
+  const router = useRouter();
 
   const clickDeleteStore = async () => {
     try {
@@ -63,7 +63,7 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
             <CardFooter>
               <AlertDialog>
                 <AlertDialogTrigger>
-                  <Button variant='destructive'>Eliminar</Button>
+                  <Button variant="destructive">Eliminar</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -78,7 +78,9 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
                     <AlertDialogAction
                       onClick={clickDeleteStore}
                       className="bg-destructive"
-                    >Continuar</AlertDialogAction>
+                    >
+                      Eliminar
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
@@ -89,24 +91,24 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
       <Card className="w-full max-w-7xl">
         <CardHeader>
           <CardTitle>Otros Ajustes</CardTitle>
-          <CardDescription>Customiza tu tienda</CardDescription>
+          <CardDescription>Ajustes de tu tienda (Proximamente)</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 w-full">
             <div className="flex items-center justify-between gap-4">
               <p className="font-medium">Activar Cupones</p>
-              <Switch disabled />
+              <Switch />
             </div>
             <div className="flex items-center gap-4">
               <div className="font-medium">Customizar Estilo</div>
               <div className="ml-auto">
-                <Switch disabled />
+                <Switch />
               </div>
             </div>
           </div>
         </CardContent>
         <CardFooter>
-          <Button>Guardar Cambios</Button>
+          <Button disabled>Guardar Cambios</Button>
         </CardFooter>
       </Card>
     </div>

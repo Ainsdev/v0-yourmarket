@@ -16,8 +16,11 @@ export const posts = sqliteTable('posts', {
   brand: text("brand").notNull(),
   images: text("images").notNull(), // Array of strings
   price: integer("price").notNull(),
+  // rangePrice: text("range_price"),
   gender: integer("gender").notNull(),
   size: text("size").notNull(),
+  categoryId: integer("category_id").notNull(),
+  subcategory: text("subcategory").notNull(),
   storeId: text("store_id").notNull(),
   createdAt: text("created_at")
     .notNull()
@@ -29,6 +32,8 @@ export const posts = sqliteTable('posts', {
 }, (posts) => {
   return {
     brandIndex: uniqueIndex('brand_idx').on(posts.brand),
+    sizeIndex: uniqueIndex('size_idx').on(posts.size),
+
   }
 });
 
