@@ -33,7 +33,15 @@ import { type Store, type StoreId } from "@/lib/db/schema/stores";
 import { TAddOptimistic } from "@/app/(app)/(lobby)/posts/useOptimisticPosts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import {
   Card,
   CardHeader,
@@ -42,6 +50,16 @@ import {
   CardContent,
 } from "../ui/card";
 import { Textarea } from "../ui/textarea";
+import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { brands, mostPopularBrandsJSON } from "@/config/brands";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "../ui/command";
 
 const PostForm = ({
   stores,
@@ -168,6 +186,88 @@ const PostForm = ({
           </CardHeader>
           <CardContent>
             <div className="grid gap-6">
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="brand"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Marca</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-[200px] justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? brands.find(
+                                    (brand) => brand.value === field.value
+                                  )?.name
+                                : "Seleccciona unna marca"}
+                              <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Buscar Marca..." />
+                            <CommandEmpty>No hemos encontrado.</CommandEmpty>
+                            <CommandGroup title="Mas Populares">
+                              {mostPopularBrandsJSON.map((brand) => (
+                                <CommandItem
+                                  value={brand.name}
+                                  key={brand.value}
+                                  onSelect={() => {
+                                    form.setValue("brand", brand.value);
+                                  }}
+                                >
+                                  <CheckIcon
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      brand.value === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {brand.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                            <CommandGroup>
+                              {brands.map((brand) => (
+                                <CommandItem
+                                  value={brand.name}
+                                  key={brand.value}
+                                  onSelect={() => {
+                                    form.setValue("brand", brand.value);
+                                  }}
+                                >
+                                  <CheckIcon
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      brand.value === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {brand.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>Selecciona una marca.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="grid gap-3">
                 {/* PUT THE BRAND FIRST */}
                 <FormField

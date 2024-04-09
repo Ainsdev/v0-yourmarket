@@ -16,7 +16,7 @@ export const posts = sqliteTable('posts', {
   brand: text("brand").notNull(),
   images: text("images").notNull(), // Array of strings
   price: integer("price").notNull(),
-  // rangePrice: text("range_price"),
+  rangePrice: text("range_price"),
   gender: integer("gender").notNull(),
   size: text("size").notNull(),
   categoryId: integer("category_id").notNull(),
