@@ -39,7 +39,7 @@ export default function PostList({
   const closeModal = () => setOpen(false);
 
   return (
-    <div>
+    <div className="w-full">
       <DrawerDialog
         open={open}
         setOpen={setOpen}

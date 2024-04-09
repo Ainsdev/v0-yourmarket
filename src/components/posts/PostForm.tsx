@@ -61,6 +61,7 @@ import {
   CommandItem,
 } from "../ui/command";
 
+
 const PostForm = ({
   stores,
   storeId,
@@ -98,6 +99,7 @@ const PostForm = ({
     useValidatedForm<Post>(insertPostParams);
   const editing = !!post?.id;
   const [category, setCategory] = useState(post?.categoryId ?? 0);
+  const [brandInName, setBrandInName] = useState(post?.brand ?? "");
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
@@ -177,9 +179,9 @@ const PostForm = ({
 
   return (
     <Form {...form}>
-      <form className="space-y-4 p-4 flex flex-col justify-start items-start md:px-12 lg:px-24 xl:px-48 overflow-auto">
+      <form className="space-y-4 p-4 flex flex-col justify-start items-start md:px-12 overflow-auto">
         {/* Schema fields start */}
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Detalles del Producto</CardTitle>
             <CardDescription>Te recomendamos un titulo:</CardDescription>
@@ -200,7 +202,7 @@ const PostForm = ({
                               variant="outline"
                               role="combobox"
                               className={cn(
-                                "w-[200px] justify-between",
+                                "w-[300px] justify-between",
                                 !field.value && "text-muted-foreground"
                               )}
                             >
@@ -208,12 +210,12 @@ const PostForm = ({
                                 ? brands.find(
                                     (brand) => brand.value === field.value
                                   )?.name
-                                : "Seleccciona unna marca"}
+                                : "Seleccciona una marca"}
                               <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
+                        <PopoverContent className="w-[300px] p-0">
                           <Command>
                             <CommandInput placeholder="Buscar Marca..." />
                             <CommandEmpty>No hemos encontrado.</CommandEmpty>
@@ -262,7 +264,7 @@ const PostForm = ({
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      <FormDescription>Selecciona una marca.</FormDescription>
+                      <FormDescription>Busca una marca.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -280,21 +282,34 @@ const PostForm = ({
                         <Input
                           required
                           id="name"
-                          placeholder="Nike Air Max 90"
+                          placeholder="Air Max 90"
                           type="text"
                           {...field}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Inclcuir la marca en el titulo?
+                        {/* <Checkbox
+                          checked={field.value?.includes(brandInName)}
+                          onChange={() => {
+                            setBrandInName(
+                              field.value?.includes(brandInName)
+                                ? field.value
+                                : `${brandInName} ${field.value}`
+                            );
+                          }}
+                        /> */}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descripcion</Label>
                 <Textarea
                   id="description"
-                  defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
+                  defaultValue=""
                   className="min-h-32"
                 />
               </div>
