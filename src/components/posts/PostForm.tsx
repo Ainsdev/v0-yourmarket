@@ -231,7 +231,15 @@ const PostForm = ({
                         </DrawerTrigger>
                         <DrawerContent>
                           <div className="mt-4 border-t">
-                            <Command>
+                            <Command
+                              filter={(value, search) => {
+                                return value
+                                  .toLowerCase()
+                                  .includes(search.toLowerCase())
+                                  ? 1
+                                  : 0;
+                              }}
+                            >
                               <CommandInput placeholder="Buscar Marca..." />
                               <CommandEmpty>No hemos encontrado.</CommandEmpty>
 
@@ -263,10 +271,36 @@ const PostForm = ({
                                               }}
                                             >
                                               {brand.name}
+                                              <CheckIcon
+                                                className={cn(
+                                                  "w-4 h-4 text-primary",
+                                                  field.value === brand.value ? "opacity-100" : "opacity-0"
+                                                )}
+                                              />
                                             </CommandItem>
                                           ))}
                                       </CommandGroup>
                                     ))
+                                }
+                                {
+                                  // Add a group for symbols and numbers
+                                  <CommandGroup heading="Otros">
+                                    {brands
+                                      .filter((brand) =>
+                                        brand.name.match(/^[^a-zA-Z]/)
+                                      )
+                                      .map((brand) => (
+                                        <CommandItem
+                                          key={brand.value}
+                                          value={brand.value}
+                                          onSelect={() => {
+                                            form.setValue("brand", brand.value);
+                                          }}
+                                        >
+                                          {brand.name}
+                                        </CommandItem>
+                                      ))}
+                                  </CommandGroup>
                                 }
                               </CommandList>
                             </Command>
