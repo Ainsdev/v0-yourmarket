@@ -59,8 +59,10 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "../ui/command";
 
+import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 
 const PostForm = ({
   stores,
@@ -207,9 +209,11 @@ const PostForm = ({
                               )}
                             >
                               {field.value
-                                ? brands.find(
-                                    (brand) => brand.value === field.value
-                                  )?.name
+                                ? brands
+                                    .slice(0, 50)
+                                    .find(
+                                      (brand) => brand.value === field.value
+                                    )?.name
                                 : "Seleccciona una marca"}
                               <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
@@ -219,51 +223,133 @@ const PostForm = ({
                           <Command>
                             <CommandInput placeholder="Buscar Marca..." />
                             <CommandEmpty>No hemos encontrado.</CommandEmpty>
-                            <CommandGroup title="Mas Populares">
-                              {mostPopularBrandsJSON.map((brand) => (
-                                <CommandItem
-                                  value={brand.name}
-                                  key={brand.value}
-                                  onSelect={() => {
-                                    form.setValue("brand", brand.value);
-                                  }}
-                                >
-                                  <CheckIcon
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      brand.value === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  {brand.name}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
+                            {/* <CommandGroup title="Mas Populares">
+                              <CommandList>
+                                {mostPopularBrandsJSON.map((brand) => (
+                                  <CommandItem
+                                    value={brand.name}
+                                    key={brand.value}
+                                    onSelect={() => {
+                                      form.setValue("brand", brand.value);
+                                    }}
+                                  >
+                                    <CheckIcon
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        brand.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {brand.name}
+                                  </CommandItem>
+                                ))}
+                              </CommandList>
+                            </CommandGroup> */}
                             <CommandGroup>
-                              {brands.map((brand) => (
-                                <CommandItem
-                                  value={brand.name}
-                                  key={brand.value}
-                                  onSelect={() => {
-                                    form.setValue("brand", brand.value);
-                                  }}
-                                >
-                                  <CheckIcon
+                              <CommandList>
+                                {brands.slice(0, 50).map((brand) => (
+                                  <CommandItem
+                                    value={brand.name}
+                                    key={brand.value}
+                                    onSelect={() => {
+                                      form.setValue("brand", brand.value);
+                                    }}
+                                  >
+                                    {/* <CheckIcon
                                     className={cn(
                                       "mr-2 h-4 w-4",
                                       brand.value === field.value
                                         ? "opacity-100"
                                         : "opacity-0"
                                     )}
-                                  />
-                                  {brand.name}
-                                </CommandItem>
-                              ))}
+                                  /> */}
+                                    {brand.name}
+                                  </CommandItem>
+                                ))}
+                              </CommandList>
                             </CommandGroup>
                           </Command>
                         </PopoverContent>
                       </Popover>
+                      <Drawer>
+                        <DrawerTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-max justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? brands.find(
+                                  (brand) => brand.value === field.value
+                                )?.name
+                              : "Seleccciona una marca"}
+                            <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                          <div className="mt-4 border-t">
+                            <Command
+                              filter={(value, search) => {
+                                if (value.includes(search)) return 1;
+                                return 0;
+                              }}
+                            >
+                              <CommandInput placeholder="Buscar Marca..." />
+                              <CommandEmpty>No hemos encontrado.</CommandEmpty>
+                              <CommandGroup title="Mas Populares">
+                                <CommandList>
+                                  {mostPopularBrandsJSON.map((brand) => (
+                                    <CommandItem
+                                      value={brand.name}
+                                      key={brand.value}
+                                      onSelect={() => {
+                                        form.setValue("brand", brand.value);
+                                      }}
+                                    >
+                                      <CheckIcon
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          brand.value === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {brand.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandList>
+                              </CommandGroup>
+                              <CommandGroup>
+                                <CommandList>
+                                  {brands.map((brand) => (
+                                    <CommandItem
+                                      value={brand.name}
+                                      key={brand.value}
+                                      onSelect={() => {
+                                        form.setValue("brand", brand.value);
+                                      }}
+                                    >
+                                      <CheckIcon
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          brand.value === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {brand.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandList>
+                              </CommandGroup>
+                            </Command>
+                          </div>
+                        </DrawerContent>
+                      </Drawer>
                       <FormDescription>Busca una marca.</FormDescription>
                       <FormMessage />
                     </FormItem>
