@@ -63,6 +63,7 @@ import {
 } from "../ui/command";
 
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
+import { productCategories } from "@/config/categories";
 
 const PostForm = ({
   stores,
@@ -94,13 +95,15 @@ const PostForm = ({
       size: post?.size,
       categoryId: post?.categoryId,
       subcategory: post?.subcategory,
+      condition: post?.condition,
+      mainImage: post?.mainImage,
+      rangePrice: post?.rangePrice,
     },
   });
 
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Post>(insertPostParams);
   const editing = !!post?.id;
-  const [category, setCategory] = useState(post?.categoryId ?? 0);
   const [brandInName, setBrandInName] = useState(post?.brand ?? "");
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
@@ -332,12 +335,18 @@ const PostForm = ({
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription> 
+                      <FormDescription>
                         El titulo se vera asi:{" "}
-                        <span className="font-bold">
+                        <span
+                          className={
+                            form.watch("brand")
+                              ? "opacity-100 font-semibold"
+                              : "opacity-0"
+                          }
+                        >
                           {brands.find(
                             (brand) => brand.value === form.watch("brand")
-                          ) +
+                          )?.name +
                             " " +
                             form.watch("name")}
                         </span>
@@ -358,146 +367,144 @@ const PostForm = ({
             </div>
           </CardContent>
         </Card>
-        <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.active ? "text-destructive" : ""
-            )}
-          >
-            Active
-          </Label>
-          <br />
-          <Checkbox
-            defaultChecked={post?.active as boolean}
-            name={"active"}
-            className={cn(errors?.active ? "ring ring-destructive" : "")}
-          />
-          {errors?.active ? (
-            <p className="text-xs text-destructive mt-2">{errors.active[0]}</p>
-          ) : (
-            <div className="h-6" />
-          )}
-        </div>
-        <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.brand ? "text-destructive" : ""
-            )}
-          >
-            Brand
-          </Label>
-          <Input
-            type="text"
-            name="brand"
-            className={cn(errors?.brand ? "ring ring-destructive" : "")}
-            defaultValue={post?.brand ?? ""}
-          />
-          {errors?.brand ? (
-            <p className="text-xs text-destructive mt-2">{errors.brand[0]}</p>
-          ) : (
-            <div className="h-6" />
-          )}
-        </div>
-        <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.images ? "text-destructive" : ""
-            )}
-          >
-            Images
-          </Label>
-          <Input
-            type="text"
-            name="images"
-            className={cn(errors?.images ? "ring ring-destructive" : "")}
-            defaultValue={post?.images ?? ""}
-          />
-          {errors?.images ? (
-            <p className="text-xs text-destructive mt-2">{errors.images[0]}</p>
-          ) : (
-            <div className="h-6" />
-          )}
-        </div>
-        <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.price ? "text-destructive" : ""
-            )}
-          >
-            Price
-          </Label>
-          <Input
-            type="text"
-            name="price"
-            className={cn(errors?.price ? "ring ring-destructive" : "")}
-            defaultValue={post?.price ?? ""}
-          />
-          {errors?.price ? (
-            <p className="text-xs text-destructive mt-2">{errors.price[0]}</p>
-          ) : (
-            <div className="h-6" />
-          )}
-        </div>
-        <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.gender ? "text-destructive" : ""
-            )}
-          >
-            Gender
-          </Label>
-          <Input
-            type="text"
-            name="gender"
-            className={cn(errors?.gender ? "ring ring-destructive" : "")}
-            defaultValue={post?.gender ?? ""}
-          />
-          {errors?.gender ? (
-            <p className="text-xs text-destructive mt-2">{errors.gender[0]}</p>
-          ) : (
-            <div className="h-6" />
-          )}
-        </div>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Categoria del Producto</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 sm:grid-cols-3">
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="categoryId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Categoria</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={`${field.value}`}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una categoria" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {productCategories.map((category) => (
+                            <SelectItem
+                              key={category.id}
+                              value={`${category.id}`}
+                            >
+                              {category.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="subcategory"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>SubCategoria</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una categoria" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {productCategories[
+                            form.watch("categoryId")
+                          ].subcategories.map((subcategory) => (
+                            <SelectItem
+                              key={subcategory.title}
+                              value={subcategory.title}
+                              onSelect={() => {
+                                form.setValue("subcategory", subcategory.title);
+                              }}
+                            >
+                              {subcategory.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="condition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Condicion</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una condicion" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="new">Nuevo</SelectItem>
+                          <SelectItem value="used">SemiNuevo</SelectItem>
+                          <SelectItem value="used">Usado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Genero</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={`${field.value}`}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un genero" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="0">Hombre</SelectItem>
+                          <SelectItem value="1">Mujer</SelectItem>
+                          <SelectItem value="2">Unisex</SelectItem>
+                          <SelectItem value="3">Niños</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {storeId ? null : (
-          <div>
-            <Label
-              className={cn(
-                "mb-2 inline-block",
-                errors?.storeId ? "text-destructive" : ""
-              )}
-            >
-              Store
-            </Label>
-            <Select defaultValue={post?.storeId} name="storeId">
-              <SelectTrigger
-                className={cn(errors?.storeId ? "ring ring-destructive" : "")}
-              >
-                <SelectValue placeholder="Select a store" />
-              </SelectTrigger>
-              <SelectContent>
-                {stores?.map((store) => (
-                  <SelectItem key={store.id} value={store.id.toString()}>
-                    {store.id}
-                    {/* TODO: Replace with a field from the store model */}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors?.storeId ? (
-              <p className="text-xs text-destructive mt-2">
-                {errors.storeId[0]}
-              </p>
-            ) : (
-              <div className="h-6" />
-            )}
-          </div>
-        )}
         {/* Schema fields end */}
 
         {/* Save Button */}
