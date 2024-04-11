@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -105,6 +105,20 @@ const PostForm = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
+  // const brandOptions = useMemo(() => {
+  //   return brands.map((brand) => (
+  //     <CommandItem
+  //       value={brand.name}
+  //       key={brand.value}
+  //       onSelect={() => {
+  //         form.setValue("brand", brand.value);
+  //       }}
+  //     >
+  //       {brand.name}
+  //     </CommandItem>
+  //   ));
+  // }, [form]);
+
   const router = useRouter();
   const backpath = useBackPath("posts");
 
@@ -197,81 +211,6 @@ const PostForm = ({
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Marca</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-[300px] justify-between",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? brands
-                                    .slice(0, 50)
-                                    .find(
-                                      (brand) => brand.value === field.value
-                                    )?.name
-                                : "Seleccciona una marca"}
-                              <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[300px] p-0">
-                          <Command>
-                            <CommandInput placeholder="Buscar Marca..." />
-                            <CommandEmpty>No hemos encontrado.</CommandEmpty>
-                            {/* <CommandGroup title="Mas Populares">
-                              <CommandList>
-                                {mostPopularBrandsJSON.map((brand) => (
-                                  <CommandItem
-                                    value={brand.name}
-                                    key={brand.value}
-                                    onSelect={() => {
-                                      form.setValue("brand", brand.value);
-                                    }}
-                                  >
-                                    <CheckIcon
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        brand.value === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    {brand.name}
-                                  </CommandItem>
-                                ))}
-                              </CommandList>
-                            </CommandGroup> */}
-                            <CommandGroup>
-                              <CommandList>
-                                {brands.slice(0, 50).map((brand) => (
-                                  <CommandItem
-                                    value={brand.name}
-                                    key={brand.value}
-                                    onSelect={() => {
-                                      form.setValue("brand", brand.value);
-                                    }}
-                                  >
-                                    {/* <CheckIcon
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      brand.value === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  /> */}
-                                    {brand.name}
-                                  </CommandItem>
-                                ))}
-                              </CommandList>
-                            </CommandGroup>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
                       <Drawer>
                         <DrawerTrigger asChild>
                           <Button
@@ -295,52 +234,41 @@ const PostForm = ({
                             <Command>
                               <CommandInput placeholder="Buscar Marca..." />
                               <CommandEmpty>No hemos encontrado.</CommandEmpty>
-                              <CommandGroup title="Mas Populares">
-                                <CommandList>
-                                  {mostPopularBrandsJSON.map((brand) => (
-                                    <CommandItem
-                                      value={brand.name}
-                                      key={brand.value}
-                                      onSelect={() => {
-                                        form.setValue("brand", brand.value);
-                                      }}
-                                    >
-                                      <CheckIcon
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          brand.value === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {brand.name}
-                                    </CommandItem>
-                                  ))}
-                                </CommandList>
-                              </CommandGroup>
-                              <CommandGroup>
-                                <CommandList>
-                                  {brands.map((brand) => (
-                                    <CommandItem
-                                      value={brand.name}
-                                      key={brand.value}
-                                      onSelect={() => {
-                                        form.setValue("brand", brand.value);
-                                      }}
-                                    >
-                                      <CheckIcon
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          brand.value === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {brand.name}
-                                    </CommandItem>
-                                  ))}
-                                </CommandList>
-                              </CommandGroup>
+
+                              <CommandList>
+                                {
+                                  // Make a group for every letter in the alphabet (Include symbols and numbers int e final group)
+                                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                    .split("")
+                                    .map((letter) => (
+                                      <CommandGroup
+                                        heading={letter.toUpperCase()}
+                                        key={letter}
+                                      >
+                                        {brands
+                                          .filter((brand) =>
+                                            brand.name
+                                              .toUpperCase()
+                                              .startsWith(letter)
+                                          )
+                                          .map((brand) => (
+                                            <CommandItem
+                                              key={brand.value}
+                                              value={brand.value}
+                                              onSelect={() => {
+                                                form.setValue(
+                                                  "brand",
+                                                  brand.value
+                                                );
+                                              }}
+                                            >
+                                              {brand.name}
+                                            </CommandItem>
+                                          ))}
+                                      </CommandGroup>
+                                    ))
+                                }
+                              </CommandList>
                             </Command>
                           </div>
                         </DrawerContent>
