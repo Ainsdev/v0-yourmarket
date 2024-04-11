@@ -292,12 +292,7 @@ const PostForm = ({
                         </DrawerTrigger>
                         <DrawerContent>
                           <div className="mt-4 border-t">
-                            <Command
-                              filter={(value, search) => {
-                                if (value.includes(search)) return 1;
-                                return 0;
-                              }}
-                            >
+                            <Command>
                               <CommandInput placeholder="Buscar Marca..." />
                               <CommandEmpty>No hemos encontrado.</CommandEmpty>
                               <CommandGroup title="Mas Populares">
