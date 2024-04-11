@@ -274,7 +274,9 @@ const PostForm = ({
                                               <CheckIcon
                                                 className={cn(
                                                   "w-4 h-4 text-primary",
-                                                  field.value === brand.value ? "opacity-100" : "opacity-0"
+                                                  field.value === brand.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
                                                 )}
                                               />
                                             </CommandItem>
@@ -320,7 +322,7 @@ const PostForm = ({
                   name="name"
                   render={({ field }) => (
                     <FormItem id="name" className="max-w-xl w-full">
-                      <FormLabel>Titulo</FormLabel>
+                      <FormLabel>Titulo Principal</FormLabel>
                       <FormControl>
                         <Input
                           required
@@ -330,18 +332,15 @@ const PostForm = ({
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Inclcuir la marca en el titulo?
-                        {/* <Checkbox
-                          checked={field.value?.includes(brandInName)}
-                          onChange={() => {
-                            setBrandInName(
-                              field.value?.includes(brandInName)
-                                ? field.value
-                                : `${brandInName} ${field.value}`
-                            );
-                          }}
-                        /> */}
+                      <FormDescription> 
+                        El titulo se vera asi:{" "}
+                        <span className="font-bold">
+                          {brands.find(
+                            (brand) => brand.value === form.watch("brand")
+                          ) +
+                            " " +
+                            form.watch("name")}
+                        </span>
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -359,29 +358,6 @@ const PostForm = ({
             </div>
           </CardContent>
         </Card>
-        <div>
-          <Label
-            className={cn(
-              "mb-2 inline-block",
-              errors?.description ? "text-destructive" : ""
-            )}
-          >
-            Description
-          </Label>
-          <Input
-            type="text"
-            name="description"
-            className={cn(errors?.description ? "ring ring-destructive" : "")}
-            defaultValue={post?.description ?? ""}
-          />
-          {errors?.description ? (
-            <p className="text-xs text-destructive mt-2">
-              {errors.description[0]}
-            </p>
-          ) : (
-            <div className="h-6" />
-          )}
-        </div>
         <div>
           <Label
             className={cn(
