@@ -91,7 +91,7 @@ const PostForm = ({
       brand: post?.brand,
       images: post?.images,
       price: post?.price,
-      gender: post?.gender,
+      gender: post?.gender as any,
       size: post?.size,
       categoryId: post?.categoryId,
       subcategory: post?.subcategory,
