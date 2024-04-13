@@ -41,6 +41,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  UncontrolledFormMessage,
 } from "../ui/form";
 import {
   Card,
@@ -68,6 +69,8 @@ import Image from "next/image";
 import { generateReactHelpers } from "@uploadthing/react/hooks";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FileWithPreview } from "@/lib/types";
+import { FileDialog } from "../file-dialog";
+import { Zoom } from "../zoom-image";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
@@ -552,65 +555,109 @@ const PostForm = ({
             </div>
           </CardContent>
         </Card>
-        <Card className="">
-          <CardHeader>
-            <CardTitle>Imagenes</CardTitle>
-            <CardDescription>
-              Elige las mejores imagenes para tu producto
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-6">
-              <FormField
-                control={form.control}
-                name="images"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Imagenes</FormLabel>
-                    {files?.length ? (
-            <div className="flex items-center gap-2">
-              {files.map((file, i) => (
-                <Zoom key={i}>
-                  <Image
-                    src={file.preview}
-                    alt={file.name}
-                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
-                    width={80}
-                    height={80}
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Imagenes</CardTitle>
+              <CardDescription>
+                Elige las mejores imagenes para tu producto
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormItem className="flex w-full flex-col gap-1.5">
+                <FormLabel>Images</FormLabel>
+                {files?.length ? (
+                  <div className="flex items-center gap-2">
+                    {files.map((file, i) => (
+                      <Zoom key={i}>
+                        <Image
+                          src={file.preview}
+                          alt={file.name}
+                          className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                          width={80}
+                          height={80}
+                        />
+                      </Zoom>
+                    ))}
+                  </div>
+                ) : null}
+                <FormControl>
+                  <FileDialog
+                    setValue={form.setValue}
+                    name="images"
+                    maxFiles={3}
+                    maxSize={1024 * 1024 * 4}
+                    files={files}
+                    setFiles={setFiles}
+                    isUploading={isUploading}
+                    disabled={pending}
                   />
-                </Zoom>
-              ))}
-              <FormControl>
-              <UncontrolledFormMessage
-            message={form.formState.errors.images?.message}
-          />
-            <FileDialog
-              setValue={form.setValue}
-              name="images"
-              maxFiles={3}
-              maxSize={1024 * 1024 * 4}
-              files={files}
-              setFiles={setFiles}
-              isUploading={isUploading}
-              disabled={isPending}
-            />
-          </FormControl>
-            </div>
-          ) : null}
-                    <FormDescription>
-                      La imagen principal de tu producto
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-            </div>
-          </CardContent>
-        </Card>
+                </FormControl>
+                <UncontrolledFormMessage
+                  message={form.formState.errors.images?.message}
+                />
+              </FormItem>
+            </CardContent>
+          </Card>
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Precio</CardTitle>
+              <CardDescription>
+                Elige el precio y si quieres mostrar un rango
+              </CardDescription>
+            <CardContent>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio</FormLabel>
+                      <FormControl>
+                        <Input
+                          required
+                          id="price"
+                          placeholder="10000"
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        El precio de tu producto
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* <FormField
+                  control={form.control}
+                  name="rangePrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rango de Precio</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="rangePrice"
+                          placeholder="10000 - 20000"
+                          type="text"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Si quieres mostrar un rango de precio
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                /> */}
+              </div>
+            </CardContent>
+            </CardHeader>
+          </Card>
+        </div>
         {/* Schema fields end */}
-
         {/* Save Button */}
         <SaveButton errors={hasErrors} editing={editing} />
-
         {/* Delete Button */}
         {editing ? (
           <Button

@@ -16,7 +16,7 @@ import type {
 } from "react-hook-form"
 import { toast } from "sonner"
 
-import "cropperjs/dist/cropper.css"
+// import "cropperjs/dist/cropper.css"
 
 import Image from "next/image"
 import {
