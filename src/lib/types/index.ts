@@ -19,6 +19,7 @@ export interface Subcategory {
   description?: string;
   image: string;
   slug: string;
+  sizes: string[];
 }
 
 export interface Option {

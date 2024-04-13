@@ -50,7 +50,7 @@ import {
   CardContent,
 } from "../ui/card";
 import { Textarea } from "../ui/textarea";
-import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { CheckIcon, ChevronDownIcon, UploadIcon } from "@radix-ui/react-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { brands, mostPopularBrandsJSON } from "@/config/brands";
 import {
@@ -64,6 +64,12 @@ import {
 
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 import { productCategories } from "@/config/categories";
+import Image from "next/image";
+import { generateReactHelpers } from "@uploadthing/react/hooks";
+import { OurFileRouter } from "@/app/api/uploadthing/core";
+import { FileWithPreview } from "@/lib/types";
+
+const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const PostForm = ({
   stores,
@@ -100,11 +106,14 @@ const PostForm = ({
       rangePrice: post?.rangePrice,
     },
   });
+  //IMAGES UPLOAD
+  const { isUploading, startUpload } = useUploadThing("productImages");
+  const [files, setFiles] = useState<FileWithPreview[] | null>(null);
 
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Post>(insertPostParams);
   const editing = !!post?.id;
-  const [brandInName, setBrandInName] = useState(post?.brand ?? "");
+  // const [brandInName, setBrandInName] = useState(post?.brand ?? "");
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
@@ -424,13 +433,13 @@ const PostForm = ({
                         </FormControl>
                         <SelectContent>
                           {productCategories[
-                            form.watch("categoryId")
+                            form.watch("categoryId") || 0
                           ].subcategories.map((subcategory) => (
                             <SelectItem
                               key={subcategory.title}
-                              value={subcategory.title}
+                              value={subcategory.slug}
                               onSelect={() => {
-                                form.setValue("subcategory", subcategory.title);
+                                form.setValue("subcategory", subcategory.slug);
                               }}
                             >
                               {subcategory.title}
@@ -462,7 +471,7 @@ const PostForm = ({
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="new">Nuevo</SelectItem>
-                          <SelectItem value="used">SemiNuevo</SelectItem>
+                          <SelectItem value="used">Semi-Nuevo</SelectItem>
                           <SelectItem value="used">Usado</SelectItem>
                         </SelectContent>
                       </Select>
@@ -501,10 +510,102 @@ const PostForm = ({
                   )}
                 />
               </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="size"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Talla</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una talla" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {productCategories[
+                            form.watch("categoryId") || 0
+                          ].subcategories
+                            .find(
+                              (subcategory) =>
+                                subcategory.slug === form.watch("subcategory")
+                            )
+                            ?.sizes.map((size) => (
+                              <SelectItem key={size} value={size}>
+                                {size}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Elige tu talla en US o CL
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
-
+        <Card className="">
+          <CardHeader>
+            <CardTitle>Imagenes</CardTitle>
+            <CardDescription>
+              Elige las mejores imagenes para tu producto
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6">
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Imagenes</FormLabel>
+                    {files?.length ? (
+            <div className="flex items-center gap-2">
+              {files.map((file, i) => (
+                <Zoom key={i}>
+                  <Image
+                    src={file.preview}
+                    alt={file.name}
+                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                    width={80}
+                    height={80}
+                  />
+                </Zoom>
+              ))}
+              <FormControl>
+              <UncontrolledFormMessage
+            message={form.formState.errors.images?.message}
+          />
+            <FileDialog
+              setValue={form.setValue}
+              name="images"
+              maxFiles={3}
+              maxSize={1024 * 1024 * 4}
+              files={files}
+              setFiles={setFiles}
+              isUploading={isUploading}
+              disabled={isPending}
+            />
+          </FormControl>
+            </div>
+          ) : null}
+                    <FormDescription>
+                      La imagen principal de tu producto
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+            </div>
+          </CardContent>
+        </Card>
         {/* Schema fields end */}
 
         {/* Save Button */}

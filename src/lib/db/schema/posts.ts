@@ -28,7 +28,7 @@ export const posts = sqliteTable(
     rangePrice: text("range_price"),
     gender: integer("gender"),
     size: text("size").notNull(),
-    stock: integer("stock").notNull().default(1),
+    // stock: integer("stock").notNull().default(1),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
     storeId: text("store_id").notNull(),

@@ -28,6 +28,17 @@ export const ourFileRouter = {
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId, url: file.url };
     }),
+   productImages: f({ image: { maxFileSize: "4MB", maxFileCount: 4 } })
+    .middleware(async ({ req }) => {
+      const { session } = await getUserAuth();
+      if (!session) throw new UploadThingError("Unauthorized");
+      return { userId: session.user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for userId:", metadata.userId);
+      console.log("file url", file.url);
+      return { uploadedBy: metadata.userId, url: file.url };
+    }), 
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
