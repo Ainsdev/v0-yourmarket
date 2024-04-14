@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
 
-import { type Action, cn } from "@/lib/utils";
+import { type Action, cn, numberToClp } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,7 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FileWithPreview } from "@/lib/types";
 import { FileDialog } from "../file-dialog";
 import { Zoom } from "../zoom-image";
+import { Switch } from "../ui/switch";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
@@ -603,55 +604,55 @@ const PostForm = ({
             <CardHeader>
               <CardTitle>Precio</CardTitle>
               <CardDescription>
-                Elige el precio y si quieres mostrar un rango
+                (proximamente) te recomendaremos el mejor precio.
               </CardDescription>
-            <CardContent>
-              <div className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Precio</FormLabel>
-                      <FormControl>
-                        <Input
-                          required
-                          id="price"
-                          placeholder="10000"
-                          type="number"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        El precio de tu producto
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* <FormField
-                  control={form.control}
-                  name="rangePrice"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Rango de Precio</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="rangePrice"
-                          placeholder="10000 - 20000"
-                          type="text"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Si quieres mostrar un rango de precio
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
-              </div>
-            </CardContent>
+              <CardContent>
+                <div className="grid gap-3 py-3 ">
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            id="price"
+                            step={1000}
+                            placeholder="20k"
+                            className="max-w-xs"
+                            type="text"
+                            onChange={(e) => {
+                              e.target.value = numberToClp(e.target.value);
+                              field.onChange(e);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="active"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Publicar directamente</FormLabel>
+                          <FormDescription>
+                            Al Desactivar, solo tu podras ver el producto.
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
             </CardHeader>
           </Card>
         </div>

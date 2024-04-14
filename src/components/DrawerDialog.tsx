@@ -40,7 +40,7 @@ export function DrawerDialog({
 
   return (
     <Drawer
-      direction={isDesktop ? "right" : "bottom"}
+      
       open={open}
       onOpenChange={setOpen}
     >
