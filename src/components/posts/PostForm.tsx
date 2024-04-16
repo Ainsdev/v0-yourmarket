@@ -639,7 +639,7 @@ const PostForm = ({
                         <div className="space-y-0.5">
                           <FormLabel className="text-base">Publicar directamente</FormLabel>
                           <FormDescription>
-                            Al Desactivar, solo tu podras ver el producto
+                            Al Desactivar, solo tu podras ver el producto.
                           </FormDescription>
                         </div>
                         <FormControl>
