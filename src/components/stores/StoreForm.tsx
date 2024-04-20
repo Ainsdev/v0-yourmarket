@@ -80,7 +80,6 @@ const StoreForm = ({
   postSuccess,
 }: {
   store?: Store | null;
-
   openModal?: (store?: Store) => void;
   closeModal?: () => void;
   postSuccess?: () => void;
@@ -181,7 +180,7 @@ const StoreForm = ({
               return formattedImages ?? null;
             })
             .then(async (images) => {
-              //Editing
+              //Editing with images
               if (editing) {
                 const error = await updateStoreAction({
                   ...data,
@@ -199,7 +198,7 @@ const StoreForm = ({
                   error ? errorFormatted : undefined
                 );
               }
-              // //Creating
+              //Creating with images
               else {
                 const error = await createStoreAction({
                   ...data,
@@ -218,7 +217,10 @@ const StoreForm = ({
                 );
               }
             });
-        } else {
+        }
+        //No images
+        else {
+          //Editing
           if (editing) {
             const error = await updateStoreAction({
               ...data,

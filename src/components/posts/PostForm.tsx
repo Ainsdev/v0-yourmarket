@@ -1,12 +1,10 @@
 import { z } from "zod";
 
-import { useMemo, useState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
 
-import { type Action, cn, numberToClp } from "@/lib/utils";
+import { type Action, cn, numberToClp, cleanClp } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,13 +20,7 @@ import {
 } from "@/components/ui/select";
 
 import { type Post, insertPostParams } from "@/lib/db/schema/posts";
-import {
-  createPostAction,
-  deletePostAction,
-  updatePostAction,
-} from "@/lib/actions/posts";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
-import { TAddOptimistic } from "@/app/(app)/(lobby)/posts/useOptimisticPosts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -49,9 +41,8 @@ import {
   CardContent,
 } from "../ui/card";
 import { Textarea } from "../ui/textarea";
-import { CheckIcon, ChevronDownIcon, UploadIcon } from "@radix-ui/react-icons";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { brands, mostPopularBrandsJSON } from "@/config/brands";
+import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { brands } from "@/config/brands";
 import {
   Command,
   CommandEmpty,
@@ -68,7 +59,6 @@ import { generateReactHelpers } from "@uploadthing/react/hooks";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FileWithPreview } from "@/lib/types";
 import { FileDialog } from "../file-dialog";
-import { Zoom } from "../zoom-image";
 import { Switch } from "../ui/switch";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
@@ -79,7 +69,6 @@ const PostForm = ({
   post,
   openModal,
   closeModal,
-  addOptimistic,
   postSuccess,
 }: {
   post?: Post | null;
@@ -87,7 +76,6 @@ const PostForm = ({
   storeId?: StoreId;
   openModal?: (post?: Post) => void;
   closeModal?: () => void;
-  addOptimistic?: TAddOptimistic;
   postSuccess?: () => void;
 }) => {
   const form = useForm<z.infer<typeof insertPostParams>>({
@@ -98,7 +86,7 @@ const PostForm = ({
       description: post?.description,
       brand: post?.brand,
       images: post?.images,
-      price: post?.price,
+      price: numberToClp(`${post?.price}`),
       gender: post?.gender as any,
       size: post?.size,
       categoryId: post?.categoryId,
@@ -113,26 +101,10 @@ const PostForm = ({
   const [files, setFiles] = useState<FileWithPreview[] | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
 
-  const { errors, hasErrors, setErrors, handleChange } =
-    useValidatedForm<Post>(insertPostParams);
   const editing = !!post?.id;
   // const [brandInName, setBrandInName] = useState(post?.brand ?? "");
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
-
-  // const brandOptions = useMemo(() => {
-  //   return brands.map((brand) => (
-  //     <CommandItem
-  //       value={brand.name}
-  //       key={brand.value}
-  //       onSelect={() => {
-  //         form.setValue("brand", brand.value);
-  //       }}
-  //     >
-  //       {brand.name}
-  //     </CommandItem>
-  //   ));
-  // }, [form]);
 
   const router = useRouter();
   const backpath = useBackPath("posts");
@@ -144,32 +116,20 @@ const PostForm = ({
     const failed = Boolean(data?.error);
     if (failed) {
       openModal && openModal(data?.values);
-      toast.error(`Failed to ${action}`, {
+      toast.error(`Error al ${action}`, {
         description: data?.error ?? "Error",
       });
     } else {
       router.refresh();
       postSuccess && postSuccess();
-      toast.success(`Post ${action}d!`);
+      toast.success(`Publicacion ${action}d!`);
       if (action === "delete") router.push(backpath);
     }
   };
 
-  const handleSubmit = async (data: FormData) => {
-    setErrors(null);
-
-    const payload = Object.fromEntries(data.entries());
-    const postParsed = await insertPostParams.safeParseAsync({
-      storeId,
-      ...payload,
-    });
-    if (!postParsed.success) {
-      setErrors(postParsed?.error.flatten().fieldErrors);
-      return;
-    }
-
-    closeModal && closeModal();
-    const values = postParsed.data;
+  const handleSubmit = async (data: z.infer<typeof insertPostParams>) => {
+    // closeModal && closeModal();
+    console.log(data);
     const pendingPost: Post = {
       updatedAt:
         post?.updatedAt ??
@@ -178,32 +138,36 @@ const PostForm = ({
         post?.createdAt ??
         new Date().toISOString().slice(0, 19).replace("T", " "),
       id: post?.id ?? "",
-      ...values,
+      ...data,
+      storeId: storeId ?? 0,
+      price: parseInt(cleanClp(data.price), 10),
+      images: `["${files?.map((file) => file.preview).join('","')}"]`,
     };
     try {
       startMutation(async () => {
-        addOptimistic &&
-          addOptimistic({
-            data: pendingPost,
-            action: editing ? "update" : "create",
-          });
-
-        const error = editing
-          ? await updatePostAction({ ...values, id: post.id })
-          : await createPostAction(values);
-
-        const errorFormatted = {
-          error: error ?? "Error",
-          values: pendingPost,
-        };
-        onSuccess(
-          editing ? "update" : "create",
-          error ? errorFormatted : undefined
+        // const error = "error here";
+        toast(
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">
+              {JSON.stringify(pendingPost, null, 2)}
+            </code>
+          </pre>
         );
+
+        // const errorFormatted = {
+        //   error: error ?? "Error",
+        //   values: pendingPost,
+        // };
+        // onSuccess(
+        //   editing ? "update" : "create",
+        //   error ? errorFormatted : undefined
+        // );
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
-        setErrors(e.flatten().fieldErrors);
+        toast.error("Algo salio mal, revisa tus datos.");
+      } else {
+        toast.error("Algo salio mal, intenta de nuevo.");
       }
     }
   };
@@ -393,7 +357,10 @@ const PostForm = ({
                     <FormItem>
                       <FormLabel>Categoria</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={
+                          // Put a number value in the change
+                          (value) => field.onChange(Number(value))
+                        }
                         defaultValue={`${field.value}`}
                       >
                         <FormControl>
@@ -566,7 +533,7 @@ const PostForm = ({
             <CardContent>
               <FormItem className="flex w-full flex-col gap-1.5">
                 {viewImage && (
-                  <div className="flex flex-row items-center justify-center w-full">
+                  <div className="flex gap-1 flex-col items-center justify-center w-full max-h-96">
                     <Image
                       alt={"as"}
                       src={viewImage}
@@ -574,6 +541,9 @@ const PostForm = ({
                       width={100}
                       height={100}
                     />
+                    <p className="text-xs font-semibold">
+                      Imagen Principal. (Elige haciendo click en las imagenes)
+                    </p>
                   </div>
                 )}
                 <FormLabel>Imagenes</FormLabel>
@@ -599,7 +569,7 @@ const PostForm = ({
                 <FormControl>
                   <FileDialog
                     setValue={form.setValue}
-                    name="images"
+                    name="imagesArray"
                     maxFiles={3}
                     maxSize={1024 * 1024 * 4}
                     files={files}
@@ -674,61 +644,35 @@ const PostForm = ({
           </Card>
         </div>
         {/* Schema fields end */}
-        {/* Save Button */}
-        <SaveButton errors={hasErrors} editing={editing} />
-        {/* Delete Button */}
-        {editing ? (
-          <Button
-            type="button"
-            disabled={isDeleting || pending || hasErrors}
-            variant={"destructive"}
-            onClick={() => {
-              setIsDeleting(true);
-              closeModal && closeModal();
-              startMutation(async () => {
-                addOptimistic &&
-                  addOptimistic({ action: "delete", data: post });
-                const error = await deletePostAction(post.id);
-                setIsDeleting(false);
-                const errorFormatted = {
-                  error: error ?? "Error",
-                  values: post,
-                };
-
-                onSuccess("delete", error ? errorFormatted : undefined);
-              });
-            }}
-          >
-            Delet{isDeleting ? "ing..." : "e"}
-          </Button>
-        ) : null}
+        <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
+          {/* Save Button */}
+          {/* Schema fields end */}
+          {/* Save Button */}
+          {editing ? (
+            <Button
+              className="w-full"
+              size="default"
+              type="submit"
+              disabled={pending}
+              onClick={form.handleSubmit(handleSubmit)}
+            >
+              {pending ? "Guardando..." : "Guardar"}
+            </Button>
+          ) : (
+            <Button
+              className="w-full"
+              size="default"
+              type="submit"
+              disabled={pending}
+              onClick={form.handleSubmit(handleSubmit)}
+            >
+              {pending ? "Publicando..." : "Publicar"}
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );
 };
 
 export default PostForm;
-
-const SaveButton = ({
-  editing,
-  errors,
-}: {
-  editing: Boolean;
-  errors: boolean;
-}) => {
-  const { pending } = useFormStatus();
-  const isCreating = pending && editing === false;
-  const isUpdating = pending && editing === true;
-  return (
-    <Button
-      type="submit"
-      className="mr-2"
-      disabled={isCreating || isUpdating || errors}
-      aria-disabled={isCreating || isUpdating || errors}
-    >
-      {editing
-        ? `Sav${isUpdating ? "ing..." : "e"}`
-        : `Creat${isCreating ? "ing..." : "e"}`}
-    </Button>
-  );
-};

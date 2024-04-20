@@ -26,10 +26,7 @@ export default function PostList({
   stores: Store[];
   storeId?: StoreId;
 }) {
-  const { optimisticPosts, addOptimisticPost } = useOptimisticPosts(
-    posts,
-    stores
-  );
+  const { optimisticPosts } = useOptimisticPosts(posts, stores);
   const [open, setOpen] = useState(false);
   const [activePost, setActivePost] = useState<Post | null>(null);
   const openModal = (post?: Post) => {
@@ -48,7 +45,6 @@ export default function PostList({
       >
         <PostForm
           post={activePost}
-          addOptimistic={addOptimisticPost}
           openModal={openModal}
           closeModal={closeModal}
           stores={stores}

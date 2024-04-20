@@ -31,7 +31,7 @@ export const posts = sqliteTable(
     // stock: integer("stock").notNull().default(1),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
-    storeId: text("store_id").notNull(),
+    storeId: integer("store_id").notNull(),
     createdAt: text("created_at")
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
@@ -54,9 +54,11 @@ export const insertPostSchema = createInsertSchema(posts).omit(timestamps);
 export const insertPostParams = baseSchema
   .extend({
     active: z.coerce.boolean(),
-    price: z.coerce.number(),
+    price: z.coerce.string(),
     gender: z.coerce.number(),
     storeId: z.coerce.string().min(1),
+    // Array of FileWithPreview
+    imagesArray: z.array(z.string()).min(1),
   })
   .omit({
     id: true,
