@@ -111,6 +111,7 @@ const PostForm = ({
   //IMAGES UPLOAD
   const { isUploading, startUpload } = useUploadThing("productImages");
   const [files, setFiles] = useState<FileWithPreview[] | null>(null);
+  const [viewImage, setViewImage] = useState<string | null>(null);
 
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Post>(insertPostParams);
@@ -563,20 +564,35 @@ const PostForm = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* <FormItem className="flex w-full flex-col gap-1.5">
-                <FormLabel>Images</FormLabel>
+              <FormItem className="flex w-full flex-col gap-1.5">
+                {viewImage && (
+                  <div className="flex flex-row items-center justify-center w-full">
+                    <Image
+                      alt={"as"}
+                      src={viewImage}
+                      className="shrink-0 rounded-md object-cover object-center w-3/4 max-h-96 max-w-96"
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                )}
+                <FormLabel>Imagenes</FormLabel>
                 {files?.length ? (
                   <div className="flex items-center gap-2">
                     {files.map((file, i) => (
-                      <Zoom key={i}>
+                      <div
+                        key={i}
+                        className="relative w-20 h-20 rounded-md overflow-hidden"
+                      >
                         <Image
                           src={file.preview}
                           alt={file.name}
-                          className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                          className="h-20 w-20 shrink-0 rounded-md object-cover object-center cursor-pointer"
                           width={80}
                           height={80}
+                          onClick={() => setViewImage(file.preview)}
                         />
-                      </Zoom>
+                      </div>
                     ))}
                   </div>
                 ) : null}
@@ -595,15 +611,15 @@ const PostForm = ({
                 <UncontrolledFormMessage
                   message={form.formState.errors.images?.message}
                 />
-              </FormItem> */}
-              
+              </FormItem>
             </CardContent>
           </Card>
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Precio</CardTitle>
               <CardDescription>
-                (proximamente) te recomendaremos el mejor precio basado en tu producto.
+                (proximamente) te recomendaremos el mejor precio basado en tu
+                producto.
               </CardDescription>
               <CardContent>
                 <div className="grid gap-3 py-3 ">
@@ -636,7 +652,9 @@ const PostForm = ({
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                         <div className="space-y-0.5">
-                          <FormLabel className="text-base">Publicar inmediatamente</FormLabel>
+                          <FormLabel className="text-base">
+                            Publicar inmediatamente
+                          </FormLabel>
                           <FormDescription>
                             Al Desactivar, solo tu podras ver el producto.
                           </FormDescription>

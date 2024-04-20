@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css"
 
 export function Zoom({ children }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <MediumZoom zoomMargin={80} classDialog="zoom-image">
+    <MediumZoom zoomMargin={10} classDialog="zoom-image" >
       {children}
     </MediumZoom>
   )

@@ -282,6 +282,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
                 variant="outline"
                 size="icon"
                 className="h-7 w-7"
+                disabled
               >
                 <CropIcon className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">Recortar image</span>
