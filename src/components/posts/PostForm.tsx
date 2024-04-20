@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
 
-import { Checkbox } from "@/components/ui/checkbox";
-
 import {
   Select,
   SelectContent,
@@ -565,7 +563,7 @@ const PostForm = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <FormItem className="flex w-full flex-col gap-1.5">
+              {/* <FormItem className="flex w-full flex-col gap-1.5">
                 <FormLabel>Images</FormLabel>
                 {files?.length ? (
                   <div className="flex items-center gap-2">
@@ -597,14 +595,15 @@ const PostForm = ({
                 <UncontrolledFormMessage
                   message={form.formState.errors.images?.message}
                 />
-              </FormItem>
+              </FormItem> */}
+              
             </CardContent>
           </Card>
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Precio</CardTitle>
               <CardDescription>
-                (proximamente) te recomendaremos el mejor precio.
+                (proximamente) te recomendaremos el mejor precio basado en tu producto.
               </CardDescription>
               <CardContent>
                 <div className="grid gap-3 py-3 ">
