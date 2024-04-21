@@ -25,9 +25,11 @@ export const posts = sqliteTable(
     mainImage: text("main_image").notNull(),
     images: text("images").notNull(), // Array of strings
     price: integer("price").notNull(),
-    rangePrice: text("range_price"),
+    // rangePrice: text("range_price"),
     gender: integer("gender"),
     size: text("size").notNull(),
+    // region: text("region").notNull(),
+    // contact: text("contact").notNull(),
     // stock: integer("stock").notNull().default(1),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
@@ -54,11 +56,23 @@ export const insertPostSchema = createInsertSchema(posts).omit(timestamps);
 export const insertPostParams = baseSchema
   .extend({
     active: z.coerce.boolean(),
-    price: z.coerce.string(),
-    gender: z.coerce.number(),
+    price: z.coerce.string().min(1, "Selecciona un precio"),
+    gender: z.coerce
+      .number({ invalid_type_error: "Debes seleccionar un genero" })
+      .min(1, "Selecciona un género"),
     storeId: z.coerce.string().min(1),
+    mainImage: z.string().optional(),
+    images: z.string().optional(),
     // Array of FileWithPreview
-    imagesArray: z.array(z.string()).min(1),
+    imagesArray: z
+      .array(
+        z.any({
+          required_error: "Selecciona al menos una imagen",
+          invalid_type_error: "Debes seleccionar un archivo de imagen",
+          description: "Imagenes",
+        })
+      )
+      .min(1, "Selecciona al menos una imagen"),
   })
   .omit({
     id: true,

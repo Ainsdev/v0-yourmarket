@@ -93,7 +93,7 @@ const PostForm = ({
       subcategory: post?.subcategory,
       condition: post?.condition,
       mainImage: post?.mainImage,
-      rangePrice: post?.rangePrice,
+      // rangePrice: post?.rangePrice,
     },
   });
   //IMAGES UPLOAD
@@ -142,6 +142,7 @@ const PostForm = ({
       storeId: storeId ?? 0,
       price: parseInt(cleanClp(data.price), 10),
       images: `["${files?.map((file) => file.preview).join('","')}"]`,
+      mainImage: files?.[0]?.preview ?? "",
     };
     try {
       startMutation(async () => {
@@ -333,11 +334,27 @@ const PostForm = ({
                 />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="description">Descripcion</Label>
-                <Textarea
-                  id="description"
-                  defaultValue=""
-                  className="min-h-32"
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descripcion</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          id="description"
+                          placeholder="Zapatillas Nuevas..."
+                          onChange={(e) => field.onChange(e.target.value)}
+                          // value={field.value}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Describe tu producto, incluye detalles como entrega,
+                        desgastes, material, etc.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
             </div>
@@ -527,7 +544,7 @@ const PostForm = ({
             <CardHeader>
               <CardTitle>Imagenes</CardTitle>
               <CardDescription>
-                Elige las mejores imagenes para tu producto
+                Haz click para seleccionar una imagen principal.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -579,7 +596,7 @@ const PostForm = ({
                   />
                 </FormControl>
                 <UncontrolledFormMessage
-                  message={form.formState.errors.images?.message}
+                  message="Selecciona al menos una imagen"
                 />
               </FormItem>
             </CardContent>
@@ -642,6 +659,7 @@ const PostForm = ({
               </CardContent>
             </CardHeader>
           </Card>
+          {JSON.stringify(form.formState.errors, null, 2)}
         </div>
         {/* Schema fields end */}
         <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
