@@ -64,7 +64,7 @@ import { Switch } from "../ui/switch";
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const PostForm = ({
-  stores,
+  store,
   storeId,
   post,
   openModal,
@@ -72,7 +72,7 @@ const PostForm = ({
   postSuccess,
 }: {
   post?: Post | null;
-  stores: Store[];
+  store: Store;
   storeId?: StoreId;
   openModal?: (post?: Post) => void;
   closeModal?: () => void;
@@ -93,6 +93,8 @@ const PostForm = ({
       subcategory: post?.subcategory,
       condition: post?.condition,
       mainImage: post?.mainImage,
+      contact:
+        post?.contact || store.phone?.toString() || store.instagram || "",
       // rangePrice: post?.rangePrice,
     },
   });
@@ -129,7 +131,10 @@ const PostForm = ({
 
   const handleSubmit = async (data: z.infer<typeof insertPostParams>) => {
     // closeModal && closeModal();
-    console.log(data);
+    const refinedName = data.name.includes(data.brand)
+      ? data.name
+      : data.brand + " " + data.name;
+
     const pendingPost: Post = {
       updatedAt:
         post?.updatedAt ??
@@ -137,12 +142,14 @@ const PostForm = ({
       createdAt:
         post?.createdAt ??
         new Date().toISOString().slice(0, 19).replace("T", " "),
-      id: post?.id ?? "",
+      id: post?.id as string,
       ...data,
       storeId: storeId ?? 0,
       price: parseInt(cleanClp(data.price), 10),
       images: `["${files?.map((file) => file.preview).join('","')}"]`,
       mainImage: files?.[0]?.preview ?? "",
+      region: store.city,
+      name: refinedName,
     };
     try {
       startMutation(async () => {
@@ -307,7 +314,7 @@ const PostForm = ({
                         <Input
                           required
                           id="name"
-                          placeholder="Air Max 90"
+                          placeholder="Modelo"
                           type="text"
                           {...field}
                         />
@@ -571,6 +578,9 @@ const PostForm = ({
                         key={i}
                         className="relative w-20 h-20 rounded-md overflow-hidden"
                       >
+                        {/* <h1 className="absolute top-4 text-xs text-destructive font-extrabold">
+                          Principal
+                        </h1> */}
                         <Image
                           src={file.preview}
                           alt={file.name}
@@ -595,9 +605,7 @@ const PostForm = ({
                     disabled={pending}
                   />
                 </FormControl>
-                <UncontrolledFormMessage
-                  message="Selecciona al menos una imagen"
-                />
+                <UncontrolledFormMessage message="Selecciona al menos una imagen" />
               </FormItem>
             </CardContent>
           </Card>
@@ -652,6 +660,40 @@ const PostForm = ({
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="contact"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contacto</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona un contacto" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {store.phone && (
+                                <SelectItem value={store.phone.toString()}>
+                                  {store.phone.toString()}
+                                </SelectItem>
+                              )}
+                              {store.instagram && (
+                                <SelectItem value={store.instagram}>
+                                  {store.instagram}
+                                </SelectItem>
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

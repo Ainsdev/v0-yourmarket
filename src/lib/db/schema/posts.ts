@@ -10,6 +10,7 @@ import { z } from "zod";
 import { type getPosts } from "@/lib/api/posts/queries";
 
 import { nanoid, timestamps } from "@/lib/utils";
+import { stores } from "./stores";
 
 export const posts = sqliteTable(
   "posts",
@@ -28,12 +29,14 @@ export const posts = sqliteTable(
     // rangePrice: text("range_price"),
     gender: integer("gender"),
     size: text("size").notNull(),
-    // region: text("region").notNull(),
-    // contact: text("contact").notNull(),
+    region: text("region").notNull(),
+    contact: text("contact").notNull(),
     // stock: integer("stock").notNull().default(1),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
-    storeId: integer("store_id").notNull(),
+    storeId: integer("store_id")
+      .notNull()
+      .references(() => stores.id),
     createdAt: text("created_at")
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
@@ -45,6 +48,8 @@ export const posts = sqliteTable(
     return {
       brandIndex: uniqueIndex("brand_idx").on(posts.brand),
       sizeIndex: uniqueIndex("size_idx").on(posts.size),
+      conditionIndex: uniqueIndex("condition_idx").on(posts.condition),
+      categoryIndex: uniqueIndex("category_idx").on(posts.categoryId),
     };
   }
 );
@@ -59,10 +64,11 @@ export const insertPostParams = baseSchema
     price: z.coerce.string().min(1, "Selecciona un precio"),
     gender: z.coerce
       .number({ invalid_type_error: "Debes seleccionar un genero" })
-      .min(1, "Selecciona un género"),
+      .min(0, "Selecciona un género"),
     storeId: z.coerce.string().min(1),
     mainImage: z.string().optional(),
     images: z.string().optional(),
+    region: z.string().optional(),
     // Array of FileWithPreview
     imagesArray: z
       .array(

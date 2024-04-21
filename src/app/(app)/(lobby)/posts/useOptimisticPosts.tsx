@@ -5,25 +5,18 @@ import { useOptimistic } from "react";
 
 export type TAddOptimistic = (action: OptimisticAction<Post>) => void;
 
-export const useOptimisticPosts = (
-  posts: CompletePost[],
-  stores: Store[]
-) => {
+export const useOptimisticPosts = (posts: CompletePost[], stores: Store) => {
   const [optimisticPosts, addOptimisticPost] = useOptimistic(
     posts,
     (
       currentState: CompletePost[],
-      action: OptimisticAction<Post>,
+      action: OptimisticAction<Post>
     ): CompletePost[] => {
       const { data } = action;
 
-      const optimisticStore = stores.find(
-        (store) => store.id === data.storeId,
-      )!;
-
       const optimisticPost = {
         ...data,
-        store: optimisticStore,
+        store: stores,
         id: "optimistic",
       };
 
@@ -34,16 +27,16 @@ export const useOptimisticPosts = (
             : [...currentState, optimisticPost];
         case "update":
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, ...optimisticPost } : item,
+            item.id === data.id ? { ...item, ...optimisticPost } : item
           );
         case "delete":
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, id: "delete" } : item,
+            item.id === data.id ? { ...item, id: "delete" } : item
           );
         default:
           return currentState;
       }
-    },
+    }
   );
 
   return { addOptimisticPost, optimisticPosts };

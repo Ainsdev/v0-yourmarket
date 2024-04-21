@@ -37,7 +37,7 @@ const Store = async ({ id }: { id: string }) => {
       </div>
       <div className="relative mt-8 mx-4">
         <h3 className="text-xl font-medium mb-4">Ultimas Publicaciones</h3>
-        <PostList stores={[]} storeId={store.id} posts={posts} />
+        <PostList store={store} storeId={store.id} posts={posts} />
       </div>
     </Suspense>
   );

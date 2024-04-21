@@ -19,14 +19,14 @@ type TOpenModal = (post?: Post) => void;
 
 export default function PostList({
   posts,
-  stores,
+  store,
   storeId,
 }: {
   posts: CompletePost[];
-  stores: Store[];
+  store: Store;
   storeId?: StoreId;
 }) {
-  const { optimisticPosts } = useOptimisticPosts(posts, stores);
+  const { optimisticPosts } = useOptimisticPosts(posts, store);
   const [open, setOpen] = useState(false);
   const [activePost, setActivePost] = useState<Post | null>(null);
   const openModal = (post?: Post) => {
@@ -47,7 +47,7 @@ export default function PostList({
           post={activePost}
           openModal={openModal}
           closeModal={closeModal}
-          stores={stores}
+          store={store}
           storeId={storeId}
         />
       </DrawerDialog>
