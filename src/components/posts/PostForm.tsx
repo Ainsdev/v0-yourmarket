@@ -133,7 +133,10 @@ const PostForm = ({
     // closeModal && closeModal();
     const refinedName = data.name.includes(data.brand)
       ? data.name
-      : data.brand + " " + data.name;
+      : data.brand.charAt(0).toUpperCase() +
+        data.brand.slice(1) +
+        " " +
+        data.name;
 
     const pendingPost: Post = {
       updatedAt:
@@ -701,7 +704,7 @@ const PostForm = ({
               </CardContent>
             </CardHeader>
           </Card>
-          {JSON.stringify(form.formState.errors, null, 2)}
+          {/* {JSON.stringify(form.formState.errors, null, 2)} */}
         </div>
         {/* Schema fields end */}
         <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
