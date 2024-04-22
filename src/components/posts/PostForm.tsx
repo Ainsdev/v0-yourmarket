@@ -4,7 +4,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { type Action, cn, numberToClp, cleanClp } from "@/lib/utils";
+import {
+  type Action,
+  cn,
+  numberToClp,
+  cleanClp,
+  isArrayOfFile,
+} from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,7 +25,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { type Post, insertPostParams } from "@/lib/db/schema/posts";
+import {
+  type Post,
+  insertPostParams,
+  storeBaseSchema,
+} from "@/lib/db/schema/posts";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -60,8 +70,36 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FileWithPreview } from "@/lib/types";
 import { FileDialog } from "../file-dialog";
 import { Switch } from "../ui/switch";
+import { createPostAction } from "@/lib/actions/posts";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
+
+const formSchema = storeBaseSchema
+  .extend({
+    active: z.coerce.boolean(),
+    price: z.coerce.string().min(1, "Selecciona un precio"),
+    gender: z.coerce
+      .number({ invalid_type_error: "Debes seleccionar un genero" })
+      .min(0, "Selecciona un género"),
+    storeId: z.coerce.string().min(1),
+    mainImage: z.string().optional(),
+    images: z.string().optional(),
+    region: z.string().optional(),
+    // Array of FileWithPreview
+    imagesArray: z
+      .array(
+        z.any({
+          required_error: "Selecciona al menos una imagen",
+          invalid_type_error: "Debes seleccionar un archivo de imagen",
+          description: "Imagenes",
+        })
+      )
+      .min(1, "Selecciona al menos una imagen")
+      .optional(),
+  })
+  .omit({
+    id: true,
+  });
 
 const PostForm = ({
   store,
@@ -78,8 +116,8 @@ const PostForm = ({
   closeModal?: () => void;
   postSuccess?: () => void;
 }) => {
-  const form = useForm<z.infer<typeof insertPostParams>>({
-    resolver: zodResolver(insertPostParams),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       active: post?.active ?? true,
       name: post?.name,
@@ -129,7 +167,7 @@ const PostForm = ({
     }
   };
 
-  const handleSubmit = async (data: z.infer<typeof insertPostParams>) => {
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     // closeModal && closeModal();
     const refinedName = data.name.includes(data.brand)
       ? data.name
@@ -147,23 +185,63 @@ const PostForm = ({
         new Date().toISOString().slice(0, 19).replace("T", " "),
       id: post?.id as string,
       ...data,
-      storeId: storeId ?? 0,
+      storeId: storeId as number,
       price: parseInt(cleanClp(data.price), 10),
-      images: `["${files?.map((file) => file.preview).join('","')}"]`,
-      mainImage: files?.[0]?.preview ?? "",
+      images: data.images ?? "[]",
+      mainImage: data.mainImage ?? "",
       region: store.city,
       name: refinedName,
     };
     try {
       startMutation(async () => {
-        // const error = "error here";
-        toast(
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">
-              {JSON.stringify(pendingPost, null, 2)}
-            </code>
-          </pre>
-        );
+        //Check if is editing or creating
+        if (editing) {
+          // await updatePostAction({
+          //   ...pendingPost,
+          //   id: post?.id as string,
+          // });
+        } else {
+          if (isArrayOfFile(data.imagesArray)) {
+            toast.promise(
+              startUpload(data.imagesArray)
+                .then((res) => {
+                  const formattedImages = res?.map((image) => ({
+                    id: image.key,
+                    name: image.key.split("_")[1] ?? image.key,
+                    url: image.url,
+                  }));
+                  return formattedImages ?? null;
+                })
+                .then(async (images) => {
+                  // make an array of urls in string
+                  const imageString = `["${images
+                    ?.map((image) => image.url)
+                    .join('","')}"]`;
+                  //Select the index image based on the viewImage or the first image
+                  const indexMainImage =
+                    files?.findIndex((file) => file.preview === viewImage) ?? 0;
+                  return await createPostAction({
+                    ...pendingPost,
+                    images: imageString,
+                    mainImage: images?.[indexMainImage]?.url as string,
+                    active: data.active,
+                    gender: data.gender,
+                  });
+                }),
+              {
+                loading: "Subiendo Imagenes...",
+                success: "Producto agregado exitosamente.",
+                error: "Error al subir imagenes.",
+              }
+            );
+          } else {
+            // await createPostAction({
+            //   ...data,
+            // });
+
+            toast.success("Producto agregado exitosamente.");
+          }
+        }
 
         // const errorFormatted = {
         //   error: error ?? "Error",

@@ -25,13 +25,13 @@ const handleErrors = (e: unknown) => {
   return errMsg;
 };
 
-const revalidatePosts = () => revalidatePath("/posts");
+// const revalidatePosts = () => revalidatePath("/posts");
 
 export const createPostAction = async (input: NewPostParams) => {
   try {
-    const payload = insertPostParams.parse(input);
+    const payload = insertPostParams.parse(input)
     await createPost(payload);
-    revalidatePosts();
+    // revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }
@@ -41,7 +41,7 @@ export const updatePostAction = async (input: UpdatePostParams) => {
   try {
     const payload = updatePostParams.parse(input);
     await updatePost(payload.id, payload);
-    revalidatePosts();
+    // revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }
@@ -51,7 +51,7 @@ export const deletePostAction = async (input: PostId) => {
   try {
     const payload = postIdSchema.parse({ id: input });
     await deletePost(payload.id);
-    revalidatePosts();
+    // revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }

@@ -18,7 +18,7 @@ import { type Action } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBackPath } from "@/components/shared/BackButton";
-import { type Store, insertStoreParams } from "@/lib/db/schema/stores";
+import { type Store } from "@/lib/db/schema/stores";
 import { createStoreAction, updateStoreAction } from "@/lib/actions/stores";
 import {
   Select,
