@@ -198,7 +198,7 @@ const PostForm = ({
         if (editing) {
           const error = await updatePostAction({
             ...pendingPost,
-            id: post?.id as string,
+            id: post?.id ?? "",
             active: data.active,
             gender: data.gender,
           });
@@ -213,67 +213,78 @@ const PostForm = ({
           //creating
         } else {
           //with images
-          if (isArrayOfFile(data.imagesArray)) {
-            toast.promise(
-              startUpload(data.imagesArray)
-                .then((res) => {
-                  const formattedImages = res?.map((image) => ({
-                    id: image.key,
-                    name: image.key.split("_")[1] as string,
-                    url: image.url,
-                  }));
-                  console.log(formattedImages);
-                  return formattedImages ?? null;
-                })
-                .then(async (images) => {
-                  // make an array of urls in string
-                  const imageString = `["${images
-                    ?.map((image) => image.url)
-                    .join('","')}"]`;
-                  //Select the index image based on the viewImage or the first image
-                  const indexMainImage =
-                    files?.findIndex((file) => file.preview === viewImage) ?? 0;
-                  console.log("Producto subiendo", pendingPost);
-                  return await createPostAction({
-                    ...pendingPost,
-                    images: imageString,
-                    mainImage: images?.[indexMainImage]?.url as string,
-                    active: data.active,
-                    gender: data.gender,
-                  });
-                }),
-              {
-                loading: "Subiendo Imagenes...",
-                success: "Producto agregado exitosamente.",
-                error: "Error, algo salio mal.",
-              }
-            )
-            // without images
-          } else {
-            const error = await createPostAction({
-              ...pendingPost,
-              active: data.active,
-              gender: data.gender,
-            });
-            const errorFormatted = {
-              error: error ?? "Error",
-              values: pendingPost,
-            };
-            onSuccess(
-              editing ? "update" : "create",
-              error ? errorFormatted : undefined
-            );
+          // if (isArrayOfFile(data.imagesArray)) {
+          //   toast.promise(
+          //     startUpload(data.imagesArray)
+          //       .then((res) => {
+          //         const formattedImages = res?.map((image) => ({
+          //           id: image.key,
+          //           name: image.key.split("_")[1] as string,
+          //           url: image.url,
+          //         }));
+          //         console.log(formattedImages);
+          //         return formattedImages ?? null;
+          //       })
+          //       .then(async (images) => {
+          //         // make an array of urls in string
+          //         const imageString = `["${images
+          //           ?.map((image) => image.url)
+          //           .join('","')}"]`;
+          //         //Select the index image based on the viewImage or the first image
+          //         const indexMainImage =
+          //           files?.findIndex((file) => file.preview === viewImage) ?? 0;
+          //         console.log("Producto subiendo", pendingPost);
+          //         return await createPostAction({
+          //           ...pendingPost,
+          //           images: imageString,
+          //           mainImage: images?.[indexMainImage]?.url as string,
+          //           active: data.active,
+          //           gender: data.gender,
+          //         });
+          //       }),
+          //     {
+          //       loading: "Subiendo Imagenes...",
+          //       success: "Producto agregado exitosamente.",
+          //       error: "Error, algo salio mal.",
+          //     }
+          //   )
+          //   // without images
+          // } else {
+          //   const error = await createPostAction({
+          //     ...pendingPost,
+          //     active: data.active,
+          //     gender: data.gender,
+          //   });
+          //   const errorFormatted = {
+          //     error: error ?? "Error",
+          //     values: pendingPost,
+          //   };
+          //   onSuccess(
+          //     editing ? "update" : "create",
+          //     error ? errorFormatted : undefined
+          //   );
 
-            toast.success("Producto agregado exitosamente.");
-          }
+          //   toast.success("Producto agregado exitosamente.");
+          // }
+          const finalPost = {
+            ...pendingPost,
+            active: data.active,
+            gender: data.gender,
+            images:
+              '["https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"]',
+            mainImage:
+              "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          };
+          await createPostAction(finalPost);
+          toast.success("Producto agregado exitosamente.");
         }
         closeModal && closeModal();
       });
-    } catch (e) {
+    } catch (e: any) {
       if (e instanceof z.ZodError) {
         toast.error("Algo salio mal, revisa tus datos.");
       } else {
-        toast.error("Algo salio mal, intenta de nuevo.");
+        toast.error(e.message);
       }
     }
   };

@@ -28,8 +28,11 @@ const handleErrors = (e: unknown) => {
 // const revalidatePosts = () => revalidatePath("/posts");
 
 export const createPostAction = async (input: NewPostParams) => {
+  console.log("createPostAction");
   try {
+    console.log("input", input);
     const payload = insertPostParams.parse(input)
+    console.log("payload", payload);
     await createPost(payload);
     // revalidatePosts();
   } catch (e) {
