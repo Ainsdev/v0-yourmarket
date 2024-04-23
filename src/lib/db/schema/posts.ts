@@ -74,7 +74,7 @@ export const updatePostParams = storeBaseSchema.extend({
   active: z.coerce.boolean(),
   price: z.coerce.number(),
   gender: z.coerce.number(),
-  storeId: z.coerce.string().min(1),
+  storeId: z.coerce.number(),
 });
 export const postIdSchema = storeBaseSchema.pick({ id: true });
 

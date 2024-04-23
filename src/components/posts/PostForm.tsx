@@ -70,7 +70,7 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FileWithPreview } from "@/lib/types";
 import { FileDialog } from "../file-dialog";
 import { Switch } from "../ui/switch";
-import { createPostAction } from "@/lib/actions/posts";
+import { createPostAction, updatePostAction } from "@/lib/actions/posts";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
@@ -196,20 +196,33 @@ const PostForm = ({
       startMutation(async () => {
         //Check if is editing or creating
         if (editing) {
-          // await updatePostAction({
-          //   ...pendingPost,
-          //   id: post?.id as string,
-          // });
+          const error = await updatePostAction({
+            ...pendingPost,
+            id: post?.id as string,
+            active: data.active,
+            gender: data.gender,
+          });
+          const errorFormatted = {
+            error: error ?? "Error",
+            values: pendingPost,
+          };
+          onSuccess(
+            editing ? "update" : "create",
+            error ? errorFormatted : undefined
+          );
+          //creating
         } else {
+          //with images
           if (isArrayOfFile(data.imagesArray)) {
             toast.promise(
               startUpload(data.imagesArray)
                 .then((res) => {
                   const formattedImages = res?.map((image) => ({
                     id: image.key,
-                    name: image.key.split("_")[1] ?? image.key,
+                    name: image.key.split("_")[1] as string,
                     url: image.url,
                   }));
+                  console.log(formattedImages);
                   return formattedImages ?? null;
                 })
                 .then(async (images) => {
@@ -220,6 +233,7 @@ const PostForm = ({
                   //Select the index image based on the viewImage or the first image
                   const indexMainImage =
                     files?.findIndex((file) => file.preview === viewImage) ?? 0;
+                  console.log("Producto subiendo", pendingPost);
                   return await createPostAction({
                     ...pendingPost,
                     images: imageString,
@@ -231,26 +245,29 @@ const PostForm = ({
               {
                 loading: "Subiendo Imagenes...",
                 success: "Producto agregado exitosamente.",
-                error: "Error al subir imagenes.",
+                error: "Error, algo salio mal.",
               }
-            );
+            )
+            // without images
           } else {
-            // await createPostAction({
-            //   ...data,
-            // });
+            const error = await createPostAction({
+              ...pendingPost,
+              active: data.active,
+              gender: data.gender,
+            });
+            const errorFormatted = {
+              error: error ?? "Error",
+              values: pendingPost,
+            };
+            onSuccess(
+              editing ? "update" : "create",
+              error ? errorFormatted : undefined
+            );
 
             toast.success("Producto agregado exitosamente.");
           }
         }
-
-        // const errorFormatted = {
-        //   error: error ?? "Error",
-        //   values: pendingPost,
-        // };
-        // onSuccess(
-        //   editing ? "update" : "create",
-        //   error ? errorFormatted : undefined
-        // );
+        closeModal && closeModal();
       });
     } catch (e) {
       if (e instanceof z.ZodError) {
