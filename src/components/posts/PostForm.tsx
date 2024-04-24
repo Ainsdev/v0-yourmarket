@@ -29,6 +29,7 @@ import {
   type Post,
   insertPostParams,
   storeBaseSchema,
+  NewPostParams,
 } from "@/lib/db/schema/posts";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -149,6 +150,17 @@ const PostForm = ({
   const router = useRouter();
   const backpath = useBackPath("posts");
 
+  //provisional
+  const handleErrors = (e: unknown) => {
+    const errMsg = "Error, please try again.";
+    if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
+    if (e && typeof e === "object" && "error" in e) {
+      const errAsStr = e.error as string;
+      return errAsStr.length > 0 ? errAsStr : errMsg;
+    }
+    return errMsg;
+  };
+
   const onSuccess = (
     action: Action,
     data?: { error: string; values: Post }
@@ -266,16 +278,17 @@ const PostForm = ({
 
           //   toast.success("Producto agregado exitosamente.");
           // }
-          const finalPost = {
-            ...pendingPost,
-            active: data.active,
-            gender: data.gender,
-            images:
-              '["https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"]',
-            mainImage:
-              "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          };
-          await createPostAction(finalPost);
+
+          async () =>
+            createPostAction({
+              ...pendingPost,
+              active: data.active,
+              gender: data.gender,
+              images:
+                '["https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"]',
+              mainImage:
+                "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            });
           toast.success("Producto agregado exitosamente.");
         }
         closeModal && closeModal();
@@ -355,9 +368,9 @@ const PostForm = ({
                                               .toUpperCase()
                                               .startsWith(letter)
                                           )
-                                          .map((brand) => (
+                                          .map((brand, index) => (
                                             <CommandItem
-                                              key={brand.value}
+                                              key={index}
                                               value={brand.value}
                                               onSelect={() => {
                                                 form.setValue(
@@ -574,7 +587,7 @@ const PostForm = ({
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="new">Nuevo</SelectItem>
-                          <SelectItem value="used">Semi-Nuevo</SelectItem>
+                          <SelectItem value="semi-new">Semi-Nuevo</SelectItem>
                           <SelectItem value="used">Usado</SelectItem>
                         </SelectContent>
                       </Select>

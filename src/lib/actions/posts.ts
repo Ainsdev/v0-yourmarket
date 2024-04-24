@@ -25,7 +25,7 @@ const handleErrors = (e: unknown) => {
   return errMsg;
 };
 
-// const revalidatePosts = () => revalidatePath("/posts");
+const revalidatePosts = () => revalidatePath("/dashboard/stores");
 
 export const createPostAction = async (input: NewPostParams) => {
   console.log("createPostAction");
