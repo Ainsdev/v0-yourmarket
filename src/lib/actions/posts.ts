@@ -29,8 +29,8 @@ const revalidatePosts = () => revalidatePath("/dashboard/stores");
 
 export const createPostAction = async (input: NewPostParams) => {
   console.log("createPostAction");
+  console.log("input", input);
   try {
-    console.log("input", input);
     const payload = insertPostParams.parse(input)
     console.log("payload", payload);
     await createPost(payload);

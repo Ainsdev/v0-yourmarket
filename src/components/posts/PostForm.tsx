@@ -202,7 +202,7 @@ const PostForm = ({
       images: data.images ?? "[]",
       mainImage: data.mainImage ?? "",
       region: store.city,
-      name: refinedName,
+      name: refinedName.toString(),
     };
     try {
       startMutation(async () => {
@@ -279,17 +279,25 @@ const PostForm = ({
           //   toast.success("Producto agregado exitosamente.");
           // }
 
-          async () =>
-            createPostAction({
-              ...pendingPost,
-              active: data.active,
-              gender: data.gender,
-              images:
-                '["https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"]',
-              mainImage:
-                "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            });
-          toast.success("Producto agregado exitosamente.");
+          const error = await createPostAction({
+            ...pendingPost,
+            active: data.active,
+            gender: data.gender,
+            images: [
+              "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            ].toString(),
+            mainImage:
+              "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1760&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          });
+
+          const errorFormatted = {
+            error: error ?? "Error",
+            values: pendingPost,
+          };
+          onSuccess(
+            editing ? "update" : "create",
+            error ? errorFormatted : undefined
+          );
         }
         closeModal && closeModal();
       });
