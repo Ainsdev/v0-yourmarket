@@ -4,6 +4,7 @@ import { eq, and, exists } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
 import { type StoreId, storeIdSchema, stores } from "@/lib/db/schema/stores";
 import { posts, type CompletePost } from "@/lib/db/schema/posts";
+import { asc, desc } from "drizzle-orm";
 
 export const getStores = async () => {
   const { session } = await getUserAuth();
@@ -34,7 +35,9 @@ export const getStoreByIdWithPosts = async (id: StoreId) => {
     .select({ store: stores, post: posts })
     .from(stores)
     .where(and(eq(stores.id, storeId), eq(stores.userId, session?.user.id!)))
-    .leftJoin(posts, eq(stores.id, posts.storeId));
+    .leftJoin(posts, eq(stores.id, posts.storeId))
+    .orderBy(desc(posts.createdAt))
+    .limit(10);
   if (rows.length === 0) return {};
   const s = rows[0].store;
   const sp = rows
@@ -46,6 +49,6 @@ export const getStoreByIdWithPosts = async (id: StoreId) => {
 
 export const checkNameExists = async (name: string) => {
   const query = db.select().from(stores).where(eq(stores.name, name));
-  const rows =  await db.select().from(stores).where(exists(query))
+  const rows = await db.select().from(stores).where(exists(query));
   return { exists: rows.length > 0 };
 };

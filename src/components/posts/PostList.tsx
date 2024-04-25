@@ -93,8 +93,8 @@ const Post = ({
       <div className="w-full">
         <div>{post.name}</div>
       </div>
-      <Button variant={"link"} asChild>
-        <Link href={basePath + "/" + post.id}>Edit</Link>
+      <Button onClick={() => openModal()} variant={"link"}>
+        Editar
       </Button>
     </li>
   );
