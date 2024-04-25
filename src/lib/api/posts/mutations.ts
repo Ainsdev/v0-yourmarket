@@ -1,19 +1,19 @@
 import { db } from "@/lib/db/index";
 import { eq } from "drizzle-orm";
-import { 
-  PostId, 
+import {
+  PostId,
   NewPostParams,
-  UpdatePostParams, 
+  UpdatePostParams,
   updatePostSchema,
-  insertPostSchema, 
+  insertPostSchema,
   posts,
-  postIdSchema 
+  postIdSchema,
 } from "@/lib/db/schema/posts";
 
 export const createPost = async (post: NewPostParams) => {
   const newPost = insertPostSchema.parse(post);
   try {
-    const [p] =  await db.insert(posts).values(newPost).returning();
+    const [p] = await db.insert(posts).values(newPost).returning();
     return { post: p };
   } catch (err) {
     const message = (err as Error).message ?? "Error, please try again";
@@ -26,11 +26,14 @@ export const updatePost = async (id: PostId, post: UpdatePostParams) => {
   const { id: postId } = postIdSchema.parse({ id });
   const newPost = updatePostSchema.parse(post);
   try {
-    const [p] =  await db
-     .update(posts)
-     .set({...newPost, updatedAt: new Date().toISOString().slice(0, 19).replace("T", " ") })
-     .where(eq(posts.id, postId!))
-     .returning();
+    const [p] = await db
+      .update(posts)
+      .set({
+        ...newPost,
+        updatedAt: new Date().toISOString().slice(0, 19).replace("T", " "),
+      })
+      .where(eq(posts.id, postId))
+      .returning();
     return { post: p };
   } catch (err) {
     const message = (err as Error).message ?? "Error, please try again";
@@ -42,8 +45,7 @@ export const updatePost = async (id: PostId, post: UpdatePostParams) => {
 export const deletePost = async (id: PostId) => {
   const { id: postId } = postIdSchema.parse({ id });
   try {
-    const [p] =  await db.delete(posts).where(eq(posts.id, postId!))
-    .returning();
+    const [p] = await db.delete(posts).where(eq(posts.id, postId)).returning();
     return { post: p };
   } catch (err) {
     const message = (err as Error).message ?? "Error, please try again";
@@ -52,3 +54,19 @@ export const deletePost = async (id: PostId) => {
   }
 };
 
+export const updateStatusPost = async (id: PostId, status: boolean) => {
+  const { id: postId } = postIdSchema.parse({ id });
+  try {
+    await db
+      .update(posts)
+      .set({
+        active: status,
+        updatedAt: new Date().toISOString().slice(0, 19).replace("T", " "),
+      })
+      .where(eq(posts.id, postId));
+  } catch (err) {
+    const message = (err as Error).message ?? "Error, please try again";
+    console.error(message);
+    throw { error: message };
+  }
+};

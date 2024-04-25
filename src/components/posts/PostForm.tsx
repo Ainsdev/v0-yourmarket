@@ -181,7 +181,9 @@ const PostForm = ({
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     // closeModal && closeModal();
-    const refinedName = data.name.includes(data.brand)
+    const refinedName = data.name
+      .toLowerCase()
+      .includes(data.brand.toLowerCase())
       ? data.name
       : data.brand.charAt(0).toUpperCase() +
         data.brand.slice(1) +
@@ -243,7 +245,7 @@ const PostForm = ({
                 })
                 .then(async (images) => {
                   // make an array of urls in string
-                  const imageString = `["${images
+                  const imagesString = `["${images
                     ?.map((image) => image.url)
                     .join('","')}"]`;
                   //Select the index image based on the viewImage or the first image
@@ -254,7 +256,7 @@ const PostForm = ({
                     JSON.parse(
                       JSON.stringify({
                         ...pendingPost,
-                        images: imageString,
+                        images: imagesString,
                         mainImage: images?.[indexMainImage]?.url as string,
                         active: data.active,
                         gender: data.gender,

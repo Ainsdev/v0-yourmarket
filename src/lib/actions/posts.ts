@@ -5,6 +5,7 @@ import {
   createPost,
   deletePost,
   updatePost,
+  updateStatusPost,
 } from "@/lib/api/posts/mutations";
 import {
   PostId,
@@ -54,8 +55,17 @@ export const deletePostAction = async (input: PostId) => {
   try {
     const payload = postIdSchema.parse({ id: input });
     await deletePost(payload.id);
-    // revalidatePosts();
+    revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }
 };
+
+export const updateStatusPostAction = async (id: PostId, status: boolean) => {
+  try {
+    await updateStatusPost(id, status );
+    revalidatePosts();
+  } catch (e) {
+    return handleErrors(e);
+  }
+}
