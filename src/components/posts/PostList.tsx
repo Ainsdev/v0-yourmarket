@@ -11,10 +11,18 @@ import { type Store, type StoreId } from "@/lib/db/schema/stores";
 
 import { Button } from "@/components/ui/button";
 import PostForm from "./PostForm";
-import { PlusIcon } from "lucide-react";
 import { useOptimisticPosts } from "@/app/(app)/(lobby)/posts/useOptimisticPosts";
 import { DrawerDialog } from "../DrawerDialog";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
+import {
+  CopyIcon,
+  EyeOpenIcon,
+  LockClosedIcon,
+  LockOpen1Icon,
+  Pencil2Icon,
+  PlusCircledIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import Image from "next/image";
 import { MoreHorizontal } from "lucide-react";
 
@@ -84,15 +92,19 @@ export default function PostList({
           storeId={storeId}
         />
       </DrawerDialog>
-      <div className="absolute right-0 top-0 ">
-        <Button
-          className="flex gap-1 justify-center items-center"
-          onClick={() => openModal()}
-          variant={"outline"}
-        >
-          <PlusCircledIcon /> Agregar Producto
-        </Button>
-      </div>
+      {optimisticPosts.length === 0 ? (
+        <></>
+      ) : (
+        <div className="absolute right-0 top-0 ">
+          <Button
+            className="flex gap-1 justify-center items-center"
+            onClick={() => openModal()}
+            variant={"outline"}
+          >
+            <PlusCircledIcon /> Agregar Producto
+          </Button>
+        </div>
+      )}
       {optimisticPosts.length === 0 ? (
         <EmptyState openModal={openModal} />
       ) : (
@@ -107,7 +119,7 @@ export default function PostList({
                 <TableHead>Estatus</TableHead>
                 <TableHead className="hidden md:table-cell">Precio</TableHead>
                 <TableHead className="hidden md:table-cell">Fecha</TableHead>
-                <TableHead className="hidden md:table-cell">Editar</TableHead>
+                <TableHead className="hidden md:table-cell"></TableHead>
                 <TableHead>
                   <span className="sr-only">acciones</span>
                 </TableHead>
@@ -180,16 +192,29 @@ const Post = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => openModal(post)}>
-              Editar
+            <DropdownMenuItem className="flex gap-1">
+              <EyeOpenIcon />
+              <Link href={`${basePath}${post.id}`}>Ver</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex gap-1">
+              <CopyIcon />
+              Compartir
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="text-secondary-foreground"
+              className="flex gap-1"
+              onClick={() => openModal(post)}
+            >
+              <Pencil2Icon /> Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex gap-1"
               onClick={() => updateStatusPostAction(post.id, !post.active)}
             >
+              {post.active ? <LockOpen1Icon /> : <LockClosedIcon />}
               {post.active ? "Desactivar" : "Activar"}
             </DropdownMenuItem>
             <DropdownMenuItem
+              className="flex gap-1"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

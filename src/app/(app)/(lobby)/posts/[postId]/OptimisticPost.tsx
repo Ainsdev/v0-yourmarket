@@ -1,7 +1,7 @@
 "use client";
 
 import { useOptimistic, useState } from "react";
-import { TAddOptimistic } from "@/app/(app)/posts/useOptimisticPosts";
+// import { TAddOptimistic } from "@/app/(app)/posts/useOptimisticPosts";
 import { type Post } from "@/lib/db/schema/posts";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ export default function OptimisticPost({
 }: { 
   post: Post; 
   
-  stores: Store[];
+  stores: Store;
   storeId?: StoreId
 }) {
   const [open, setOpen] = useState(false);
@@ -26,19 +26,19 @@ export default function OptimisticPost({
   };
   const closeModal = () => setOpen(false);
   const [optimisticPost, setOptimisticPost] = useOptimistic(post);
-  const updatePost: TAddOptimistic = (input) =>
-    setOptimisticPost({ ...input.data });
+  // const updatePost: TAddOptimistic = (input) =>
+  //   setOptimisticPost({ ...input.data });
 
   return (
     <div className="m-4">
       <Modal open={open} setOpen={setOpen}>
         <PostForm
           post={optimisticPost}
-          stores={stores}
+          store={stores}
         storeId={storeId}
           closeModal={closeModal}
           openModal={openModal}
-          addOptimistic={updatePost}
+          // addOptimistic={updatePost}
         />
       </Modal>
       <div className="flex justify-between items-end mb-4">

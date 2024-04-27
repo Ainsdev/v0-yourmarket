@@ -2,11 +2,12 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { getPostById } from "@/lib/api/posts/queries";
-import { getStores } from "@/lib/api/stores/queries";import OptimisticPost from "@/app/(app)/posts/[postId]/OptimisticPost";
+import { getStores } from "@/lib/api/stores/queries";
 
 
 import { BackButton } from "@/components/shared/BackButton";
 import Loading from "@/app/loading";
+import OptimisticPost from "./OptimisticPost";
 
 
 export const revalidate = 0;

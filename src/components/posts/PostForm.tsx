@@ -122,7 +122,7 @@ const PostForm = ({
     defaultValues: {
       active: post?.active ?? true,
       name: post?.name,
-      description: post?.description,
+      description: post?.description || "",
       brand: post?.brand,
       images: post?.images,
       price: numberToClp(`${post?.price}`),
@@ -138,13 +138,22 @@ const PostForm = ({
     },
   });
   //IMAGES UPLOAD
+
+  const imagesFromPost = post?.images;
+  const parsedImages = imagesFromPost ? JSON.parse(imagesFromPost) : [];
+  const fileWithPreviewArray = parsedImages.map((url: string) => ({
+    url,
+    preview: url,
+    file: null,
+  }));
+
   const { isUploading, startUpload } = useUploadThing("productImages");
   const [files, setFiles] = useState<FileWithPreview[] | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
 
   const editing = !!post?.id;
   // const [brandInName, setBrandInName] = useState(post?.brand ?? "");
-  const [isDeleting, setIsDeleting] = useState(false);
+  // const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
   const router = useRouter();
@@ -245,13 +254,12 @@ const PostForm = ({
                 })
                 .then(async (images) => {
                   // make an array of urls in string
-                  const imagesString = `["${images
-                    ?.map((image) => image.url)
-                    .join('","')}"]`;
+                  const imagesString = `${images?.map((image) => image.url)}`;
                   //Select the index image based on the viewImage or the first image
                   const indexMainImage =
                     files?.findIndex((file) => file.preview === viewImage) ?? 0;
                   console.log("Producto subiendo", pendingPost);
+
                   return await createPostAction(
                     JSON.parse(
                       JSON.stringify({
@@ -474,8 +482,8 @@ const PostForm = ({
                         <Textarea
                           id="description"
                           placeholder="Zapatillas Nuevas..."
-                          onChange={(e) => field.onChange(e.target.value)}
-                          // value={field.value}
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormDescription>
@@ -805,12 +813,12 @@ const PostForm = ({
                             <SelectContent>
                               {store.phone && (
                                 <SelectItem value={store.phone.toString()}>
-                                  {store.phone.toString()}
+                                  {"Tel: " + store.phone.toString()}
                                 </SelectItem>
                               )}
                               {store.instagram && (
                                 <SelectItem value={store.instagram}>
-                                  {store.instagram}
+                                  {"IG: " + store.instagram}
                                 </SelectItem>
                               )}
                             </SelectContent>

@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db/index";
-import { eq, and, exists } from "drizzle-orm";
+import { eq, and, exists, count, sum } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
 import { type StoreId, storeIdSchema, stores } from "@/lib/db/schema/stores";
 import { posts, type CompletePost } from "@/lib/db/schema/posts";
@@ -28,7 +28,7 @@ export const getStoreById = async (id: StoreId) => {
   return { store: s };
 };
 
-export const getStoreByIdWithPosts = async (id: StoreId) => {
+export const getStoreByIdWithPostsAnalytics = async (id: StoreId) => {
   const { session } = await getUserAuth();
   const { id: storeId } = storeIdSchema.parse({ id });
   const rows = await db
@@ -44,7 +44,15 @@ export const getStoreByIdWithPosts = async (id: StoreId) => {
     .filter((r) => r.post !== null)
     .map((p) => p.post) as CompletePost[];
 
-  return { store: s, posts: sp };
+  const postsCountandSoldRevenue = await db
+    .select({
+      count: count(),
+      revenue: sum(posts.price),
+    })
+    .from(posts)
+    .where(and(eq(posts.storeId, storeId), eq(posts.sold, true)));
+
+  return { store: s, posts: sp, analytics: postsCountandSoldRevenue };
 };
 
 export const checkNameExists = async (name: string) => {

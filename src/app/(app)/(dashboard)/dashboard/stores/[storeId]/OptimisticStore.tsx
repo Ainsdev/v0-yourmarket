@@ -22,7 +22,18 @@ import Link from "next/link";
 import { Share1Icon } from "@radix-ui/react-icons";
 import { Progress } from "@radix-ui/react-progress";
 
-export default function OptimisticStore({ store }: { store: Store }) {
+type Analytics = {
+  revenue: string | null;
+  count: number | null;
+};
+
+export default function OptimisticStore({
+  store,
+  analytics,
+}: {
+  store: Store;
+  analytics: Analytics;
+}) {
   const [open, setOpen] = useState(false);
   const openModal = (_?: Store) => {
     setOpen(true);
@@ -86,13 +97,13 @@ export default function OptimisticStore({ store }: { store: Store }) {
           </Card>
           <Card className="h-36">
             <CardHeader className="pb-2">
-              <CardDescription>Esta Mes</CardDescription>
-              <CardTitle className="text-2xl">$0</CardTitle>
+              <CardDescription>Total</CardDescription>
+              <CardTitle className="text-2xl">
+                {analytics.revenue || "$0.00"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-xs text-muted-foreground">
-                En Ventas
-              </div>
+              <div className="text-xs text-muted-foreground">En Ventas</div>
             </CardContent>
             <CardFooter>
               <Progress value={25} max={100} />
@@ -100,13 +111,13 @@ export default function OptimisticStore({ store }: { store: Store }) {
           </Card>
           <Card className="h-36">
             <CardHeader className="pb-2">
-              <CardDescription>Este Mes</CardDescription>
-              <CardTitle className="text-2xl">0 Productos</CardTitle>
+              <CardDescription>Total</CardDescription>
+              <CardTitle className="text-2xl">
+                {analytics.count || 0}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-xs text-muted-foreground">
-                Vendidos
-              </div>
+              <div className="text-xs text-muted-foreground">Vendidos</div>
             </CardContent>
             <CardFooter>
               <Progress value={12} aria-label="12% increase" />

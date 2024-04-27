@@ -35,7 +35,7 @@ export const createPostAction = async (input: NewPostParams) => {
     const payload = insertPostParams.parse(input)
     console.log("payload", payload);
     await createPost(payload);
-    // revalidatePosts();
+    revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }
@@ -45,7 +45,7 @@ export const updatePostAction = async (input: UpdatePostParams) => {
   try {
     const payload = updatePostParams.parse(input);
     await updatePost(payload.id, payload);
-    // revalidatePosts();
+    revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }

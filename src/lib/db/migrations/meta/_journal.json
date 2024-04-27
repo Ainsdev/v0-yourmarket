@@ -134,6 +134,13 @@
       "when": 1713741846839,
       "tag": "0018_workable_elektra",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1714234124677,
+      "tag": "0019_friendly_silver_samurai",
+      "breakpoints": true
     }
   ]
 }

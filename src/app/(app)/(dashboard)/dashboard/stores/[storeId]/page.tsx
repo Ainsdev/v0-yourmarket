@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-import { getStoreByIdWithPosts } from "@/lib/api/stores/queries";
+import { getStoreByIdWithPostsAnalytics } from "@/lib/api/stores/queries";
 import { checkAuth } from "@/lib/auth/utils";
 import PostList from "@/components/posts/PostList";
 
@@ -26,14 +26,16 @@ export default async function StorePage({
 const Store = async ({ id }: { id: string }) => {
   await checkAuth();
 
-  const { store, posts } = await getStoreByIdWithPosts(Number(id));
+  const { store, posts, analytics } = await getStoreByIdWithPostsAnalytics(Number(id));
 
   if (!store) notFound();
   return (
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="stores" />
-        <OptimisticStore store={store} />
+        <OptimisticStore
+        analytics={analytics[0]}
+        store={store} />
       </div>
       <div className="relative mt-8 mx-4">
         <h3 className="text-xl font-medium mb-4">Ultimas Publicaciones</h3>
