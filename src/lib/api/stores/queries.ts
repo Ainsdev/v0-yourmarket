@@ -37,7 +37,7 @@ export const getStoreByIdWithPostsAnalytics = async (id: StoreId) => {
     .where(and(eq(stores.id, storeId), eq(stores.userId, session?.user.id!)))
     .leftJoin(posts, eq(stores.id, posts.storeId))
     .orderBy(desc(posts.createdAt))
-    .limit(10);
+    .limit(12);
   if (rows.length === 0) return {};
   const s = rows[0].store;
   const sp = rows

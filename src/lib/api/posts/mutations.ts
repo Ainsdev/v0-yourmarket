@@ -54,13 +54,18 @@ export const deletePost = async (id: PostId) => {
   }
 };
 
-export const updateStatusPost = async (id: PostId, status: boolean) => {
+export const updateStatusPost = async (
+  id: PostId,
+  status: boolean,
+  type: "ACTIVE" | "SOLD"
+) => {
   const { id: postId } = postIdSchema.parse({ id });
+  const rowToUpdate= type === "ACTIVE" ? { active: status } : { sold: status };
   try {
     await db
       .update(posts)
       .set({
-        active: status,
+        ...rowToUpdate,
         updatedAt: new Date().toISOString().slice(0, 19).replace("T", " "),
       })
       .where(eq(posts.id, postId));

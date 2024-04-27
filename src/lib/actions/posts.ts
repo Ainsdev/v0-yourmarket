@@ -32,7 +32,7 @@ export const createPostAction = async (input: NewPostParams) => {
   console.log("createPostAction");
   console.log("input", input);
   try {
-    const payload = insertPostParams.parse(input)
+    const payload = insertPostParams.parse(input);
     console.log("payload", payload);
     await createPost(payload);
     revalidatePosts();
@@ -61,11 +61,15 @@ export const deletePostAction = async (input: PostId) => {
   }
 };
 
-export const updateStatusPostAction = async (id: PostId, status: boolean) => {
+export const updateStatusPostAction = async (
+  id: PostId,
+  status: boolean,
+  type: "ACTIVE" | "SOLD"
+) => {
   try {
-    await updateStatusPost(id, status );
+    await updateStatusPost(id, status, type);
     revalidatePosts();
   } catch (e) {
     return handleErrors(e);
   }
-}
+};

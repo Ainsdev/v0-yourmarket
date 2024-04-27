@@ -175,11 +175,11 @@ const Post = ({
       </TableCell>
       <TableCell className="hidden md:table-cell">
         <Button
-          onClick={() => openModal(post)}
+          onClick={() => updateStatusPostAction(post.id, !post.sold, "SOLD")}
           variant="link"
           className="text-default"
         >
-          Editar
+          Marcar como vendido
         </Button>
       </TableCell>
       <TableCell>
@@ -208,7 +208,9 @@ const Post = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex gap-1"
-              onClick={() => updateStatusPostAction(post.id, !post.active)}
+              onClick={() =>
+                updateStatusPostAction(post.id, !post.active, "ACTIVE")
+              }
             >
               {post.active ? <LockOpen1Icon /> : <LockClosedIcon />}
               {post.active ? "Desactivar" : "Activar"}
