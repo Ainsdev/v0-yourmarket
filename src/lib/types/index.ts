@@ -31,3 +31,7 @@ export interface Option {
 export type FileWithPreview = FileWithPath & {
   preview: string
 }
+
+export interface SearchParams {
+  [key: string]: string | string[] | undefined
+}

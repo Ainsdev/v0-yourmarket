@@ -60,7 +60,7 @@ export const updateStatusPost = async (
   type: "ACTIVE" | "SOLD"
 ) => {
   const { id: postId } = postIdSchema.parse({ id });
-  const rowToUpdate= type === "ACTIVE" ? { active: status } : { sold: status };
+  const rowToUpdate = type === "ACTIVE" ? { active: status } : { sold: status };
   try {
     await db
       .update(posts)
