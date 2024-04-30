@@ -1,9 +1,11 @@
 import { customAlphabet } from "nanoid";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { z } from "zod";
+import { toast } from "sonner";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789");
@@ -12,8 +14,6 @@ export const timestamps: { createdAt: true; updatedAt: true } = {
   createdAt: true,
   updatedAt: true,
 };
-
-
 
 export type Action = "create" | "update" | "delete";
 
@@ -27,31 +27,30 @@ export function formatBytes(
   decimals = 0,
   sizeType: "accurate" | "normal" = "normal"
 ) {
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
-  const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"]
-  if (bytes === 0) return "0 Byte"
-  const i = Math.floor(Math.log(bytes) / Math.log(1024))
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"];
+  if (bytes === 0) return "0 Byte";
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
     sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
-  }`
+  }`;
 }
 
 export function isArrayOfFile(files: unknown): files is File[] {
-  const isArray = Array.isArray(files)
-  if (!isArray) return false
-  return files.every((file) => file instanceof File)
+  const isArray = Array.isArray(files);
+  if (!isArray) return false;
+  return files.every((file) => file instanceof File);
 }
 
-
-  export function textToArr(text: string) {
-    // CHeck if the text is an array 
-    if (!text.startsWith("[") || !text.endsWith("]")) {
-      return []
-    } 
-    return JSON.parse(text)
+export function textToArr(text: string) {
+  // CHeck if the text is an array
+  if (!text.startsWith("[") || !text.endsWith("]")) {
+    return [];
   }
+  return JSON.parse(text);
+}
 
-  //OTHERS
+//OTHERS
 export function currencyFormat(number: string) {
   return new Intl.NumberFormat("es-CL", {
     style: "currency",
@@ -115,7 +114,7 @@ export function validateRut(rut: string): boolean {
 export function numberToClp(
   monto: string,
   separator = ".",
-  symbol = "$",
+  symbol = "$"
 ): string {
   const cleanValue = monto.replace(/\D/g, "");
   const valueConverted = cleanValue ? cleanValue.split("").reverse() : [];
@@ -142,7 +141,9 @@ export function numberToClp(
     array.push(valueConverted.reverse().slice(0, 3).join(""));
   }
 
-  return `${symbol}${finalValue ? finalValue : ""}${array.reverse().join(separator)}`;
+  return `${symbol}${finalValue ? finalValue : ""}${array
+    .reverse()
+    .join(separator)}`;
 }
 
 export function cleanClp(monto: string): string {
@@ -157,4 +158,17 @@ export function getRutDv(cleanRut: string): string {
   }
   const n_dv = 11 - (suma % 11);
   return n_dv === 11 ? "0" : n_dv === 10 ? "K" : n_dv.toString();
+}
+
+export function catchError(err: unknown) {
+  if (err instanceof z.ZodError) {
+    const errors = err.issues.map((issue) => {
+      return issue.message;
+    });
+    return toast(errors.join("\n"));
+  } else if (err instanceof Error) {
+    return toast(err.message);
+  } else {
+    return toast("Algo salio mal. Intentalo mas tarde!!!");
+  }
 }

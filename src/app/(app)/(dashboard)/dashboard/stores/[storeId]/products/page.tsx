@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { db } from "@/lib/db";
 import { Post, posts } from "@/lib/db/schema/posts";
@@ -7,6 +7,7 @@ import { searchParamsSchema } from "@/lib/validations/params";
 import { and, asc, count, desc, eq, gte, like, lte } from "drizzle-orm";
 import { z } from "zod";
 import { DataTableSkeleton } from "@/components/posts/data-table/data-table-skeleton";
+import { ProductsTableShell } from "@/components/posts/data-table/products-table-shell";
 
 interface ProductsPageProps {
   params: {

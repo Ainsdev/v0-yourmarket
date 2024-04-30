@@ -52,6 +52,7 @@ export const updatePostAction = async (input: UpdatePostParams) => {
 };
 
 export const deletePostAction = async (input: PostId) => {
+  //ADD VALIDATION OF USER
   try {
     const payload = postIdSchema.parse({ id: input });
     await deletePost(payload.id);
