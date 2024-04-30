@@ -100,6 +100,7 @@ const formSchema = storeBaseSchema
   })
   .omit({
     id: true,
+    sold: true,
   });
 
 const PostForm = ({
@@ -214,6 +215,7 @@ const PostForm = ({
       mainImage: data.mainImage ?? "",
       region: store.city,
       name: refinedName.toString(),
+      sold: post?.sold ?? false,
     };
     try {
       startMutation(async () => {

@@ -686,3 +686,14 @@ export function getSubcategories(category?: string): Option[] {
 
   return subcategories;
 }
+
+export function getAllSubcategories(): Option[] {
+  return productCategories.reduce((acc, category) => {
+    const subcategories = category.subcategories.map((s) => ({
+      label: s.title,
+      value: s.slug,
+    }));
+
+    return [...acc, ...subcategories];
+  }, [] as Option[]);
+}

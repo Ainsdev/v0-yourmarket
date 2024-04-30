@@ -23,11 +23,18 @@ import { type Post } from "@/lib/db/schema/posts";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { deletePostAction } from "@/lib/actions/posts";
 import { DataTable } from "./data-table";
-import { productCategories } from "@/config/categories";
+import { getAllSubcategories, productCategories } from "@/config/categories";
 
 type AwaitedProduct = Pick<
   Post,
-  "id" | "name" | "active" | "categoryId" | "price" | "sold" | "createdAt"
+  | "id"
+  | "name"
+  | "active"
+  | "categoryId"
+  | "subcategory"
+  | "price"
+  | "sold"
+  | "createdAt"
 >;
 
 interface ProductsTableShellProps {
@@ -88,21 +95,18 @@ export function ProductsTableShell({
       {
         accessorKey: "name",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Name" />
+          <DataTableColumnHeader column={column} title="Titulo" />
         ),
       },
       {
-        accessorKey: "category",
+        accessorKey: "categoryId",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Category" />
         ),
         cell: ({ cell }) => {
-          const categories = productCategories.map(
-            (category) => category.title
-          );
-          const category = cell.getValue() as string;
-
-          if (!categories.includes(category)) return null;
+          const category = productCategories.find(
+            (category) => category.id === cell.getValue()
+          )?.title;
 
           return (
             <Badge variant="outline" className="capitalize">
@@ -112,33 +116,66 @@ export function ProductsTableShell({
         },
       },
       {
-        accessorKey: "price",
+        accessorKey: "subcategory",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Price" />
+          <DataTableColumnHeader column={column} title="Subcategoria" />
         ),
         cell: ({ cell }) => {
-          numberToClp(`${cell.getValue()}`);
+          const subcategory = productCategories[
+            cell.row.original.categoryId
+          ].subcategories.find(
+            (subcategory) => subcategory.slug === cell.getValue()
+          )?.title;
+          return (
+            <Badge variant="outline" className="capitalize">
+              {subcategory}
+            </Badge>
+          );
         },
       },
       {
-        accessorKey: "inventory",
+        accessorKey: "price",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Inventory" />
+          <DataTableColumnHeader column={column} title="Precio" />
         ),
+        cell: ({ cell }) => {
+          const price = cell.getValue() as number;
+          return numberToClp(`${price}`);
+        },
       },
       {
-        accessorKey: "rating",
+        accessorKey: "sold",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Rating" />
+          <DataTableColumnHeader column={column} title="Vendido" />
         ),
+        //True if the product has been sold
+        cell: ({ cell }) => {
+          const sold = cell.getValue() as boolean;
+          return sold ? "Si" : "No";
+        },
+      },
+      {
+        accessorKey: "active",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Activo" />
+        ),
+        cell: ({ cell }) => {
+          const active = cell.getValue() as boolean;
+          return (
+            <Badge variant={active ? "secondary" : "outline"}>
+              {active ? "Activo" : "Inactivo"}
+            </Badge>
+          );
+        },
       },
       {
         accessorKey: "createdAt",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Created At" />
+          <DataTableColumnHeader column={column} title="Fecha" />
         ),
         cell: ({ cell }) => {
-          new Date(cell.getValue() as string).toLocaleDateString();
+          const date = cell.getValue() as string;
+          return new Date(date).toLocaleDateString();
         },
         enableColumnFilter: false,
       },
@@ -171,7 +208,6 @@ export function ProductsTableShell({
                 onClick={() => {
                   startTransition(() => {
                     row.toggleSelected(false);
-
                     toast.promise(deletePostAction(row.original.id), {
                       loading: "Eliminando...",
                       success: () => "Producto eliminado existosamente.",
@@ -180,6 +216,7 @@ export function ProductsTableShell({
                   });
                 }}
                 disabled={isPending}
+                className="text-destructive"
               >
                 Eliminar
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
@@ -222,6 +259,19 @@ export function ProductsTableShell({
             value: category.id.toString(),
             label: category.title,
           })),
+        },
+        {
+          id: "subcategory",
+          title: "Subcategoria",
+          options: getAllSubcategories()
+        },
+        {
+          id: "active",
+          title: "Activo",
+          options: [
+            { value: "true", label: "Activo" },
+            { value: "false", label: "Inactivo" },
+          ],
         },
       ]}
       searchableColumns={[

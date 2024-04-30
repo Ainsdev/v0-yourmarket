@@ -176,7 +176,7 @@ const Post = ({
       <TableCell className="hidden md:table-cell">
         <Button
           onClick={() => updateStatusPostAction(post.id, !post.sold, "SOLD")}
-          variant="link"
+          variant="secondary"
           className="text-default"
         >
           Marcar como vendido
@@ -199,6 +199,12 @@ const Post = ({
             <DropdownMenuItem className="flex gap-1">
               <CopyIcon />
               Compartir
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex gap-1">
+              Vendido
+              <Badge variant="outline" className="capitalize">
+                {post.sold ? "Si" : "No"}
+              </Badge>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex gap-1"

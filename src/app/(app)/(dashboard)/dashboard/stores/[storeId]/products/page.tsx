@@ -17,7 +17,10 @@ interface ProductsPageProps {
 }
 const storesProductsSearchParamsSchema = searchParamsSchema.extend({
   name: z.string().optional(),
-  categoryId: z.number().optional(),
+  categoryId: z.string().optional(),
+  subcategory: z.string().optional(),
+  active: z.string().optional(),
+  sold: z.string().optional(),
 });
 
 export default async function ProductsPage({
@@ -26,8 +29,18 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId);
 
-  const { page, per_page, sort, name, categoryId, from, to } =
-    storesProductsSearchParamsSchema.parse(searchParams);
+  const {
+    page,
+    per_page,
+    sort,
+    name,
+    categoryId,
+    subcategory,
+    active,
+    sold,
+    from,
+    to,
+  } = storesProductsSearchParamsSchema.parse(searchParams);
   // Fallback page for invalid page numbers
   const fallbackPage = isNaN(page) || page < 1 ? 1 : page;
   // Number of items per page
@@ -48,6 +61,7 @@ export default async function ProductsPage({
     ? new Date(to).toISOString().slice(0, 19).replace("T", " ")
     : undefined;
 
+
   const productsPromise = db.transaction(async (tx) => {
     try {
       const data = await tx
@@ -61,7 +75,13 @@ export default async function ProductsPage({
             //Filter by name
             name ? like(posts.name, `%${name}%`) : undefined,
             //Filter by category
-            categoryId ? eq(posts.categoryId, categoryId) : undefined,
+            categoryId ? eq(posts.categoryId, parseInt(categoryId)) : undefined,
+            //Filter by subcategory
+            subcategory ? eq(posts.subcategory, subcategory) : undefined,
+            //Filter by active
+            active ? eq(posts.active, active === "true") : undefined,
+            //Filter by sold
+            sold ? eq(posts.sold, sold === "true") : undefined,
             //Filter by createdAt and updatedAt
             fromDay && toDay
               ? and(gte(posts.createdAt, fromDay), lte(posts.createdAt, toDay))
@@ -87,7 +107,13 @@ export default async function ProductsPage({
             //Filter by name
             name ? like(posts.name, `%${name}%`) : undefined,
             //Filter by category
-            categoryId ? eq(posts.categoryId, categoryId) : undefined,
+            categoryId ? eq(posts.categoryId, parseInt(categoryId)) : undefined,
+            //Filter by subcategory
+            subcategory ? eq(posts.subcategory, subcategory) : undefined,
+            //Filter by active
+            active ? eq(posts.active, active === "true") : undefined,
+            //Filter by sold
+            sold ? eq(posts.sold, sold === "true") : undefined,
             //Filter by createdAt and updatedAt
             fromDay && toDay
               ? and(gte(posts.createdAt, fromDay), lte(posts.createdAt, toDay))
