@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
 import type {
   DataTableFilterableColumn,
   DataTableSearchableColumn,
-} from "@/types"
-import { Cross2Icon, PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons"
-import type { Table } from "@tanstack/react-table"
+} from "@/lib/types/index";
+import { Cross2Icon, PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons";
+import type { Table } from "@tanstack/react-table";
 
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
+import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { DataTableFacetedFilter } from "@/components/posts/data-table/data-table-faceted-filter";
+import { DataTableViewOptions } from "@/components/posts/data-table/data-table-view-options";
 
 interface DataTableToolbarProps<TData> {
-  table: Table<TData>
-  filterableColumns?: DataTableFilterableColumn<TData>[]
-  searchableColumns?: DataTableSearchableColumn<TData>[]
-  newRowLink?: string
-  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
+  table: Table<TData>;
+  filterableColumns?: DataTableFilterableColumn<TData>[];
+  searchableColumns?: DataTableSearchableColumn<TData>[];
+  newRowLink?: string;
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export function DataTableToolbar<TData>({
@@ -30,8 +30,8 @@ export function DataTableToolbar<TData>({
   newRowLink,
   deleteRowsAction,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
-  const [isPending, startTransition] = React.useTransition()
+  const isFiltered = table.getState().columnFilters.length > 0;
+  const [isPending, startTransition] = React.useTransition();
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
@@ -90,14 +90,14 @@ export function DataTableToolbar<TData>({
             className="h-8"
             onClick={(event) => {
               startTransition(() => {
-                table.toggleAllPageRowsSelected(false)
-                deleteRowsAction(event)
-              })
+                table.toggleAllPageRowsSelected(false);
+                deleteRowsAction(event);
+              });
             }}
             disabled={isPending}
           >
             <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-            Delete
+            Eliminar
           </Button>
         ) : newRowLink ? (
           <Link aria-label="Create new row" href={newRowLink}>
@@ -111,12 +111,12 @@ export function DataTableToolbar<TData>({
               )}
             >
               <PlusCircledIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-              New
+              Nuevo
             </div>
           </Link>
         ) : null}
         <DataTableViewOptions table={table} />
       </div>
     </div>
-  )
+  );
 }

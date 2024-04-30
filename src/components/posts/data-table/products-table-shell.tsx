@@ -58,7 +58,9 @@ export function ProductsTableShell({
             onCheckedChange={(value) => {
               table.toggleAllPageRowsSelected(!!value);
               setSelectedRowIds((prev) =>
-                prev.length === data.length ? [] : data.map((row) => row.id)
+                prev.length === data.length
+                  ? []
+                  : data.map((row) => Number(row.id))
               );
             }}
             aria-label="Select all"
@@ -72,8 +74,8 @@ export function ProductsTableShell({
               row.toggleSelected(!!value);
               setSelectedRowIds((prev) =>
                 value
-                  ? [...prev, row.original.id]
-                  : prev.filter((id) => id !== row.original.id)
+                  ? [...prev, Number(row.original.id)]
+                  : prev.filter((id) => id !== Number(row.original.id))
               );
             }}
             aria-label="Select row"
@@ -158,11 +160,11 @@ export function ProductsTableShell({
                 <Link
                   href={`/dashboard/stores/${storeId}/products/${row.original.id}`}
                 >
-                  Edit
+                  Editar
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={`/product/${row.original.id}`}>View</Link>
+                <Link href={`/product/${row.original.id}`}>Ver</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -217,7 +219,7 @@ export function ProductsTableShell({
           id: "categoryId",
           title: "Categoria",
           options: productCategories.map((category) => ({
-            value: category.id,
+            value: category.id.toString(),
             label: category.title,
           })),
         },

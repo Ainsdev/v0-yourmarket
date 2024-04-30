@@ -172,3 +172,9 @@ export function catchError(err: unknown) {
     return toast("Algo salio mal. Intentalo mas tarde!!!");
   }
 }
+
+export function toSentenceCase(str: string) {
+  return str
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (str) => str.toUpperCase())
+}
