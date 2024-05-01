@@ -61,7 +61,6 @@ export default async function ProductsPage({
     ? new Date(to).toISOString().slice(0, 19).replace("T", " ")
     : undefined;
 
-
   const productsPromise = db.transaction(async (tx) => {
     try {
       const data = await tx
