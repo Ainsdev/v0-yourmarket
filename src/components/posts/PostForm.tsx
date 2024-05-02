@@ -191,14 +191,8 @@ const PostForm = ({
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     // closeModal && closeModal();
-    const refinedName = data.name
-      .toLowerCase()
-      .includes(data.brand.toLowerCase())
-      ? data.name
-      : data.brand.charAt(0).toUpperCase() +
-        data.brand.slice(1) +
-        " " +
-        data.name;
+    //refined name: Make the first letter upercasse
+    const refinedName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
 
     const pendingPost: Post = {
       updatedAt:
@@ -436,7 +430,6 @@ const PostForm = ({
                 />
               </div>
               <div className="grid gap-3">
-                {/* PUT THE BRAND FIRST */}
                 <FormField
                   control={form.control}
                   name="name"
