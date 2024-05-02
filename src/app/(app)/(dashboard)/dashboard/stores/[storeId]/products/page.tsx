@@ -61,7 +61,57 @@ export default async function ProductsPage({
     ? new Date(to).toISOString().slice(0, 19).replace("T", " ")
     : undefined;
 
-  const productsPromise = db.transaction(async (tx) => {
+  const productsPromise = getProductsTable(
+    limit,
+    offset,
+    storeId,
+    name,
+    categoryId,
+    subcategory,
+    active,
+    sold,
+    fromDay,
+    toDay,
+    column,
+    order
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">Productos</h2>
+        <DateRangePicker align="end" />
+      </div>
+      <React.Suspense
+        fallback={
+          <DataTableSkeleton
+            columnCount={6}
+            isNewRowCreatable={true}
+            isRowsDeletable={true}
+          />
+        }
+      >
+        <ProductsTableShell promise={productsPromise} storeId={storeId} />
+      </React.Suspense>
+    </div>
+  );
+}
+
+function getProductsTable(
+  limit: number,
+  offset: number,
+  storeId: number,
+  name: string | undefined,
+  categoryId: string | undefined,
+  subcategory: string | undefined,
+  active: string | undefined,
+  sold: string | undefined,
+  fromDay: string | undefined,
+  toDay: string | undefined,
+  column: string | undefined,
+  order: string | undefined
+) {
+  return db.transaction(async (tx) => {
     try {
       const data = await tx
         .select()
@@ -90,8 +140,8 @@ export default async function ProductsPage({
         .orderBy(
           column && column in posts
             ? order === "asc"
-              ? asc(posts[column])
-              : desc(posts[column])
+              ? asc(posts[column as keyof Post])
+              : desc(posts[column as keyof Post])
             : desc(posts.createdAt)
         );
 
@@ -134,24 +184,4 @@ export default async function ProductsPage({
       };
     }
   });
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Products</h2>
-        <DateRangePicker align="end" />
-      </div>
-      <React.Suspense
-        fallback={
-          <DataTableSkeleton
-            columnCount={6}
-            isNewRowCreatable={true}
-            isRowsDeletable={true}
-          />
-        }
-      >
-        <ProductsTableShell promise={productsPromise} storeId={storeId} />
-      </React.Suspense>
-    </div>
-  );
 }

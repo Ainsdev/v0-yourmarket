@@ -139,18 +139,23 @@ const PostForm = ({
     },
   });
   //IMAGES UPLOAD
-
-  const imagesFromPost = post?.images;
-  const parsedImages = imagesFromPost ? JSON.parse(imagesFromPost) : [];
-  const fileWithPreviewArray = parsedImages.map((url: string) => ({
-    url,
-    preview: url,
-    file: null,
-  }));
+  //convert the string of images to an array
+  const fileWithPreviewArray = post?.images
+    ? post.images.split(",").map((url: string) => ({
+        url,
+        preview: url,
+        file: null,
+        name: url.split("/").pop() as string,
+      }))
+    : null;
 
   const { isUploading, startUpload } = useUploadThing("productImages");
-  const [files, setFiles] = useState<FileWithPreview[] | null>(null);
-  const [viewImage, setViewImage] = useState<string | null>(null);
+  const [files, setFiles] = useState<FileWithPreview[] | null>(
+    fileWithPreviewArray
+  );
+  const [viewImage, setViewImage] = useState<string | null>(
+    post?.mainImage ?? ""
+  );
 
   const editing = !!post?.id;
   // const [brandInName, setBrandInName] = useState(post?.brand ?? "");

@@ -21,6 +21,7 @@ import {
   Pencil2Icon,
   PlusCircledIcon,
   PlusIcon,
+  Share1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
 import Image from "next/image";
@@ -55,6 +56,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { deletePostAction, updateStatusPostAction } from "@/lib/actions/posts";
+import { toast } from "sonner";
 
 type TOpenModal = (post?: Post) => void;
 
@@ -163,9 +165,15 @@ const Post = ({
       </TableCell>
       <TableCell className="font-medium">{post.name}</TableCell>
       <TableCell>
-        <Badge variant={post.active ? "outline" : "secondary"}>
-          {post.active ? "Activo" : "Inactivo"}
-        </Badge>
+        {post.sold ? (
+          <Badge variant="destructive" className="capitalize ">
+            Vendido
+          </Badge>
+        ) : (
+          <Badge variant={post.active ? "outline" : "secondary"}>
+            {post.active ? "Activo" : "Inactivo"}
+          </Badge>
+        )}
       </TableCell>
       <TableCell className="hidden md:table-cell">
         {numberToClp(`${post?.price}`)}
@@ -178,6 +186,7 @@ const Post = ({
           onClick={() => updateStatusPostAction(post.id, !post.sold, "SOLD")}
           variant="secondary"
           className="text-default"
+          disabled={post.sold as boolean}
         >
           Marcar como vendido
         </Button>
@@ -196,24 +205,46 @@ const Post = ({
               <EyeOpenIcon />
               <Link href={`${basePath}${post.id}`}>Ver</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex gap-1">
-              <CopyIcon />
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigator.clipboard
+                  .writeText(`http://localhost:3000//posts/${post.id}`)
+                  .then(() => {
+                    toast.info("Link copiado", {
+                      position: "top-center",
+                      duration: 3000,
+                    });
+                  });
+              }}
+              className="flex gap-1 cursor-pointer"
+            >
+              <Share1Icon />
               Compartir
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex gap-1">
-              Vendido
-              <Badge variant="outline" className="capitalize">
+            <DropdownMenuItem
+              onClick={() => {
+                // post.sold
+                //   ? toast.error("Este producto ya fue vendido")
+                //   : updateStatusPostAction(post.id, !post.sold, "SOLD");
+                updateStatusPostAction(post.id, !post.sold, "SOLD");
+              }}
+              className="flex gap-1 cursor-pointer"
+            >
+              Vendido:
+              <Badge variant="outline" className="capitalize ">
                 {post.sold ? "Si" : "No"}
               </Badge>
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="flex gap-1"
+              className="flex gap-1 cursor-pointer"
               onClick={() => openModal(post)}
             >
               <Pencil2Icon /> Editar
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="flex gap-1"
+              className="flex gap-1 cursor-pointer"
               onClick={() =>
                 updateStatusPostAction(post.id, !post.active, "ACTIVE")
               }
@@ -222,7 +253,7 @@ const Post = ({
               {post.active ? "Desactivar" : "Activar"}
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="flex gap-1"
+              className="flex gap-1 "
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

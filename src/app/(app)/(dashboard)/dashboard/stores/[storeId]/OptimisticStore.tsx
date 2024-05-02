@@ -3,7 +3,7 @@
 import { useOptimistic, useState } from "react";
 
 import { type Store } from "@/lib/db/schema/stores";
-import { cn } from "@/lib/utils";
+import { cn, numberToClp } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/Modal";
@@ -99,7 +99,7 @@ export default function OptimisticStore({
             <CardHeader className="pb-2">
               <CardDescription>Total</CardDescription>
               <CardTitle className="text-2xl">
-                {analytics.revenue || "$0.00"}
+                {numberToClp(`${analytics.revenue}`) || "$0.00"}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -112,9 +112,7 @@ export default function OptimisticStore({
           <Card className="h-36">
             <CardHeader className="pb-2">
               <CardDescription>Total</CardDescription>
-              <CardTitle className="text-2xl">
-                {analytics.count || 0}
-              </CardTitle>
+              <CardTitle className="text-2xl">{analytics.count || 0}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-xs text-muted-foreground">Vendidos</div>
