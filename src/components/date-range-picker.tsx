@@ -1,70 +1,72 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { addDays, format } from "date-fns"
-import type { DateRange } from "react-day-picker"
+import * as React from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { addDays, format } from "date-fns";
+import type { DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 interface DateRangePickerProps
   extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
-  dateRange?: DateRange
-  dayCount?: number
+  dateRange?: DateRange;
+  dayCount?: number;
+  hideText?: boolean;
 }
 
 export function DateRangePicker({
   dateRange,
   dayCount,
   className,
+  hideText,
   ...props
 }: DateRangePickerProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [from, to] = React.useMemo(() => {
-    let fromDay: Date | undefined
-    let toDay: Date | undefined
+    let fromDay: Date | undefined;
+    let toDay: Date | undefined;
 
     if (dateRange) {
-      fromDay = dateRange.from
-      toDay = dateRange.to
+      fromDay = dateRange.from;
+      toDay = dateRange.to;
     } else if (dayCount) {
-      toDay = new Date()
-      fromDay = addDays(toDay, -dayCount)
+      toDay = new Date();
+      fromDay = addDays(toDay, -dayCount);
     }
 
-    return [fromDay, toDay]
-  }, [dateRange, dayCount])
+    return [fromDay, toDay];
+  }, [dateRange, dayCount]);
 
-  const [date, setDate] = React.useState<DateRange | undefined>({ from, to })
+  const [date, setDate] = React.useState<DateRange | undefined>({ from, to });
 
   // Create query string
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString())
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
 
       for (const [key, value] of Object.entries(params)) {
         if (value === null) {
-          newSearchParams.delete(key)
+          newSearchParams.delete(key);
         } else {
-          newSearchParams.set(key, String(value))
+          newSearchParams.set(key, String(value));
         }
       }
 
-      return newSearchParams.toString()
+      return newSearchParams.toString();
     },
     [searchParams]
-  )
+  );
 
   // Update query string
   React.useEffect(() => {
@@ -76,9 +78,9 @@ export function DateRangePicker({
       {
         scroll: false,
       }
-    )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date?.from, date?.to])
+  }, [date?.from, date?.to]);
 
   return (
     <div className="grid gap-2">
@@ -103,7 +105,11 @@ export function DateRangePicker({
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Elige una fecha</span>
+              <span
+                className={cn("text-muted-foreground", hideText && "hidden")}
+              >
+                Elige una fecha
+              </span>
             )}
           </Button>
         </PopoverTrigger>
@@ -119,5 +125,5 @@ export function DateRangePicker({
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

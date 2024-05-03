@@ -37,7 +37,7 @@ export function DataGalleryPagination({
   const per_page = searchParams?.get("per_page") ?? "10";
   const perPageAsNumber = Number(per_page);
   const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
-  const sort = searchParams?.get("sort");
+  // const sort = searchParams?.get("sort");
   const currentPage = Number(searchParams.get("page")) || 1;
   // Create query string
   const createQueryString = React.useCallback(

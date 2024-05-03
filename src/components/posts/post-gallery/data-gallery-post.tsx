@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Post } from "@/lib/db/schema/posts";
+import { numberToClp } from "@/lib/utils";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { BuildingIcon, TagIcon } from "lucide-react";
 import Image from "next/image";
@@ -34,7 +35,7 @@ export function DataGalleryPost<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md group hover:scale-[1.008]">
       <div className="relative h-40 overflow-hidden rounded-t-lg">
         <Image
           src={data.mainImage}
@@ -43,18 +44,18 @@ export function DataGalleryPost<TData, TValue>({
           objectFit="cover"
           className="bg-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent group-hover:from-transparent" />
       </div>
       <CardContent className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold">{data.name}</h3>
-            <p className="text-2xl font-bold">{data.price}</p>
+            <h3 className="text-xl font-medium">{data.name}</h3>
+            <p className="text-lg font-semibold">{numberToClp(`${data.price}`)}</p>
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2">
-            <TagIcon className="h-5 w-5 text-secondary" />
+            <TagIcon className="h-5 w-5 " />
             <span className="text-sm">{data.subcategory}</span>
           </div>
           <div className="flex items-center gap-2">
