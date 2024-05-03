@@ -263,7 +263,7 @@ export function ProductsTableShell({
         {
           id: "subcategory",
           title: "Subcategoria",
-          options: getAllSubcategories()
+          options: getAllSubcategories(),
         },
         {
           id: "active",

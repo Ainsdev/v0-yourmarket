@@ -88,7 +88,7 @@ export function DateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start truncate text-left font-normal xs:w-[300px]",
+              "w-max justify-start truncate text-left font-normal xs:w-[300px]",
               !date && "text-muted-foreground"
             )}
           >
@@ -103,7 +103,7 @@ export function DateRangePicker({
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Pick a date</span>
+              <span>Elige una fecha</span>
             )}
           </Button>
         </PopoverTrigger>

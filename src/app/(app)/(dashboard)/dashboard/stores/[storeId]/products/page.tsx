@@ -8,6 +8,9 @@ import { and, asc, count, desc, eq, gte, like, lte } from "drizzle-orm";
 import { z } from "zod";
 import { DataTableSkeleton } from "@/components/posts/data-table/data-table-skeleton";
 import { ProductsTableShell } from "@/components/posts/data-table/products-table-shell";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DashboardIcon, TableIcon } from "@radix-ui/react-icons";
+import { ProductsGalleryView } from "@/components/posts/post-gallery/data-gallery";
 
 interface ProductsPageProps {
   params: {
@@ -77,22 +80,49 @@ export default async function ProductsPage({
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
+    <div className="space-y-6 w-full">
+      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between max-w-xl">
         <h2 className="text-2xl font-bold tracking-tight">Productos</h2>
-        <DateRangePicker align="end" />
       </div>
-      <React.Suspense
-        fallback={
-          <DataTableSkeleton
-            columnCount={6}
-            isNewRowCreatable={true}
-            isRowsDeletable={true}
-          />
-        }
-      >
-        <ProductsTableShell promise={productsPromise} storeId={storeId} />
-      </React.Suspense>
+      <Tabs defaultValue="gallery" className="w-full h-max">
+        {/* <div className="w-full flex justify-center items-start"> */}
+        <TabsList className="mb-4">
+          <TabsTrigger value="gallery" className="flex gap-2">
+            <DashboardIcon /> Vista normal
+          </TabsTrigger>
+          <TabsTrigger value="table" className="flex gap-2">
+            <TableIcon /> Vista Avanzada
+          </TabsTrigger>
+        </TabsList>
+        {/* </div> */}
+        <TabsContent value="gallery">
+          <React.Suspense
+            fallback={
+              <DataTableSkeleton
+                columnCount={6}
+                isNewRowCreatable={true}
+                isRowsDeletable={true}
+              />
+            }
+          >
+            <ProductsGalleryView promise={productsPromise} storeId={storeId} />
+          </React.Suspense>
+        </TabsContent>
+        <TabsContent className="flex flex-col gap-4" value="table">
+          <DateRangePicker align="start" />
+          <React.Suspense
+            fallback={
+              <DataTableSkeleton
+                columnCount={6}
+                isNewRowCreatable={true}
+                isRowsDeletable={true}
+              />
+            }
+          >
+            <ProductsTableShell promise={productsPromise} storeId={storeId} />
+          </React.Suspense>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
