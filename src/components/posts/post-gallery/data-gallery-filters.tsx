@@ -12,11 +12,30 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React from "react";
 
 export function GalleryFilters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  // Create query string
+  const createQueryString = React.useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null) {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
+
+      return newSearchParams.toString();
+    },
+    [searchParams]
+  );
+
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-4">
