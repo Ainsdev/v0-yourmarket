@@ -45,8 +45,17 @@ export function GalleryFilters() {
             className="pl-10 pr-4 py-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             placeholder="Buscar nombre..."
             type="search"
-            onChange={() => {
+            onChange={(event) => {
               // Update query string "name"
+              const name = event.target.value;
+              //Only update the query string after 500ms
+              setTimeout(() => {
+                router.push(
+                  `${pathname}?${createQueryString({
+                    name: name || null,
+                  })}`
+                );
+              }, 500);
             }}
           />
         </div>
