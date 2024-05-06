@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { productCategories } from "@/config/categories";
 import { Post } from "@/lib/db/schema/posts";
-import { numberToClp } from "@/lib/utils";
-import { CheckIcon } from "@radix-ui/react-icons";
+import { cn, numberToClp } from "@/lib/utils";
+import { CalendarIcon, CheckIcon } from "@radix-ui/react-icons";
 import { BuildingIcon, TagIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -35,7 +37,14 @@ export function DataGalleryPost<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   return (
-    <Card className="w-full max-w-md group hover:scale-[1.008]">
+    <Card
+      className={cn(
+        "w-full max-w-md group hover:scale-[1.008]",
+        "transition-transform ease-in-out",
+        data.sold && "border-2 border-destructive",
+        !data.sold && !data.active && "ring-1 ring-muted-foreground"
+      )}
+    >
       <div className="relative h-40 overflow-hidden rounded-t-lg">
         <Image
           src={data.mainImage}
@@ -45,37 +54,59 @@ export function DataGalleryPost<TData, TValue>({
           className="bg-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent group-hover:from-transparent" />
+        {data.active && !data.sold && (
+          <Badge
+            className={cn(
+              "absolute top-4 right-4",
+              data.active ? "bg-green-500/80" : "bg-muted"
+            )}
+          >
+            {data.active ? "Activa" : "Inactiva"}
+          </Badge>
+        )}
+        {data.sold && (
+          <Badge variant="destructive" className="absolute top-4 right-4">
+            Vendido
+          </Badge>
+        )}
       </div>
       <CardContent className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-medium">{data.name}</h3>
-            <p className="text-lg font-semibold">{numberToClp(`${data.price}`)}</p>
+            <p className="text-lg font-semibold">
+              {numberToClp(`${data.price}`)}
+            </p>
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2">
             <TagIcon className="h-5 w-5 " />
-            <span className="text-sm">{data.subcategory}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <BuildingIcon className="h-5 w-5" />
-            <span className="text-sm ">{data.brand}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckIcon className="h-5 w-5 text-green-500" />
-            <span className="text-sm text-green-500">
-              {data.active ? "Activo" : "Inactivo"}
+            <span className="text-sm">
+              {productCategories.find(
+                (category) => category.id === data.categoryId
+              )?.title +
+                "/" +
+                data.subcategory}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-5 w-5 " />
-            <span className="text-sm">
-              {data.sold ? "Vendido" : "No vendido"}
+            <BuildingIcon className="h-5 w-5" />
+            <span className="text-sm ">
+              {data.brand.charAt(0).toUpperCase() + data.brand.slice(1)}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <CalendarIcon />
+            <span className="text-xs">
+              {new Date(data.createdAt).toLocaleDateString()}
             </span>
           </div>
         </div>
       </CardContent>
+      <CardFooter className="flex justify-between items-center px-6 py-4">
+        <Button variant="outline">Ver</Button>
+      </CardFooter>
     </Card>
   );
 }

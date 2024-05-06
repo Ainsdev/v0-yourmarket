@@ -86,11 +86,11 @@ export default async function ProductsPage({
       </div>
       <Tabs defaultValue="gallery" className="w-full h-max">
         {/* <div className="w-full flex justify-center items-start"> */}
-        <TabsList className="mb-4">
-          <TabsTrigger value="gallery" className="flex gap-2">
+        <TabsList className="p-4">
+          <TabsTrigger value="gallery" className="flex gap-1">
             <DashboardIcon /> Vista normal
           </TabsTrigger>
-          <TabsTrigger value="table" className="flex gap-2">
+          <TabsTrigger value="table" className="flex gap-1">
             <TableIcon /> Vista Avanzada
           </TabsTrigger>
         </TabsList>
