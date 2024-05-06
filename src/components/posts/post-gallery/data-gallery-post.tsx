@@ -1,19 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { productCategories } from "@/config/categories";
 import { Post } from "@/lib/db/schema/posts";
 import { cn, numberToClp } from "@/lib/utils";
-import { CalendarIcon, CheckIcon } from "@radix-ui/react-icons";
+import { CalendarIcon, PauseIcon, Share1Icon } from "@radix-ui/react-icons";
 import { BuildingIcon, TagIcon } from "lucide-react";
 import Image from "next/image";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type AwaitedProduct = Pick<
   Post,
@@ -104,8 +103,33 @@ export function DataGalleryPost<TData, TValue>({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center px-6 py-4">
-        <Button variant="outline">Ver</Button>
+      <CardFooter className="flex justify-between items-center p-4">
+        <div className="flex items-center gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger disabled={data.sold as boolean}>
+                <PauseIcon />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Pausar Publicacion</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger disabled={data.sold as boolean}>
+                <Share1Icon />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Compartir Link</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline">Ver</Button>
+          <Button>Editar</Button>
+        </div>
       </CardFooter>
     </Card>
   );
