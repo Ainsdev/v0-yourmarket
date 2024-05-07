@@ -127,7 +127,9 @@ export function DataGalleryPost<TData, TValue>({
           </TooltipProvider>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline">Ver</Button>
+          <Button size="sm" variant="outline">
+            Vista previa
+          </Button>
           <Button>Editar</Button>
         </div>
       </CardFooter>
