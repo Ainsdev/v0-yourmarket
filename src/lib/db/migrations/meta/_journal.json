@@ -141,6 +141,13 @@
       "when": 1714234124677,
       "tag": "0019_friendly_silver_samurai",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1715109103984,
+      "tag": "0020_glamorous_ravenous",
+      "breakpoints": true
     }
   ]
 }

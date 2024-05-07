@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   text,
   integer,
@@ -35,9 +35,14 @@ export const posts = sqliteTable(
     // stock: integer("stock").notNull().default(1),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
+    discountPercentage: integer("discount_percentage").default(0),
+    discountPrice: integer("discount_price").default(0),
     storeId: integer("store_id")
       .notNull()
-      .references(() => stores.id),
+      .references(() => stores.id, {
+        onUpdate: "cascade",
+        onDelete: "cascade",
+      }),
     createdAt: text("created_at")
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
@@ -54,6 +59,13 @@ export const posts = sqliteTable(
     };
   }
 );
+
+export const postRelations = relations(posts, ({ one }) => ({
+  store: one(stores, {
+    fields: [posts.storeId],
+    references: [stores.id],
+  }),
+}));
 
 // Schema for posts - used to validate API requests
 export const storeBaseSchema = createSelectSchema(posts).omit(timestamps);

@@ -10,10 +10,10 @@ export const users = sqliteTable("user", {
   oAuthProvider: text("oauth_provider"),
   oAuthId: text("oauth_id").default(""),
   avatar: text("avatar"),
-  memberStoreId: text("member_store_id").references(() => stores.id, {
-    onDelete: "set default",
-    // onUpdate: "set null",
-  }),
+  // memberStoreId: text("member_store_id").references(() => stores.id, {
+  //   onDelete: "set default",
+  //   // onUpdate: "set null",
+  // }),
 });
 
 export const sessions = sqliteTable("session", {

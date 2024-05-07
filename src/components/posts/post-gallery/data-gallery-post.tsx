@@ -4,8 +4,20 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { productCategories } from "@/config/categories";
 import { Post } from "@/lib/db/schema/posts";
 import { cn, numberToClp } from "@/lib/utils";
-import { CalendarIcon, PauseIcon, Share1Icon } from "@radix-ui/react-icons";
-import { BuildingIcon, TagIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  EyeOpenIcon,
+  PauseIcon,
+  Pencil2Icon,
+  Share1Icon,
+} from "@radix-ui/react-icons";
+import {
+  BuildingIcon,
+  Link,
+  MoreHorizontal,
+  PlayIcon,
+  TagIcon,
+} from "lucide-react";
 import Image from "next/image";
 import {
   Tooltip,
@@ -13,6 +25,26 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { updateStatusPostAction, deletePostAction } from "@/lib/actions/posts";
+import { toast } from "sonner";
 
 type AwaitedProduct = Pick<
   Post,
@@ -38,7 +70,7 @@ export function DataGalleryPost<TData, TValue>({
   return (
     <Card
       className={cn(
-        "w-full max-w-md group hover:scale-[1.008]",
+        "w-full group hover:scale-[1.008]",
         "transition-transform ease-in-out",
         data.sold && "border-2 border-destructive",
         !data.sold && !data.active && "ring-1 ring-muted-foreground"
@@ -55,6 +87,7 @@ export function DataGalleryPost<TData, TValue>({
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent group-hover:from-transparent" />
         {data.active && !data.sold && (
           <Badge
+            variant="secondary"
             className={cn(
               "absolute top-4 right-4",
               data.active ? "bg-green-500/80" : "bg-muted"
@@ -78,7 +111,7 @@ export function DataGalleryPost<TData, TValue>({
             </p>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 xl:grid-cols-2 gap-4">
           <div className="flex items-center gap-2">
             <TagIcon className="h-5 w-5 " />
             <span className="text-sm">
@@ -103,21 +136,27 @@ export function DataGalleryPost<TData, TValue>({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center p-4">
+      <CardFooter className="flex justify-between sm:justify-center xl:justify-between items-start p-4 gap-2 sm:flex-col 2xl:flex-row">
         <div className="flex items-center gap-2">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger disabled={data.sold as boolean}>
+              <TooltipTrigger
+                className="border p-2 border-muted rounded-xl"
+                disabled={data.sold as boolean}
+              >
                 <PauseIcon />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Pausar Publicacion</p>
+                <p>Pausar</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger disabled={data.sold as boolean}>
+              <TooltipTrigger
+                className="border p-2 border-muted rounded-xl z-50"
+                disabled={data.sold as boolean}
+              >
                 <Share1Icon />
               </TooltipTrigger>
               <TooltipContent>
@@ -125,8 +164,104 @@ export function DataGalleryPost<TData, TValue>({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button aria-haspopup="true" size="icon" variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+              <DropdownMenuItem className="flex gap-1">
+                <EyeOpenIcon />
+                <Link href={`http://localhost:3000//posts/${data.id}`}>
+                  Ver
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigator.clipboard
+                    .writeText(`http://localhost:3000//posts/${data.id}`)
+                    .then(() => {
+                      toast.info("Link copiado", {
+                        position: "top-center",
+                        duration: 3000,
+                      });
+                    });
+                }}
+                className="flex gap-1 cursor-pointer"
+              >
+                <Share1Icon />
+                Compartir
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  // post.sold
+                  //   ? toast.error("Este producto ya fue vendido")
+                  //   : updateStatusPostAction(post.id, !post.sold, "SOLD");
+                  updateStatusPostAction(data.id, !data.sold, "SOLD");
+                }}
+                className="flex gap-1 cursor-pointer"
+              >
+                Vendido:
+                <Badge variant="outline" className="capitalize ">
+                  {data.sold ? "Si" : "No"}
+                </Badge>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex gap-1 cursor-pointer"
+                // onClick={() => openModal(data)}
+              >
+                <Pencil2Icon /> Editar
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex gap-1 cursor-pointer"
+                onClick={() =>
+                  updateStatusPostAction(data.id, !data.active, "ACTIVE")
+                }
+              >
+                {data.active ? <PauseIcon /> : <PlayIcon />}
+                {data.active ? "Pausar" : "Activar"}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex gap-1 "
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <AlertDialog>
+                  <AlertDialogTrigger className="text-destructive">
+                    Eliminar
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Estas 100% seguro?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Al eliminar este post no podras recuperarlo.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={(e) => {
+                          e.preventDefault();
+                          deletePostAction(data.id);
+                        }}
+                      >
+                        Continuar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-end  ">
           <Button size="sm" variant="outline">
             Vista previa
           </Button>

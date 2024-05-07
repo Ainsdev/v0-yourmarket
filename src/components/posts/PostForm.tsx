@@ -95,12 +95,14 @@ const formSchema = storeBaseSchema
           description: "Imagenes",
         })
       )
-      .min(1, "Selecciona al menos una imagen")
+      .min(0, "Selecciona al menos una imagen")
       .optional(),
   })
   .omit({
     id: true,
     sold: true,
+    discountPercentage: true,
+    discountPrice: true,
   });
 
 const PostForm = ({
@@ -215,6 +217,9 @@ const PostForm = ({
       region: store.city,
       name: refinedName.toString(),
       sold: post?.sold ?? false,
+      discountPercentage: 0,
+      discountPrice: 0,
+      //DO WORK THIS
     };
     try {
       startMutation(async () => {
@@ -250,7 +255,6 @@ const PostForm = ({
                     name: image.key.split("_")[1] as string,
                     url: image.url,
                   }));
-                  console.log(formattedImages);
                   return formattedImages ?? null;
                 })
                 .then(async (images) => {
@@ -258,9 +262,7 @@ const PostForm = ({
                   const imagesString = `${images?.map((image) => image.url)}`;
                   //Select the index image based on the viewImage or the first image
                   const indexMainImage =
-                    files?.findIndex((file) => file.preview === viewImage) ?? 0;
-                  console.log("Producto subiendo", pendingPost);
-
+                    files?.findIndex((file) => file.preview === viewImage) || 0;
                   return await createPostAction(
                     JSON.parse(
                       JSON.stringify({
@@ -272,6 +274,9 @@ const PostForm = ({
                       })
                     )
                   );
+                })
+                .catch((e) => {
+                  return { error: e.message };
                 }),
               {
                 loading: "Subiendo Imagenes...",
@@ -799,7 +804,7 @@ const PostForm = ({
                     name="contact"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Contacto</FormLabel>
+                        <FormLabel>Metodo Contacto</FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
@@ -813,7 +818,7 @@ const PostForm = ({
                             <SelectContent>
                               {store.phone && (
                                 <SelectItem value={store.phone.toString()}>
-                                  {"Tel: " + store.phone.toString()}
+                                  {"Telefono: " + store.phone}
                                 </SelectItem>
                               )}
                               {store.instagram && (
@@ -832,7 +837,7 @@ const PostForm = ({
               </CardContent>
             </CardHeader>
           </Card>
-          {/* {JSON.stringify(form.formState.errors, null, 2)} */}
+          {JSON.stringify(form.formState.errors, null, 2)}
         </div>
         {/* Schema fields end */}
         <div className="w-full h-full flex flex-col gap-4 justify-center items-center">

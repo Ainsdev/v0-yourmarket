@@ -35,7 +35,7 @@ export async function signInAction(
       .where(eq(users.email, data.email.toLowerCase()));
     if (!existingUser) {
       return {
-        error: "Incorrect username or password",
+        error: "Este email no esta registrado",
       };
     }
 
@@ -45,7 +45,7 @@ export async function signInAction(
     );
     if (!validPassword) {
       return {
-        error: "Incorrect username or password",
+        error: "Contraseña incorrecta",
       };
     }
 

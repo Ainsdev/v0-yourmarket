@@ -66,7 +66,7 @@ const FormSchema = z.object({
   image: z.string(),
   region: z.string().min(1, { message: "Selecciona una region" }),
   city: z.string().min(1, { message: "Selecciona una comuna" }),
-  mainCategories: z.number().min(1, { message: "Selecciona una categoria" }),
+  mainCategories: z.number().min(0, { message: "Selecciona una categoria" }),
   phone: z.number(),
   instagram: z.string(),
 });
@@ -128,9 +128,9 @@ const StoreForm = ({
   };
 
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
-    if (data.phone == 0 && data.instagram == "") {
-      toast.error("Debes ingresar un telefono o un instagram");
-      data.phone == 0 &&
+    if (data.phone < 8 && data.instagram == "") {
+      // toast.error("Debes ingresar un telefono o un instagram");
+      data.phone < 8 &&
         form.setError("phone", {
           message: "Debes ingresar un telefono o un instagram",
         });
@@ -330,7 +330,7 @@ const StoreForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {regions.map((region) => (
+                    {regions.toReversed().map((region) => (
                       <SelectItem key={region.region} value={region.region}>
                         {region.region}
                       </SelectItem>
@@ -392,7 +392,7 @@ const StoreForm = ({
                       const value = parseInt(e.target.value);
                       field.onChange(value);
                     }}
-                    type="tel"
+                    type="number"
                   />
                 </FormControl>
                 <FormDescription>No incluyas el +56</FormDescription>
@@ -407,8 +407,9 @@ const StoreForm = ({
               <FormItem className="w-full max-w-xl">
                 <FormLabel>Instagram</FormLabel>
                 <FormControl>
-                  <Input placeholder="@instagram" {...field} type="text" />
+                  <Input placeholder="yourmarket.cl" {...field} type="text" />
                 </FormControl>
+                <FormDescription>No incluyas el @</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -420,7 +421,7 @@ const StoreForm = ({
           name="mainCategories"
           render={({ field }) => (
             <FormItem className="max-w-xl w-full">
-              <FormLabel>Categoria</FormLabel>
+              <FormLabel>Categoria Principal</FormLabel>
               <Select
                 required
                 onValueChange={(value) =>

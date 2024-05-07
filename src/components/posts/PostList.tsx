@@ -18,7 +18,9 @@ import {
   EyeOpenIcon,
   LockClosedIcon,
   LockOpen1Icon,
+  PauseIcon,
   Pencil2Icon,
+  PlayIcon,
   PlusCircledIcon,
   PlusIcon,
   Share1Icon,
@@ -249,8 +251,8 @@ const Post = ({
                 updateStatusPostAction(post.id, !post.active, "ACTIVE")
               }
             >
-              {post.active ? <LockOpen1Icon /> : <LockClosedIcon />}
-              {post.active ? "Desactivar" : "Activar"}
+              {post.active ? <PauseIcon /> : <PlayIcon />}
+              {post.active ? "Pausar" : "Activar"}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex gap-1 "

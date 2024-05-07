@@ -11,7 +11,9 @@ import {
 } from "@/lib/db/schema/posts";
 
 export const createPost = async (post: NewPostParams) => {
+  console.log("createPostAction in the mutation");
   const newPost = insertPostSchema.parse(post);
+  console.log("newPost", newPost);
   try {
     const [p] = await db.insert(posts).values(newPost).returning();
     return { post: p };

@@ -17,7 +17,7 @@ import {
 } from "@/lib/db/schema/posts";
 
 const handleErrors = (e: unknown) => {
-  const errMsg = "Error, please try again.";
+  const errMsg = "Error, algo salio mal.";
   if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
   if (e && typeof e === "object" && "error" in e) {
     const errAsStr = e.error as string;
@@ -32,11 +32,13 @@ export const createPostAction = async (input: NewPostParams) => {
   console.log("createPostAction");
   console.log("input", input);
   try {
+    console.log("iniciando try");
     const payload = insertPostParams.parse(input);
     console.log("payload", payload);
     await createPost(payload);
-    revalidatePosts();
+    // revalidatePosts();
   } catch (e) {
+    console.log("❌ error", e);
     return handleErrors(e);
   }
 };
