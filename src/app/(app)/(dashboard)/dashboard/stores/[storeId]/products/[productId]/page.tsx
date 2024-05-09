@@ -14,19 +14,19 @@ export const revalidate = 0;
 export default async function PostPage({
   params,
 }: {
-  params: { postId: string };
+  params: { storeId: string; productId: string };
 }) {
   return (
     <main className="overflow-auto">
-      <Post id={params.postId} />
+      <Post storeId={params.storeId} id={params.productId} />
     </main>
   );
 }
 
-const Post = async ({ id }: { id: string }) => {
+const Post = async ({ id, storeId }: { storeId: string; id: string }) => {
   const { post } = await getPostById(id);
   if (!post) notFound();
-  const { store } = await getStoreById(post?.storeId as number);
+  const { store } = await getStoreById(Number(storeId));
 
   return (
     <Suspense fallback={<Loading />}>

@@ -11,16 +11,18 @@ import PostForm from "@/components/posts/PostForm";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
 import { DrawerDialog } from "@/components/DrawerDialog";
 
-export default function OptimisticPost({ 
+export default function OptimisticPost({
   post,
   store,
-  storeId 
-}: { 
-  post: Post; 
+  storeId,
+  startOpen,
+}: {
+  post: Post;
   store: Store;
-  storeId?: StoreId
+  storeId?: StoreId;
+  startOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(startOpen || false);
   const openModal = (_?: Post) => {
     setOpen(true);
   };
@@ -52,7 +54,7 @@ export default function OptimisticPost({
       <pre
         className={cn(
           "bg-secondary p-4 rounded-lg break-all text-wrap",
-          optimisticPost.id === "optimistic" ? "animate-pulse" : "",
+          optimisticPost.id === "optimistic" ? "animate-pulse" : ""
         )}
       >
         {JSON.stringify(optimisticPost, null, 2)}

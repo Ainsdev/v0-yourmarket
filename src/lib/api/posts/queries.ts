@@ -13,7 +13,8 @@ export const getPosts = async () => {
 };
 
 export const getPostById = async (id: PostId) => {
-  const { id: postId } = postIdSchema.parse({ id: id });
+  console.log("getPostById", id);
+  const { id: postId } = postIdSchema.parse({ id });
   const [row] = await db
     .select({ post: posts, store: stores })
     .from(posts)

@@ -37,9 +37,13 @@ export function ProductsGalleryView({
   promise,
   storeId,
 }: ProductsGalleryShellProps) {
-  const [isPending, startTransition] = React.useTransition();
+  // const [isPending, startTransition] = React.useTransition();
   const { data, pageCount } = React.use(promise);
-  const router = useRouter();
+  const [posts, setPosts] = React.useState<AwaitedProduct[]>(data);
+  //useeffect
+  // React.useEffect(() => {
+  //   setPosts(data);
+  // }, [data]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   // Search params

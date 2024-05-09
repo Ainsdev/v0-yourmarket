@@ -143,6 +143,8 @@ function getProductsTable(
 ) {
   return db.transaction(async (tx) => {
     try {
+      console.log("storeId", storeId);
+
       const data = await tx
         .select()
         .from(posts)
@@ -174,7 +176,7 @@ function getProductsTable(
               : desc(posts[column as keyof Post])
             : desc(posts.createdAt)
         );
-
+      console.log("data", data);
       const countNum = await tx
         .select({
           count: count(),

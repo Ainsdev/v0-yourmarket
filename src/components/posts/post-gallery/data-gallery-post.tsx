@@ -152,6 +152,18 @@ export function DataGalleryPost<TData, TValue>({
               <TooltipTrigger
                 className="border p-2 border-muted rounded-xl z-50"
                 disabled={data.sold as boolean}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigator.clipboard
+                    .writeText(`http://localhost:3000/posts/${data.id}`)
+                    .then(() => {
+                      toast.info("Link copiado", {
+                        position: "top-center",
+                        duration: 3000,
+                      });
+                    });
+                }}
               >
                 <Share1Icon />
               </TooltipTrigger>
@@ -169,28 +181,6 @@ export function DataGalleryPost<TData, TValue>({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuItem className="flex gap-1">
-                <EyeOpenIcon />
-                <Link href={`http://localhost:3000/posts/${data.id}`}>Ver</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  navigator.clipboard
-                    .writeText(`http://localhost:3000/posts/${data.id}`)
-                    .then(() => {
-                      toast.info("Link copiado", {
-                        position: "top-center",
-                        duration: 3000,
-                      });
-                    });
-                }}
-                className="flex gap-1 cursor-pointer"
-              >
-                <Share1Icon />
-                Compartir
-              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
                   // post.sold
@@ -233,7 +223,7 @@ export function DataGalleryPost<TData, TValue>({
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Estas 100% seguro?</AlertDialogTitle>
+                      <AlertDialogTitle>Estas 100% segur@?</AlertDialogTitle>
                       <AlertDialogDescription>
                         Al eliminar este post no podras recuperarlo.
                       </AlertDialogDescription>
