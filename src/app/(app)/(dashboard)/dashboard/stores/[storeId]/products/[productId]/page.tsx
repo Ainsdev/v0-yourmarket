@@ -1,14 +1,13 @@
 import { Suspense } from "react";
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import { getPostById } from "@/lib/api/posts/queries";
-import { getStoreById, getStores } from "@/lib/api/stores/queries";
-
+import { getStoreById } from "@/lib/api/stores/queries";
 
 import { BackButton } from "@/components/shared/BackButton";
 import Loading from "@/app/loading";
 import OptimisticPost from "./OptimisticPost";
-
+import { Store } from "@/lib/db/schema/stores";
 
 export const revalidate = 0;
 
@@ -17,7 +16,6 @@ export default async function PostPage({
 }: {
   params: { postId: string };
 }) {
-
   return (
     <main className="overflow-auto">
       <Post id={params.postId} />
@@ -26,18 +24,19 @@ export default async function PostPage({
 }
 
 const Post = async ({ id }: { id: string }) => {
-  const searchParams = useSearchParams();
-  // StoreId is the number in BASE_URL/dashboard/stores/1/products/nnnnnn
-  const storeId = Number(searchParams.get("storeId"));
   const { post } = await getPostById(id);
-  const { store } = await getStoreById(post?.storeId ?? storeId)
-
   if (!post) notFound();
+  const { store } = await getStoreById(post?.storeId as number);
+
   return (
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="posts" />
-        <OptimisticPost post={post} store={store} storeId={1} />
+        <OptimisticPost
+          post={post}
+          store={store as Store}
+          storeId={store?.id}
+        />
       </div>
     </Suspense>
   );
