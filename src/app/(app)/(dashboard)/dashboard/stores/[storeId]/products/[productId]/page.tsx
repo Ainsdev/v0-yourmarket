@@ -30,7 +30,7 @@ const Post = async ({ id, storeId }: { storeId: string; id: string }) => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="relative">
+      <div className="relative w-full overflow-hidden">
         <BackButton currentResource="posts" />
         <OptimisticPost
           post={post}

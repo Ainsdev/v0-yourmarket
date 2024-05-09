@@ -10,6 +10,18 @@ import Modal from "@/components/shared/Modal";
 import PostForm from "@/components/posts/PostForm";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
 import { DrawerDialog } from "@/components/DrawerDialog";
+import {
+  Pencil1Icon,
+  PieChartIcon,
+  RocketIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function OptimisticPost({
   post,
@@ -30,7 +42,7 @@ export default function OptimisticPost({
   const [optimisticPost, setOptimisticPost] = useOptimistic(post);
 
   return (
-    <div className="m-4">
+    <div className="m-2">
       <DrawerDialog
         open={open}
         setOpen={setOpen}
@@ -45,20 +57,53 @@ export default function OptimisticPost({
           storeId={storeId}
         />
       </DrawerDialog>
-      <div className="flex justify-between items-end mb-4">
-        <h1 className="font-semibold text-2xl">{optimisticPost.name}</h1>
-        <Button className="" onClick={() => setOpen(true)}>
-          Editar
-        </Button>
+      <div className="flex justify-center items-center mb-4">
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex gap-1 group/discount"
+          >
+            <RocketIcon />
+            <span className="hidden group-hover/discount:flex group-hover/discount:animate-tracking-in-expand ease-in-out transition-all">
+              Agregar Descuento
+            </span>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex gap-1 group/analytcs"
+              >
+                <PieChartIcon />
+                <span className="hidden group-hover/analytcs:flex group-hover/analytcs:animate-tracking-in-expand ease-in-out transition-all">
+                  Analytics
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem disabled>Ver Analytics</DropdownMenuItem>
+              <DropdownMenuItem disabled>Compartir Analytics</DropdownMenuItem>
+              <DropdownMenuItem disabled>Ajustes</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            size="sm"
+            variant="destructive"
+            className="flex gap-1 group/eliminate"
+          >
+            <TrashIcon />
+            <span className="hidden group-hover/eliminate:flex group-hover/eliminate:animate-tracking-in-expand ease-in-out transition-all">
+              Eliminar
+            </span>
+          </Button>
+          <Button size="sm" variant="default" className="flex gap-1">
+            <Pencil1Icon />
+            Editar
+          </Button>
+        </div>
       </div>
-      <pre
-        className={cn(
-          "bg-secondary p-4 rounded-lg break-all text-wrap",
-          optimisticPost.id === "optimistic" ? "animate-pulse" : ""
-        )}
-      >
-        {JSON.stringify(optimisticPost, null, 2)}
-      </pre>
     </div>
   );
 }
