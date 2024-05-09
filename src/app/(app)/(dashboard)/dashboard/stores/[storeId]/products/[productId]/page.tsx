@@ -1,8 +1,8 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 
 import { getPostById } from "@/lib/api/posts/queries";
-import { getStores } from "@/lib/api/stores/queries";
+import { getStoreById, getStores } from "@/lib/api/stores/queries";
 
 
 import { BackButton } from "@/components/shared/BackButton";
@@ -26,16 +26,18 @@ export default async function PostPage({
 }
 
 const Post = async ({ id }: { id: string }) => {
-  
+  const searchParams = useSearchParams();
+  // StoreId is the number in BASE_URL/dashboard/stores/1/products/nnnnnn
+  const storeId = Number(searchParams.get("storeId"));
   const { post } = await getPostById(id);
-  const { stores } = await getStores();
+  const { store } = await getStoreById(post?.storeId ?? storeId)
 
   if (!post) notFound();
   return (
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="posts" />
-        <OptimisticPost post={post} stores={stores} />
+        <OptimisticPost post={post} store={store} storeId={1} />
       </div>
     </Suspense>
   );

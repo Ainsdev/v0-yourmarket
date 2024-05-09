@@ -10,14 +10,9 @@ import {
   PauseIcon,
   Pencil2Icon,
   Share1Icon,
-} from "@radix-ui/react-icons";
-import {
-  BuildingIcon,
-  Link,
-  MoreHorizontal,
   PlayIcon,
-  TagIcon,
-} from "lucide-react";
+} from "@radix-ui/react-icons";
+import { BuildingIcon, MoreHorizontal, TagIcon } from "lucide-react";
 import Image from "next/image";
 import {
   Tooltip,
@@ -45,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { updateStatusPostAction, deletePostAction } from "@/lib/actions/posts";
 import { toast } from "sonner";
+import Link from "next/link";
 
 type AwaitedProduct = Pick<
   Post,
@@ -85,7 +81,7 @@ export function DataGalleryPost<TData, TValue>({
           className="bg-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent group-hover:from-transparent" />
-        {data.active && !data.sold && (
+        {!data.sold && !data.active && (
           <Badge
             variant="secondary"
             className={cn(
@@ -144,10 +140,10 @@ export function DataGalleryPost<TData, TValue>({
                 className="border p-2 border-muted rounded-xl"
                 disabled={data.sold as boolean}
               >
-                <PauseIcon />
+                {data.active ? <PauseIcon /> : <PlayIcon />}
               </TooltipTrigger>
               <TooltipContent>
-                <p>Pausar</p>
+                <p>{data.active ? "Pausar" : "Activar"}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -175,16 +171,14 @@ export function DataGalleryPost<TData, TValue>({
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
               <DropdownMenuItem className="flex gap-1">
                 <EyeOpenIcon />
-                <Link href={`http://localhost:3000//posts/${data.id}`}>
-                  Ver
-                </Link>
+                <Link href={`http://localhost:3000/posts/${data.id}`}>Ver</Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   navigator.clipboard
-                    .writeText(`http://localhost:3000//posts/${data.id}`)
+                    .writeText(`http://localhost:3000/posts/${data.id}`)
                     .then(() => {
                       toast.info("Link copiado", {
                         position: "top-center",
