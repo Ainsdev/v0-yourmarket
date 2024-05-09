@@ -143,12 +143,12 @@ const PostForm = ({
   //IMAGES UPLOAD
   //convert the string of images to an array
   const fileWithPreviewArray = post?.images
-    ? post.images.split(",").map((url: string) => ({
+    ? (post.images.split(",").map((url: string) => ({
         url,
         preview: url,
         file: null,
         name: url.split("/").pop() as string,
-      }))
+      })) as unknown as FileWithPreview[])
     : null;
 
   const { isUploading, startUpload } = useUploadThing("productImages");
