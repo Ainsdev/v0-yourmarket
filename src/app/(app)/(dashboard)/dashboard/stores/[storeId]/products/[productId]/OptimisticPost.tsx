@@ -3,7 +3,7 @@
 import { useOptimistic, useState } from "react";
 // import { TAddOptimistic } from "@/app/(app)/posts/useOptimisticPosts";
 import { type Post } from "@/lib/db/schema/posts";
-import { cn } from "@/lib/utils";
+import { cn, numberToClp } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/Modal";
@@ -30,6 +30,19 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import Image from "next/image";
+import { genders, productCategories } from "@/config/categories";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deletePostAction } from "@/lib/actions/posts";
 
 export default function OptimisticPost({
   post,
@@ -48,8 +61,6 @@ export default function OptimisticPost({
   };
   const closeModal = () => setOpen(false);
   const [optimisticPost, setOptimisticPost] = useOptimistic(post);
-  // pass imgs from : https://utfs.io/f/3af5cd21-6226-499f-95aa-13c7c9fc5410-3864fs.webp,https://utfs.io/f/2a19b19f-81cb-4b51-ac36-335fa66d6203-htox1b.webp,https://utfs.io/f/09ba8668-bc0e-407d-8743-b3c6251d0c09-kads82.webp to array
-
   const arrImages = post.images.split(",");
 
   return (
@@ -68,27 +79,19 @@ export default function OptimisticPost({
           storeId={storeId}
         />
       </DrawerDialog>
-      <div className="flex justify-center flex-col items-center mb-4">
+      <div className="flex justify-center flex-col items-center">
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex gap-1 group/discount"
-          >
+          <Button variant="outline" className="flex gap-1 group/discount">
             <RocketIcon />
-            <span className="hidden group-hover/discount:flex group-hover/discount:animate-tracking-in-expand ease-in-out transition-all">
+            <span className="hidden sm:group-hover/discount:flex sm:group-hover/discount:animate-tracking-in-expand ease-in-out transition-all">
               Agregar Descuento
             </span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex gap-1 group/analytcs"
-              >
+              <Button variant="outline" className="flex gap-1 group/analytcs">
                 <PieChartIcon />
-                <span className="hidden group-hover/analytcs:flex group-hover/analytcs:animate-tracking-in-expand transition-all">
+                <span className="hidden sm:group-hover/analytcs:flex sm:group-hover/analytcs:animate-tracking-in-expand transition-all">
                   Analytics
                 </span>
               </Button>
@@ -99,88 +102,128 @@ export default function OptimisticPost({
               <DropdownMenuItem disabled>Ajustes</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <AlertDialog>
+            <AlertDialogTrigger className="flex gap-1 group/eliminate">
+              <Button
+                variant="destructive"
+                className="flex gap-1 group/eliminate"
+              >
+                <TrashIcon />
+                <span className="hidden sm:group-hover/eliminate:flex sm:group-hover/eliminate:animate-tracking-in-expand ease-in-out transition-all">
+                  Eliminar
+                </span>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Estas 100% seguro?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Al eliminar este post no podras recuperarlo.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={(e) => {
+                    e.preventDefault();
+                    deletePostAction(post.id); //TODO send to other url and dont revaildate path
+                  }}
+                >
+                  Continuar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button
-            size="sm"
-            variant="destructive"
-            className="flex gap-1 group/eliminate"
+            onClick={() => openModal(post)}
+            variant="default"
+            className="flex gap-1"
           >
-            <TrashIcon />
-            <span className="hidden group-hover/eliminate:flex group-hover/eliminate:animate-tracking-in-expand ease-in-out transition-all">
-              Eliminar
-            </span>
-          </Button>
-          <Button size="sm" variant="default" className="flex gap-1">
             <Pencil1Icon />
             Editar
           </Button>
         </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_2fr] md:gap-8 mt-4 sm:py-12">
-          <div className="p-2">
-            <Carousel className="p-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_2fr] md:gap-8 mt-4 sm:py-12 sm:border sm:border-muted rounded-md sm:px-2">
+          <div className="p-10 w-full">
+            <Carousel>
               <CarouselContent>
                 {arrImages.map((image, index) => (
                   <CarouselItem key={index}>
                     <Image
                       src={image}
                       alt={optimisticPost.name + ` image ${index}`}
-                      width={500}
-                      height={500}
-                      className={cn("rounded-lg")}
+                      width={600}
+                      height={600}
+                      className={cn("rounded-md")}
                     />
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="bg-red-500" />
+              <CarouselPrevious />
               <CarouselNext />
             </Carousel>
           </div>
-          <div className="grid gap-4">
-            <div className="grid gap-1">
-              <h2 className="text-xl font-bold">Acme Wireless Headphones</h2>
-              <p className="text-gray-500 dark:text-gray-400">
-                High-quality wireless headphones with advanced noise
-                cancellation.
+          <div className="grid gap-1">
+            <div>
+              <h2 className="text-xl font-bold">{optimisticPost.name}</h2>
+              <p className="text-muted-foreground">
+                {productCategories[optimisticPost.categoryId].title +
+                  " - " +
+                  optimisticPost.subcategory}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-1">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Price
+            <div className="grid grid-cols-2 gap-1 pt-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Precio
                 </span>
-                <span className="text-lg font-bold">$99.99</span>
+                <span className="text-lg font-bold">
+                  {numberToClp(`${optimisticPost.price}`)}
+                </span>
               </div>
-              <div className="grid gap-1">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Brand
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Marca
                 </span>
-                <span className="text-lg font-bold">Acme</span>
+                <span className="text-lg font-bold">
+                  {optimisticPost.brand}
+                </span>
               </div>
-              <div className="grid gap-1">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  SKU
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Talla
                 </span>
-                <span className="text-lg font-bold">WH-1000XM4</span>
+                <span className="text-lg font-bold">{optimisticPost.size}</span>
               </div>
-              <div className="grid gap-1">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  In Stock
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Detalles
                 </span>
-                <span className="text-lg font-bold">50</span>
+                <ul className="text-sm font-semibold text-secondary-foreground">
+                  <li className="list-disc">
+                    Condicion: {optimisticPost.condition}
+                  </li>
+                  <li className="list-disc">
+                    Genero: {genders[optimisticPost.gender as number]}
+                  </li>
+                </ul>
               </div>
             </div>
-            <div className="grid gap-2">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Description
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-muted-foreground">
+                Descripcion
               </span>
-              <p className="text-base leading-relaxed text-gray-700 dark:text-gray-300">
-                The Acme Wireless Headphones are the ultimate audio companion
-                for your daily life. With advanced noise cancellation
-                technology, you can enjoy your music, podcasts, or calls in
-                peace, even in the noisiest environments. The sleek and
-                comfortable design, combined with long-lasting battery life,
-                makes these headphones the perfect choice for both work and
-                leisure.
+              <p className="text-base leading-relaxed text-secondary-foreground">
+                {optimisticPost.description}
               </p>
+            </div>
+            <div className="flex flex-col gap-1 pt-20">
+              <span className="text-xs font-medium text-muted-foreground">
+                Creado: {optimisticPost.createdAt}
+              </span>
+              <span className="text-xs font-medium text-muted-foreground">
+                Actualizado: {optimisticPost.updatedAt}
+              </span>
             </div>
           </div>
         </div>

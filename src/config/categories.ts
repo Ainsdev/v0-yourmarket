@@ -18,6 +18,8 @@ export const sortOptions = [
     value: "name.desc",
   },
 ];
+//0: Hombre, 1: Mujer, 2: Unisex, 3: Niños
+export const genders = ["Hombre", "Mujer", "Unisex", "Niños"];
 
 export const productCategories = [
   {

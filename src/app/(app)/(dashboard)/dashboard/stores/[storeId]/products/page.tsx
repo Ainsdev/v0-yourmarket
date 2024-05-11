@@ -11,6 +11,7 @@ import { ProductsTableShell } from "@/components/posts/data-table/products-table
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardIcon, TableIcon } from "@radix-ui/react-icons";
 import { ProductsGalleryView } from "@/components/posts/post-gallery/data-gallery";
+import { SkeletonCard } from "@/components/posts/post-gallery/data-gallery-skeleton";
 
 interface ProductsPageProps {
   params: {
@@ -78,6 +79,7 @@ export default async function ProductsPage({
     column,
     order
   );
+  
 
   return (
     <div className="space-y-6 w-full">
@@ -96,15 +98,7 @@ export default async function ProductsPage({
         </TabsList>
         {/* </div> */}
         <TabsContent value="gallery">
-          <React.Suspense
-            fallback={
-              <DataTableSkeleton
-                columnCount={6}
-                isNewRowCreatable={true}
-                isRowsDeletable={true}
-              />
-            }
-          >
+          <React.Suspense fallback={<SkeletonCard />}>
             <ProductsGalleryView promise={productsPromise} storeId={storeId} />
           </React.Suspense>
         </TabsContent>

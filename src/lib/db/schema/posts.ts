@@ -28,7 +28,7 @@ export const posts = sqliteTable(
     price: integer("price").notNull(),
     sold: integer("sold", { mode: "boolean" }).default(false),
     // rangePrice: text("range_price"),
-    gender: integer("gender"),
+    gender: integer("gender"), // 0: Hombre, 1: Mujer, 2: Unisex, 3: Niños
     size: text("size").notNull(),
     region: text("region").notNull(),
     contact: text("contact").notNull(),

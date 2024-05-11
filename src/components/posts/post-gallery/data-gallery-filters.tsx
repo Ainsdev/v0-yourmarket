@@ -1,15 +1,17 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenuTrigger,
-  DropdownMenuContent,
   DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   MagnifyingGlassIcon,
   MixerHorizontalIcon,
 } from "@radix-ui/react-icons";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
@@ -63,34 +65,22 @@ export function GalleryFilters() {
           <DropdownMenuTrigger asChild>
             <Button className="flex items-center gap-2" variant="outline">
               <MixerHorizontalIcon className="h-5 w-5" />
-              Filters
+              Filtros
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-64 p-4">
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-medium mb-2">Category</h4>
-                <div className="space-y-2">
-                  <Checkbox defaultChecked id="category-electronics">
-                    Electronics
-                  </Checkbox>
-                  <Checkbox id="category-home">Home</Checkbox>
-                  <Checkbox id="category-apparel">Apparel</Checkbox>
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium mb-2">Price</h4>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium mb-2">Brand</h4>
-                <div className="space-y-2">
-                  <Checkbox defaultChecked id="brand-acme">
-                    Acme
-                  </Checkbox>
-                  <Checkbox id="brand-other">Other</Checkbox>
-                </div>
-              </div>
-            </div>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Categorias</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem>Status Bar</DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem disabled>
+              Activity Bar
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Status</DropdownMenuLabel>
+            <DropdownMenuCheckboxItem>Activo</DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem>Inactivo</DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem>Vendido</DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
