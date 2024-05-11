@@ -152,7 +152,7 @@ const Post = ({
   const deleting = post.id === "delete";
   const mutating = optimistic || deleting;
   const pathname = usePathname();
-  const basePath = pathname.includes("posts") ? pathname : pathname + "/posts/";
+  const basePath = pathname.includes("products") ? pathname : pathname + "/products/";
 
   return (
     <TableRow>
@@ -212,7 +212,7 @@ const Post = ({
                 e.preventDefault();
                 e.stopPropagation();
                 navigator.clipboard
-                  .writeText(`http://localhost:3000//posts/${post.id}`)
+                  .writeText(`http://localhost:3000//products/${post.id}`)
                   .then(() => {
                     toast.info("Link copiado", {
                       position: "top-center",
