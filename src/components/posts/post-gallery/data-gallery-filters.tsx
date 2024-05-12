@@ -1,3 +1,4 @@
+"use client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,8 @@ import {
 import { DateRangePicker } from "@/components/date-range-picker";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import { productCategories } from "@/config/categories";
 
 export function GalleryFilters() {
   const pathname = usePathname();
@@ -37,6 +40,9 @@ export function GalleryFilters() {
     },
     [searchParams]
   );
+  //states
+  const [categories, setCategories] = React.useState<Array<number>>([]);
+  const [status, setStatus] = React.useState<string | null>(null);
 
   return (
     <div className="flex items-center justify-between mb-6">
@@ -71,15 +77,73 @@ export function GalleryFilters() {
           <DropdownMenuContent>
             <DropdownMenuLabel>Categorias</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem>Status Bar</DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem disabled>
-              Activity Bar
-            </DropdownMenuCheckboxItem>
+            {productCategories.map((category) => (
+              <DropdownMenuCheckboxItem
+                key={category.id}
+                checked={categories.includes(category.id)}
+                onCheckedChange={(checked) => {
+                  setCategories((prev) =>
+                    checked
+                      ? [...prev, category.id]
+                      : prev.filter((id) => id !== category.id)
+                  );
+                  // Update query string "categories"
+                  router.push(
+                    `${pathname}?${createQueryString({
+                      categories: categories.length
+                        ? categories.join(",")
+                        : null,
+                    })}`
+                  );
+                }}
+              >
+                {category.title}
+              </DropdownMenuCheckboxItem>
+            ))}
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Status</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem>Activo</DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem>Inactivo</DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem>Vendido</DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            {[
+              { id: "active", title: "Activo" },
+              { id: "inactive", title: "Inactivo" },
+              { id: "sold", title: "Vendido" },
+            ].map((item) => (
+              <DropdownMenuCheckboxItem
+                key={item.id}
+                checked={status === item.id}
+                onCheckedChange={(checked) => {
+                  setStatus(checked ? item.id : null);
+                  if (item.id === "sold") {
+                    // Update query string "sold"
+                    router.push(
+                      `${pathname}?${createQueryString({
+                        sold: checked ? 1 : null,
+                      })}`
+                    );
+                    return;
+                  }
+                  // Update query string "active"
+                  else if (item.id === "active") {
+                    router.push(
+                      `${pathname}?${createQueryString({
+                        active: checked ? 1 : null,
+                      })}`
+                    );
+                    return;
+                  }
+                  // Update query string "inactive"
+                  else {
+                    router.push(
+                      `${pathname}?${createQueryString({
+                        inactive: checked ? 0 : null,
+                      })}`
+                    );
+                  }
+                }}
+              >
+                {item.title}
+              </DropdownMenuCheckboxItem>
+            ))}
             <DropdownMenuSeparator />
           </DropdownMenuContent>
         </DropdownMenu>
