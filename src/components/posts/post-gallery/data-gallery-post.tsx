@@ -156,7 +156,7 @@ export function DataGalleryPost<TData, TValue>({
                   e.preventDefault();
                   e.stopPropagation();
                   navigator.clipboard
-                    .writeText(`http://localhost:3000/posts/${data.id}`)
+                    .writeText(`http://localhost:3000/products/${data.id}`) //TODO
                     .then(() => {
                       toast.info("Link copiado", {
                         position: "top-center",

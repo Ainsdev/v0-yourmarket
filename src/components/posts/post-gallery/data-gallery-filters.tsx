@@ -44,6 +44,18 @@ export function GalleryFilters() {
   const [categories, setCategories] = React.useState<Array<number>>([]);
   const [status, setStatus] = React.useState<string | null>(null);
 
+  //use effect
+  React.useEffect(() => {
+    // Update query string "categories"
+    router.push(
+      `${pathname}?${createQueryString({
+        categoryId: categories.length
+          ? categories.join(".")
+          : null,
+      })}`
+    );
+  }, [categories]);
+
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-4">
@@ -75,26 +87,21 @@ export function GalleryFilters() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>Categorias</DropdownMenuLabel>
+            <DropdownMenuLabel>Categorias: {categories}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {productCategories.map((category) => (
               <DropdownMenuCheckboxItem
                 key={category.id}
                 checked={categories.includes(category.id)}
                 onCheckedChange={(checked) => {
-                  setCategories((prev) =>
-                    checked
-                      ? [...prev, category.id]
-                      : prev.filter((id) => id !== category.id)
-                  );
-                  // Update query string "categories"
-                  router.push(
-                    `${pathname}?${createQueryString({
-                      categories: categories.length
-                        ? categories.join(",")
-                        : null,
-                    })}`
-                  );
+                  if (checked) {
+                    setCategories((prev) => [...prev, category.id]);
+                  } else {
+                    setCategories((prev) =>
+                      prev.filter((id) => id !== category.id)
+                    );
+                  }
+                  
                 }}
               >
                 {category.title}
@@ -117,7 +124,7 @@ export function GalleryFilters() {
                     // Update query string "sold"
                     router.push(
                       `${pathname}?${createQueryString({
-                        sold: checked ? 1 : null,
+                        sold: checked ? "true" : null,
                       })}`
                     );
                     return;
@@ -126,7 +133,7 @@ export function GalleryFilters() {
                   else if (item.id === "active") {
                     router.push(
                       `${pathname}?${createQueryString({
-                        active: checked ? 1 : null,
+                        active: checked ? "true" : null,
                       })}`
                     );
                     return;
@@ -135,7 +142,7 @@ export function GalleryFilters() {
                   else {
                     router.push(
                       `${pathname}?${createQueryString({
-                        inactive: checked ? 0 : null,
+                        active: checked ? "false" : null,
                       })}`
                     );
                   }
