@@ -196,6 +196,7 @@ export function DataGalleryPost<TData, TValue>({
                 </Badge>
               </DropdownMenuItem>
               <DropdownMenuItem
+                disabled={data.sold as boolean}
                 className="flex gap-1 cursor-pointer"
                 // onClick={() => openModal(data)}
               >
@@ -206,6 +207,7 @@ export function DataGalleryPost<TData, TValue>({
                 onClick={() =>
                   updateStatusPostAction(data.id, !data.active, "ACTIVE")
                 }
+                disabled={data.sold as boolean}
               >
                 {data.active ? <PauseIcon /> : <PlayIcon />}
                 {data.active ? "Pausar" : "Activar"}
@@ -246,10 +248,12 @@ export function DataGalleryPost<TData, TValue>({
           </DropdownMenu>
         </div>
         <div className="flex items-center gap-2 self-end  ">
-          <Button size="sm" variant="outline">
-            Vista previa
+          <Button asChild size="sm" variant="outline">
+            <Link href={`/products/${data.id}`}>Ver</Link>
           </Button>
-          <Button>Editar</Button>
+          <Button disabled={data.sold as boolean}>
+            <Link href={`/products/${data.id}/edit`}> Editar</Link>
+          </Button>
         </div>
       </CardFooter>
     </Card>

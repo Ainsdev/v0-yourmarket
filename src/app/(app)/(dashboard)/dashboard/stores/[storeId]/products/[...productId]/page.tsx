@@ -14,16 +14,28 @@ export const revalidate = 0;
 export default async function PostPage({
   params,
 }: {
-  params: { storeId: string; productId: string };
+  params: { storeId: string; productId: string[] };
 }) {
   return (
     <main className="overflow-auto">
-      <Post storeId={params.storeId} id={params.productId} />
+      <Post
+        opened={params.productId[1] === "edit" ? true : false}
+        storeId={params.storeId}
+        id={params.productId[0]}
+      />
     </main>
   );
 }
 
-const Post = async ({ id, storeId }: { storeId: string; id: string }) => {
+const Post = async ({
+  id,
+  storeId,
+  opened,
+}: {
+  storeId: string;
+  id: string;
+  opened: boolean;
+}) => {
   const { post } = await getPostById(id);
   if (!post) notFound();
   const { store } = await getStoreById(Number(storeId));
@@ -36,6 +48,7 @@ const Post = async ({ id, storeId }: { storeId: string; id: string }) => {
           post={post}
           store={store as Store}
           storeId={store?.id}
+          startOpen={opened}
         />
       </div>
     </Suspense>
