@@ -63,8 +63,13 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
             </div>
           </div>
           <div className="pt-6 flex w-full justify-center items-center px-12 xl:px-48">
-            <Button variant="secondary"className="w-full bg-secondary/90">
-              Conectar Cuenta
+            <Button
+              size="sm"
+              disabled
+              variant="secondary"
+              className="w-full bg-secondary/90"
+            >
+              Conectar Cuenta (Proximamente)
             </Button>
           </div>
         </Card>
@@ -83,8 +88,13 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
             </div>
           </div>
           <div className="pt-6 flex w-full justify-center items-center px-12 xl:px-48">
-            <Button variant="secondary"className="w-full bg-secondary/90">
-              Verificar
+            <Button
+              size="sm"
+              disabled
+              variant="secondary"
+              className="w-full bg-secondary/90"
+            >
+              Verificar (proximamente)
             </Button>
           </div>
         </Card>
