@@ -80,7 +80,7 @@ export default function OptimisticStore({
                 size="icon"
                 className="absolute top-4 right-4"
               >
-                <Link href={`/dashboard/stores/${optimisticStore.id}/products`}>
+                <Link href={`/stores/${optimisticStore.id}`}>
                   <Share1Icon className="h-4 w-4" />
                 </Link>
               </Button>
