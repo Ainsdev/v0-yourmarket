@@ -89,7 +89,7 @@ export default function OptimisticStore({
                   onClick={() => setOpen(true)}
                   className="drop-shadow-[0_20px_50px_rgba(266,_120,_81,_0.1)] hover:drop-shadow-[0_20px_15px_rgba(266,_120,_81,_0.2)]"
                 >
-                  Editar Tienda
+                  Editar Tiend
                 </Button>
                 <Button variant="secondary"> Ver Tienda </Button>
               </div>
