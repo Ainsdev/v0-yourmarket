@@ -91,7 +91,7 @@ export default function OptimisticStore({
                 >
                   Editar Tienda
                 </Button>
-                <Button variant="secondary"> Ver Tienda </Button>
+                <Button variant="secondary"> Ver </Button>
               </div>
             </CardContent>
           </Card>
