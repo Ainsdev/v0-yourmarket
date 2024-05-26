@@ -66,3 +66,9 @@ export const checkNameExists = async (name: string) => {
   const rows = await db.select().from(stores).where(exists(query));
   return { exists: rows.length > 0 };
 };
+
+
+export const getStoresForLobby = async () => {
+  const rows = await db.select().from(stores).limit(10).orderBy(desc(stores.createdAt));
+  return { stores: rows };
+}
