@@ -1,3 +1,4 @@
+"use client";
 import {
   PageHeader,
   PageHeaderHeading,
@@ -9,7 +10,7 @@ import { DirectionAwareHover } from "@/components/ui/direction-aware-hover";
 import { getStoresForLobby } from "@/lib/api/stores/queries";
 import { cache } from "@/lib/cache";
 import { SearchParams } from "@/lib/types";
-import { SewingPinFilledIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, SewingPinFilledIcon } from "@radix-ui/react-icons";
 import {
   Select,
   SelectContent,
@@ -20,6 +21,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { productCategories } from "@/config/categories";
+import { usePathname, useRouter } from "next/navigation";
+import React from "react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { regions } from "@/config/regions";
 
 interface StorePageParams {
   searchParams: SearchParams;
@@ -36,11 +52,14 @@ const getProducts = cache(
   { revalidate: 60 * 60 * 24 }
 );
 
+// eslint-disable-next-line @next/next/no-async-client-component
 export default async function StoresPage({ searchParams }: StorePageParams) {
   const { stores } = await getProducts({
     region: searchParams.region,
     mainCategories: searchParams.mainCategory,
   });
+  const router = useRouter();
+  const [value, setValue] = React.useState(""); //TODO change this to the selected region
 
   return (
     <Shell>
@@ -87,10 +106,19 @@ export default async function StoresPage({ searchParams }: StorePageParams) {
           </div>
         </div> */}
         <h3 className="text-2xl font-bold">Tiendas Recientes</h3>
-        <div className="w-full flex gap-4 py-4">
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Filtrar por categoria">Categoria</SelectValue>
+        <div className="w-full flex gap-4 p-4">
+          <Select
+            onValueChange={(value) => {
+              router.push(
+                `?${new URLSearchParams({
+                  ...searchParams,
+                  mainCategory: value,
+                }).toString()}`
+              );
+            }}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filtrar por categoria"></SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -103,6 +131,36 @@ export default async function StoresPage({ searchParams }: StorePageParams) {
               </SelectGroup>
             </SelectContent>
           </Select>
+          <Popover>
+            <PopoverTrigger disabled>
+              <Button disabled variant="outline">
+                {value ? value : "Filtrar por region"}
+                <ChevronDownIcon />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48">
+              <Command>
+                <CommandInput placeholder="Buscar..." />
+                <CommandEmpty> No hay resultados</CommandEmpty>
+                {regions.map((region) => (
+                  <CommandGroup key={region.region} heading={region.region}>
+                    {region.comunas.map((comuna) => (
+                      <CommandItem
+                        key={comuna}
+                        value={comuna}
+                        // onSelect={() => {
+                        //   setValue(comuna);
+                        //   setOpen(false);
+                        // }}
+                      >
+                        {comuna}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ))}
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
           <DirectionAwareHover
