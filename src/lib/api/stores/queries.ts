@@ -67,8 +67,22 @@ export const checkNameExists = async (name: string) => {
   return { exists: rows.length > 0 };
 };
 
-
-export const getStoresForLobby = async () => {
-  const rows = await db.select().from(stores).limit(10).orderBy(desc(stores.createdAt));
+export const getStoresForLobby = async (
+  region: string | null,
+  mainCategory: number | null,
+  // limit: number,
+  // offset: number
+) => {
+  const rows = await db
+    .select()
+    .from(stores)
+    // .limit(limit)
+    // .offset(offset)
+    .where(
+      and(
+        region ? eq(stores.region, region) : undefined,
+        mainCategory ? eq(stores.mainCategories, mainCategory) : undefined
+      )
+    );
   return { stores: rows };
-}
+};
