@@ -1,4 +1,3 @@
-"use client";
 import {
   PageHeader,
   PageHeaderHeading,
@@ -54,13 +53,12 @@ const getProducts = cache(
 
 // eslint-disable-next-line @next/next/no-async-client-component
 export default async function StoresPage({ searchParams }: StorePageParams) {
-  const { stores } = await getProducts({
+  const router = useRouter();
+  const [value, setValue] = React.useState(""); //TODO change this to the selected region
+  const stores = await getProducts({
     region: searchParams.region,
     mainCategories: searchParams.mainCategory,
   });
-  const router = useRouter();
-  const [value, setValue] = React.useState(""); //TODO change this to the selected region
-
   return (
     <Shell>
       <PageHeader>
@@ -163,21 +161,22 @@ export default async function StoresPage({ searchParams }: StorePageParams) {
           </Popover>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
-          <DirectionAwareHover
-            imageClassName="opacity-70 p-4"
-            className="w-full"
-            childrenClassName="flex flex-col items-start justify-center gap-2"
-            imageUrl={
-              "https://utfs.io/f/6f13283b-77a2-4e1c-aa58-737876be66ea-1ji407.jpg"
-            }
-          >
-            <p className="font-bold text-xl">YourMarket</p>
-            <p className="font-normal text-sm flex">
-              <SewingPinFilledIcon />
-              Maipu
-            </p>
-            <Button>Ver Tienda</Button>
-          </DirectionAwareHover>
+          {stores.stores.map((store) => (
+            <DirectionAwareHover
+              key={store.id}
+              imageClassName="opacity-70 p-4"
+              className="w-full"
+              childrenClassName="flex flex-col items-start justify-center gap-2"
+              imageUrl={store.image as string}
+            >
+              <p className="font-bold text-xl">{store.name}</p>
+              <p className="font-normal text-sm flex">
+                <SewingPinFilledIcon />
+                {store.city}
+              </p>
+              <Button>Ver Tienda</Button>
+            </DirectionAwareHover>
+          ))}
           <DirectionAwareHover
             imageClassName="opacity-70 p-4"
             className="w-full"
