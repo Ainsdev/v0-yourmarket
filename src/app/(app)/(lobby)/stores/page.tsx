@@ -64,7 +64,7 @@ export default async function StoresPage({ searchParams }: StorePageParams) {
       <PageHeader>
         <PageHeaderHeading size="sm">Tiendas</PageHeaderHeading>
         <PageHeaderDescription size="sm">
-          Las mejores tiendas que buscas
+          Las mejores tiendas
         </PageHeaderDescription>
       </PageHeader>
       <div className="flex flex-col gap-4 w-full overflow-hidden">
