@@ -34,6 +34,7 @@ import {
 import { regions } from "@/config/regions";
 import { SearchParams } from "@/lib/types";
 import { Store } from "@/lib/db/schema/stores";
+import Link from "next/link";
 
 type StoreViewProps = {
   stores: { stores: Store[] };
@@ -161,7 +162,9 @@ export default function StoreView({ stores, searchParams }: StoreViewProps) {
               <SewingPinFilledIcon />
               {store.city}
             </p>
-            <Button>Ver Tienda</Button>
+            <Button asChild>
+              <Link href={`/stores/${store.id}`}>Ver Tienda</Link>
+            </Button>
           </DirectionAwareHover>
         ))}
         <DirectionAwareHover

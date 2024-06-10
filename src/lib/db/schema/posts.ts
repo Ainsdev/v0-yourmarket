@@ -37,6 +37,8 @@ export const posts = sqliteTable(
     // color: text("color").notNull(),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
+    //Store Properties
+    pinned: integer("pinned", { mode: "boolean" }).default(false),
     discountPercentage: integer("discount_percentage").default(0),
     discountPrice: integer("discount_price").default(0),
     storeId: integer("store_id")
