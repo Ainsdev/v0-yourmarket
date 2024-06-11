@@ -6,7 +6,7 @@ import { SearchParams } from "@/lib/types";
 import { searchParamsSchema } from "@/lib/validations/params";
 import { z } from "zod";
 import Image from "next/image";
-import { RevealBento } from "@/components/posts/post-gallery/data-gallery-image-post";
+import { GalleryImagePost } from "@/components/posts/post-gallery/data-gallery-image-post";
 
 export const revalidate = 0;
 
@@ -28,8 +28,7 @@ export default async function StorePage({
   params: { storeId: string };
 }) {
   return (
-    <main className="overflow-auto">
-      <p>Store Page: {params.storeId}</p>
+    <main className="w-full">
       <Store id={params.storeId} />
     </main>
   );
@@ -58,8 +57,11 @@ const Store = async ({ id }: { id: string }) => {
 
     //   </div>
     // </Suspense>
-    <div className="w-full">
-      <RevealBento />
+    // <div className="w-full">
+    <div className="grid grid-rows-1 gap-0">
+      <GalleryImagePost />
+      <GalleryImagePost />
+      <GalleryImagePost />
     </div>
   );
 };

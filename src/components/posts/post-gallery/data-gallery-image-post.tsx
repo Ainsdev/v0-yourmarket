@@ -1,34 +1,55 @@
+"use client";
 import React from "react";
 import { MotionProps, motion } from "framer-motion";
-import { twMerge } from "tailwind-merge";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Share1Icon, Share2Icon } from "@radix-ui/react-icons";
 
-export const RevealBento = () => {
+type GalleryImagePostProps = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  size: string;
+};
+
+export const GalleryImagePost = () => {
   return (
-    <div className="min-h-screen bg-zinc-900 px-4 py-12 text-zinc-50">
-      <motion.div
-        initial="initial"
-        animate="animate"
-        transition={{
-          staggerChildren: 0.05,
-        }}
-        className="mx-auto grid max-w-4xl grid-flow-dense grid-cols-12 gap-4"
-      >
-        <Block
-          whileHover={{
-            rotate: "2.5deg",
-            scale: 1.1,
-          }}
-          className="col-span-6 bg-red-500 md:col-span-3"
-        >
-          <a
-            href="#"
-            className="grid h-full place-content-center text-3xl text-white"
-          >
-            Youtube
-          </a>
-        </Block>
-      </motion.div>
-    </div>
+    <Block
+      whileHover={{
+        rotate: "3.5deg",
+        scale: 1.05,
+      }}
+      className="w-56 h-56 group"
+    >
+      <Link href="#" className=" h-full text-3xl text-white bg-black w-full">
+        <div>
+          <Image
+            src={
+              "https://pbs.twimg.com/profile_images/1471121187552083970/gzXvrRJL_400x400.jpg"
+            }
+            alt="Product image"
+            layout="fill"
+            objectFit="cover"
+            className="bg-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-transparent to-transparent group-hover:from-black/90" />
+          <div className="flex flex-col gap-1 justify-center items-start p-1 w-full absolute bottom-0 invisible group-hover:visible backdrop-blur-sm">
+            <Badge variant="outline">3XL</Badge>
+            <h3 className="text-base">Nike Air Max 90 Recraft InfraRed</h3>
+          </div>
+          <Badge variant="secondary" className="absolute top-2 right-2">
+            $100
+          </Badge>
+        </div>
+      </Link>
+      <Button size="icon" variant="ghost" className="absolute top-2 left-2">
+        <Share2Icon />
+      </Button>
+    </Block>
   );
 };
 
@@ -57,10 +78,7 @@ const Block = ({ className, ...rest }: BlockProps) => {
         stiffness: 400,
         damping: 50,
       }}
-      className={twMerge(
-        "col-span-4 rounded-lg border border-zinc-700 bg-zinc-800 p-6",
-        className
-      )}
+      className={cn("p-0 w-max max-w-xl", className)}
       {...rest}
     />
   );
