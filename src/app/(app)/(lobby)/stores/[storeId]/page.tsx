@@ -6,6 +6,7 @@ import { SearchParams } from "@/lib/types";
 import { searchParamsSchema } from "@/lib/validations/params";
 import { z } from "zod";
 import Image from "next/image";
+import { RevealBento } from "@/components/posts/post-gallery/data-gallery-image-post";
 
 export const revalidate = 0;
 
@@ -20,7 +21,6 @@ const storesProductsSearchParamsSchema = searchParamsSchema.extend({
   categoryId: z.string().optional(),
   subcategory: z.string().optional(),
 });
-
 
 export default async function StorePage({
   params,
@@ -59,26 +59,7 @@ const Store = async ({ id }: { id: string }) => {
     //   </div>
     // </Suspense>
     <div className="w-full">
-      {products.map((product) => (
-        <div
-          key={product.id}
-          className="flex items-center gap-4 border border-gray-200 rounded-lg p-4 dark:border-gray-800"
-        >
-          <Image
-            src="/placeholder.svg"
-            alt={product.name}
-            width={64}
-            height={64}
-            className="rounded-md"
-          />
-          <div className="grid gap-1">
-            <h4 className="font-medium">{product.name}</h4>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              ${product.price}
-            </p>
-          </div>
-        </div>
-      ))}
+      <RevealBento />
     </div>
   );
 };

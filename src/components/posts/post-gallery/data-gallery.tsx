@@ -2,9 +2,6 @@
 
 import { Post } from "@/lib/db/schema/posts";
 import React from "react";
-
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { PaginationState } from "@tanstack/react-table";
 import { DataGalleryPagination } from "./data-gallery-pagination";
 import { DataGalleryPost } from "./data-gallery-post";
 import { GalleryFilters } from "./data-gallery-filters";
@@ -42,36 +39,18 @@ export function ProductsGalleryView({
   // const [isPending, startTransition] = React.useTransition();
   const { data, pageCount } = React.use(promise);
   const [posts, setPosts] = React.useState<AwaitedProduct[]>(data);
-  //useeffect
-  // React.useEffect(() => {
-  //   setPosts(data);
-  // }, [data]);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  // Search params
-  const page = searchParams?.get("page") ?? "1";
-  const pageAsNumber = Number(page);
-  const per_page = searchParams?.get("per_page") ?? "10";
-  const perPageAsNumber = Number(per_page);
-  const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber;
-  const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
-  //search by name (&name='name')
-  const setNames = (name: string) => {
-    const createNameURL = (name: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set("name", name);
-      return `${pathname}?${params.toString()}`;
-    };
-  };
+
+  React.useEffect(() => {
+    setPosts(data);
+  }, [data]);
 
   return (
     <div className="w-full mx-auto py-8 px-4 md:px-6 overflow-auto">
       <GalleryFilters />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {admin ? (
-          data.length > 0 ? (
-            data.map((product) => (
+          posts.length > 0 ? (
+            posts.map((product) => (
               <DataGalleryPost key={product.id} data={product} />
             ))
           ) : (

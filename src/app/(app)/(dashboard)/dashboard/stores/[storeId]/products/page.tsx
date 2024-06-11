@@ -79,7 +79,6 @@ export default async function ProductsPage({
     column,
     order
   );
-  
 
   return (
     <div className="space-y-6 w-full">
@@ -99,7 +98,11 @@ export default async function ProductsPage({
         {/* </div> */}
         <TabsContent value="gallery">
           <React.Suspense fallback={<SkeletonCard />}>
-            <ProductsGalleryView promise={productsPromise} storeId={storeId} />
+            <ProductsGalleryView
+              promise={productsPromise}
+              storeId={storeId}
+              admin
+            />
           </React.Suspense>
         </TabsContent>
         <TabsContent className="flex flex-col gap-4" value="table">
