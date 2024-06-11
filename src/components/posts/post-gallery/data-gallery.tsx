@@ -5,6 +5,12 @@ import React from "react";
 import { DataGalleryPagination } from "./data-gallery-pagination";
 import { DataGalleryPost } from "./data-gallery-post";
 import { GalleryFilters } from "./data-gallery-filters";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 //&per_page=n Means that the number of items per page is n
 
@@ -46,7 +52,19 @@ export function ProductsGalleryView({
 
   return (
     <div className="w-full mx-auto py-8 px-4 md:px-6 overflow-auto">
-      <GalleryFilters />
+      {admin ? (
+        <GalleryFilters />
+      ) : (
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Filtros</AccordionTrigger>
+            <AccordionContent className="w-full">
+              <GalleryFilters />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {admin ? (
           posts.length > 0 ? (
