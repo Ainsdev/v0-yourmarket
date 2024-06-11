@@ -24,3 +24,4 @@ export const getPostById = async (id: PostId) => {
   const p = { ...row.post, store: row.store };
   return { post: p };
 };
+

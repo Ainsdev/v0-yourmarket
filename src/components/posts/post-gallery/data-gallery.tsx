@@ -31,11 +31,13 @@ interface ProductsGalleryShellProps {
     pageCount: number;
   }>;
   storeId: number;
+  admin?: boolean;
 }
 
 export function ProductsGalleryView({
   promise,
   storeId,
+  admin = false,
 }: ProductsGalleryShellProps) {
   // const [isPending, startTransition] = React.useTransition();
   const { data, pageCount } = React.use(promise);
@@ -67,11 +69,17 @@ export function ProductsGalleryView({
     <div className="w-full mx-auto py-8 px-4 md:px-6 overflow-auto">
       <GalleryFilters />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {data.length > 0
-          ? data.map((product) => (
+        {admin ? (
+          data.length > 0 ? (
+            data.map((product) => (
               <DataGalleryPost key={product.id} data={product} />
             ))
-          : "No hay resultados"}
+          ) : (
+            "No hay resultados"
+          )
+        ) : (
+          <></>
+        )}
       </div>
       <div className="flex justify-center mt-8 w-full">
         <DataGalleryPagination maxPage={pageCount} />

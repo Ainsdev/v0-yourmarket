@@ -86,3 +86,11 @@ export const getStoresForLobby = async (
     );
   return { stores: rows };
 };
+
+export const getStoreForLobby = async (id: StoreId) => {
+  const { id: storeId } = storeIdSchema.parse({ id });
+  const [row] = await db.select().from(stores).where(eq(stores.id, storeId));
+  if (row === undefined) return {};
+  const s = row;
+  return { store: s };
+}
