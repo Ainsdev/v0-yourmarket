@@ -2,7 +2,7 @@
 import React from "react";
 import { MotionProps, motion } from "framer-motion";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, numberToClp } from "@/lib/utils";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,14 +14,16 @@ type GalleryImagePostProps = {
   price: number;
   image: string;
   size: string;
+  scale?: number;
+  rotate?: string;
 };
 
-export const GalleryImagePost = () => {
+export const GalleryImagePost = (props: GalleryImagePostProps) => {
   return (
     <Block
       whileHover={{
-        rotate: "3.5deg",
-        scale: 1.05,
+        rotate: props.rotate || "3.5deg",
+        scale: props.scale || 1.05,
       }}
       className="w-56 h-56 group"
     >
@@ -29,7 +31,8 @@ export const GalleryImagePost = () => {
         <div>
           <Image
             src={
-              "https://pbs.twimg.com/profile_images/1471121187552083970/gzXvrRJL_400x400.jpg"
+              props.image ||
+              "https://images.unsplash.com/photo-1612838551443-1e0f5d2a1a6f"
             }
             alt="Product image"
             layout="fill"
@@ -38,11 +41,11 @@ export const GalleryImagePost = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-transparent group-hover:from-black/90" />
           <div className="flex flex-col gap-1 justify-center items-start p-1 w-full absolute bottom-0 invisible group-hover:visible backdrop-blur-sm">
-            <Badge variant="outline">3XL</Badge>
-            <h3 className="text-base">Nike Air Max 90 Recraft InfraRed</h3>
+            <Badge variant="outline">{props.size}</Badge>
+            <h3 className="text-base">{props.name}</h3>
           </div>
           <Badge variant="secondary" className="absolute top-2 right-2">
-            $100
+            ${numberToClp(`${props.price}`)}
           </Badge>
         </div>
       </Link>
