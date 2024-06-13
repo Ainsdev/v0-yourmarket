@@ -11,13 +11,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { GalleryImagePost } from "./data-gallery-image-post";
 
 //&per_page=n Means that the number of items per page is n
 
 type AwaitedProduct = Pick<
   Post,
   | "id"
-  | "name"
+  | "name" 
   | "active"
   | "categoryId"
   | "subcategory"
@@ -66,17 +67,26 @@ export function ProductsGalleryView({
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {admin ? (
-          posts.length > 0 ? (
-            posts.map((product) => (
-              <DataGalleryPost key={product.id} data={product} />
+        {admin
+          ? // For admin dashboard
+            posts.length > 0
+            ? posts.map((product) => (
+                <DataGalleryPost key={product.id} data={product} />
+              ))
+            : "No hay resultados"
+          : // For store page
+          posts.length > 0
+          ? posts.map((product) => (
+              <GalleryImagePost
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                image={product.mainImage}
+                size={product.brand}
+              />
             ))
-          ) : (
-            "No hay resultados"
-          )
-        ) : (
-          <></>
-        )}
+          : "No hay publicaciones aun"}
       </div>
       <div className="flex justify-center mt-8 w-full">
         <DataGalleryPagination maxPage={pageCount} />

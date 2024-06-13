@@ -6,10 +6,10 @@ import { cn, numberToClp } from "@/lib/utils";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Share1Icon, Share2Icon } from "@radix-ui/react-icons";
+import { Share2Icon } from "@radix-ui/react-icons";
 
 type GalleryImagePostProps = {
-  id: number;
+  id: string;
   name: string;
   price: number;
   image: string;
