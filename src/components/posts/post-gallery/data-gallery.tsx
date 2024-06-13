@@ -56,9 +56,9 @@ export function ProductsGalleryView({
       {admin ? (
         <GalleryFilters />
       ) : (
-        <Accordion type="single" collapsible>
+        <Accordion type="single" collapsible className="pb-4" >
           <AccordionItem value="item-1">
-            <AccordionTrigger>Filtros</AccordionTrigger>
+            <AccordionTrigger className="w-48">Filtros</AccordionTrigger>
             <AccordionContent className="w-full">
               <GalleryFilters />
             </AccordionContent>

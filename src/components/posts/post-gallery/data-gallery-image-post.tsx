@@ -22,7 +22,7 @@ export const GalleryImagePost = (props: GalleryImagePostProps) => {
   return (
     <Block
       whileHover={{
-        rotate: props.rotate || "3.5deg",
+        rotate: props.rotate || "1.5deg",
         scale: props.scale || 1.05,
       }}
       className="w-56 h-56 group"
@@ -42,14 +42,14 @@ export const GalleryImagePost = (props: GalleryImagePostProps) => {
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-transparent group-hover:from-black/90" />
           <div className="flex flex-col gap-1 justify-center items-start p-1 w-full absolute bottom-0 invisible group-hover:visible backdrop-blur-sm">
             <Badge variant="outline">{props.size}</Badge>
-            <h3 className="text-base">{props.name}</h3>
+            <h3 className="text-base font-semibold">{props.name}</h3>
           </div>
           <Badge variant="secondary" className="absolute top-2 right-2">
-            ${numberToClp(`${props.price}`)}
+            {numberToClp(`${props.price}`)}
           </Badge>
         </div>
       </Link>
-      <Button size="icon" variant="ghost" className="absolute top-2 left-2">
+      <Button size="icon" variant="outline" className="absolute top-2 left-2 invisible group-hover:visible">
         <Share2Icon />
       </Button>
     </Block>
