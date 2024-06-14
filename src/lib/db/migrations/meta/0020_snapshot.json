@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "8b31b25c-0b1b-43ed-b5b0-333168b9bc94",
-  "prevId": "85fb5ba3-6e34-409f-9bc2-295bd1b59c2a",
   "tables": {
     "session": {
       "name": "session",
@@ -34,15 +32,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -305,15 +303,15 @@
         "posts_store_id_stores_id_fk": {
           "name": "posts_store_id_stores_id_fk",
           "tableFrom": "posts",
-          "tableTo": "stores",
           "columnsFrom": [
             "store_id"
           ],
+          "tableTo": "stores",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onUpdate": "cascade",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -436,15 +434,15 @@
         "stores_user_id_user_id_fk": {
           "name": "stores_user_id_user_id_fk",
           "tableFrom": "stores",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -453,8 +451,9 @@
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "8b31b25c-0b1b-43ed-b5b0-333168b9bc94",
+  "prevId": "85fb5ba3-6e34-409f-9bc2-295bd1b59c2a"
 }

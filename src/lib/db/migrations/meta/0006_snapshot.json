@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "fe22f454-ba03-4ae7-b63b-9dc0de047ccb",
-  "prevId": "41ac51ab-ffc6-48fb-9a39-9a4e8b147dbb",
   "tables": {
     "session": {
       "name": "session",
@@ -34,15 +32,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -122,15 +120,15 @@
         "user_store_id_stores_id_fk": {
           "name": "user_store_id_stores_id_fk",
           "tableFrom": "user",
-          "tableTo": "stores",
           "columnsFrom": [
             "store_id"
           ],
+          "tableTo": "stores",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set default",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set default"
         }
       },
       "compositePrimaryKeys": {},
@@ -196,15 +194,15 @@
         "posts_store_id_stores_id_fk": {
           "name": "posts_store_id_stores_id_fk",
           "tableFrom": "posts",
-          "tableTo": "stores",
           "columnsFrom": [
             "store_id"
           ],
+          "tableTo": "stores",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -306,15 +304,15 @@
         "stores_user_id_user_id_fk": {
           "name": "stores_user_id_user_id_fk",
           "tableFrom": "stores",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "restrict"
         }
       },
       "compositePrimaryKeys": {},
@@ -323,8 +321,9 @@
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "fe22f454-ba03-4ae7-b63b-9dc0de047ccb",
+  "prevId": "41ac51ab-ffc6-48fb-9a39-9a4e8b147dbb"
 }

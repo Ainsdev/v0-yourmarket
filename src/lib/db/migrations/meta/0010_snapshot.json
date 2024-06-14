@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "66e261b6-b90e-44aa-b8d4-c1b6d3b429fa",
-  "prevId": "d5e16809-2f74-4a1b-98aa-fa3405e04d91",
   "tables": {
     "session": {
       "name": "session",
@@ -34,15 +32,15 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -129,28 +127,28 @@
         "user_member_store_id_stores_id_fk": {
           "name": "user_member_store_id_stores_id_fk",
           "tableFrom": "user",
-          "tableTo": "stores",
           "columnsFrom": [
             "member_store_id"
           ],
+          "tableTo": "stores",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set default",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set default"
         },
         "user_store_id_stores_id_fk": {
           "name": "user_store_id_stores_id_fk",
           "tableFrom": "user",
-          "tableTo": "stores",
           "columnsFrom": [
             "store_id"
           ],
+          "tableTo": "stores",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set default",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set default"
         }
       },
       "compositePrimaryKeys": {},
@@ -372,8 +370,9 @@
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "66e261b6-b90e-44aa-b8d4-c1b6d3b429fa",
+  "prevId": "d5e16809-2f74-4a1b-98aa-fa3405e04d91"
 }

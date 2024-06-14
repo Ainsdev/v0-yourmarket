@@ -1,164 +1,155 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/PmwTvNfrVgf
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
-export default function LandingPage() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      
-      <main className="flex-1">
-        <section className="w-full py-6 sm:py-12 md:py-24 lg:py-32 xl:py-48">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <div className="bg-neutral-100 dark:bg-neutral-800 mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square" />
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    The complete platform <br />
-                    for building the Web
-                  </h1>
-                  <p className="max-w-[600px] text-neutral-500 md:text-xl dark:text-neutral-400">
-                    Give your team the toolkit to stop configuring and start
-                    innovating. Securely build, deploy, and scale the best web
-                    experiences.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link
-                    className="inline-flex h-10 items-center justify-center rounded-md bg-neutral-900 px-8 text-sm font-medium text-neutral-50 shadow transition-colors hover:bg-neutral-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 dark:focus-visible:ring-neutral-300"
-                    href="#"
-                  >
-                    Get Started
-                  </Link>
-                  <Link
-                    className="inline-flex h-10 items-center justify-center rounded-md border border-neutral-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-300"
-                    href="#"
-                  >
-                    Contact Sales
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-neutral-100 px-3 py-1 text-sm dark:bg-neutral-800">
-                  Key Features
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
-                  Faster iteration. More innovation.
-                </h2>
-                <p className="max-w-[900px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
-                  The platform for rapid progress. Let your team focus on
-                  shipping features instead of managing infrastructure with
-                  automated CI/CD.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-10">
-              <div className="mx-auto aspect-video overflow-hidden bg-neutral-100 dark:bg-neutral-800 rounded-xl object-cover object-center sm:w-full lg:order-last" />
-              <div className="flex flex-col justify-center space-y-4">
-                <ul className="grid gap-6">
-                  <li>
-                    <div className="grid gap-1">
-                      <h3 className="text-xl font-bold">Collaboration</h3>
-                      <p className="text-neutral-500 dark:text-neutral-400">
-                        Make collaboration seamless with built-in code review
-                        tools.
-                      </p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="grid gap-1">
-                      <h3 className="text-xl font-bold">Automation</h3>
-                      <p className="text-neutral-500 dark:text-neutral-400">
-                        Automate your workflow with continuous integration.
-                      </p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="grid gap-1">
-                      <h3 className="text-xl font-bold">Scale</h3>
-                      <p className="text-neutral-500 dark:text-neutral-400">
-                        Deploy to the cloud with a single click and scale with
-                        ease.
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+import { Button } from "@/components/ui/button";
+import CustomButton from "@/components/ui/button-1";
+import { Input } from "@/components/ui/input";
+import AnimatedTitle from "@/components/landing/animated-title";
+import Categories from "@/components/landing/categories";
+// import PremiumComponent from "@/components/landing/feature-premium"
+// import FeatureVarity from "@/components/landing/feature-varied"
+import MainTitle from "@/components/landing/main-title";
+import { InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 
-        <section className="w-full py-12 md:py-24 lg:py-32 border-t">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
-                  Sign Up for Updates
-                </h2>
-                <p className="max-w-[600px] text-neutral-500 md:text-xl dark:text-neutral-400">
-                  Stay updated with the latest product news and updates.
-                </p>
-              </div>
-              <div className="w-full max-w-sm space-y-2">
-                <form className="flex sm:flex-row flex-col space-y-2 sm:space-y-0 sm:space-x-2">
-                  <input
-                    className="max-w-lg flex-1 px-4 py-2 border-border border rounded-md "
-                    placeholder="Enter your email"
-                    type="email"
-                  />
-                  <button
-                    type="submit"
-                    className="inline-flex h-10 items-center justify-center rounded-md bg-neutral-900 px-4 text-sm font-medium text-neutral-50 shadow transition-colors hover:bg-neutral-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 dark:focus-visible:ring-neutral-300"
-                  >
-                    Sign Up
-                  </button>
-                </form>
-              </div>
-            </div>
+export default function IndexPage() {
+  const [nameStore, setNameStore] = useState("");
+  return (
+    <main className="flex h-max w-full flex-1 flex-col items-center justify-start pt-20 text-center">
+      <MainTitle />
+      <Categories />
+      <div className="relative mt-16 flex flex-col items-center justify-center gap-4">
+        <div className="sticky top-0 z-0 w-screen">
+          {/* <video
+            className="aspect-auto h-full w-full"
+            autoPlay={true}
+            loop
+            muted
+          >
+            <source
+              src="https://res.cloudinary.com/doacxwg1x/video/upload/v1685811508/STG_flash_zklobe.mp4"
+              type="video/mp4"
+            />
+          </video> */}
+        </div>
+        {/* <div className="z-30 grid h-max w-full sm:grid-cols-2">
+          <AnimatedTitle
+            title="Sube"
+            subtitle="Sube tus prendas, zapatillas y da vida a tu tienda en segundos."
+            image="https://assets.vogue.com/photos/60d88c184b12a701e3d2f114/16:9/w_2991,h_1682,c_limit/Paris%20Mens%20SS22%20day%205%20by%20STYLEDUMONDE%20Street%20Style%20Fashion%20Photography_95A0608FullRes.jpg"
+            side="left"
+            position="bg-top"
+          />
+          <AnimatedTitle
+            title="Comparte"
+            subtitle="Comparte tus tesoros en redes sociales y con una audiencia lista para descubrir nuevas cosas."
+            image="https://media.vogue.es/photos/5d3efffb90d7160008c443d2/16:9/pass/005-The-Complex-Case-Streetwear-Vogueint-June14-Getty-Images.jpg"
+            side="right"
+            position="bg-center"
+          />
+          <AnimatedTitle
+            title="Vende"
+            subtitle="No te quitamos nada de tu venta. Crea una base de clientes apasionada por tus productos y llevate todo."
+            image="https://hips.hearstapps.com/hmg-prod/images/0-copy-1653495593.jpg"
+            side="left"
+            position="bg-center"
+          />
+          <AnimatedTitle
+            title="Feedback"
+            subtitle="Obtén feedback valioso y construye tu reputación. Conquista el corazón de los aficionados con tus productos."
+            image="https://views.fr/wp-content/uploads/2017/08/CxyHX17WgAEmlus.jpg"
+            side="left"
+            position="bg-center"
+          />
+        </div> */}
+      </div>
+      <div className="group relative flex h-max w-full items-center justify-center px-2 sm:justify-start">
+        <section className=" flex h-96 w-full items-center justify-center gap-4 bg-secondary p-2 sm:mt-16 md:flex-row">
+          <div className="relative flex h-full w-full flex-col items-center justify-center  border-2 border-dashed border-primary p-4 ">
+            <h3 className="text-xl font-semibold">Productos</h3>
           </div>
         </section>
-      </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
-          © 2024 Acme Inc. All rights reserved.
+      </div>
+      <div className="group-landing-group m-10 my-20 mb-48 flex w-full flex-col items-center justify-center gap-6 border-2 border-border py-5 sm:w-3/4 sm:py-10 px-4">
+        {/*  ANIMATE THIS */}
+        <p className="text-lg font-bold sm:text-2xl">
+          Cambia la industria con nosotros, Registra tu tienda.
         </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-xs hover:underline underline-offset-4" href="#">
-            Terms of Service
-          </Link>
-          <Link className="text-xs hover:underline underline-offset-4" href="#">
-            Privacy
-          </Link>
-        </nav>
-      </footer>
-    </div>
-  );
-}
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Input
+            onChange={(e) => {
+              setNameStore(e.target.value);
+            }}
+            type="text"
+            id="name"
+            placeholder="YourMarket.cl"
+            className="group-landing-group-hover:drop-shadow-[0_20px_50px_rgba(266,_120,_81,_0.4)]"
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center gap-2 ">
+          <CustomButton
+            title="Empezar"
+            url={"/signup/" + nameStore}
+            color="bg-secondary"
+            textColor="text-default"
+          />
+          {/* <Button asChild variant="link" className="underline sm:no-underline">
+            <Link href={"/signup/" + nameStore}>Tengo mi marca propia</Link>
+          </Button> */}
+        </div>
+      </div>
+      {/* <PremiumComponent /> */}
 
-function MountainIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-    </svg>
+      {/* <FeatureVarity /> */}
+      <footer className="w-full">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+          <div className="text-sm">
+            &copy; 2024 YourMarket - All rights reserved
+          </div>
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <Link
+              href="#"
+              className="hover:text-gray-200 transition-colors"
+              prefetch={false}
+            >
+              About
+            </Link>
+            <Link
+              href="#"
+              className="hover:text-gray-200 transition-colors"
+              prefetch={false}
+            >
+              Shop
+            </Link>
+            <Link
+              href="#"
+              className="hover:text-gray-200 transition-colors"
+              prefetch={false}
+            >
+              Contact
+            </Link>
+          </div>
+          <div className="flex gap-4 mt-4 md:mt-0">
+            <Link
+              href="#"
+              aria-label="Instagram"
+              className="hover:text-gray-200 transition-colors"
+              prefetch={false}
+            >
+              <InstagramLogoIcon />
+            </Link>
+            <Link
+              href="#"
+              aria-label="Twitter"
+              className="hover:text-gray-200 transition-colors"
+              prefetch={false}
+            >
+              <TwitterLogoIcon />
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </main>
   );
 }
