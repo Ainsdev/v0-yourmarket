@@ -90,7 +90,7 @@ export default function IndexPage() {
         <div className="flex flex-col items-center justify-center gap-2 ">
           <CustomButton
             title="Empezar"
-            url={"/signup/" + nameStore}
+            url="/add-quote"
             color="bg-secondary"
             textColor="text-default"
           />
