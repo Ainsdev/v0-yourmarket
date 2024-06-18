@@ -19,6 +19,7 @@ const runMigrate = async () => {
   console.log("✅ Migrations completed in", end - start, "ms");
 
   sqlite.close();
+  process.exit(0);
 };
 
 runMigrate().catch((err) => {
