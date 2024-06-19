@@ -1,0 +1,1 @@
+ALTER TABLE `posts` ADD `sku` text;

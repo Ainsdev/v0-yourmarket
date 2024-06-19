@@ -33,7 +33,7 @@ export const posts = sqliteTable(
     region: text("region").notNull(),
     contact: text("contact").notNull(),
     // stock: integer("stock").notNull().default(1),
-    sku: text("sku").notNull(),
+    sku: text("sku"),
     // color: text("color").notNull(),
     categoryId: integer("category_id").notNull(),
     subcategory: text("subcategory").notNull(),
