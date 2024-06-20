@@ -150,17 +150,24 @@
       "breakpoints": true
     },
     {
-      "idx": 21,
-      "version": "6",
-      "when": 1718395201663,
-      "tag": "0021_fluffy_eternity",
-      "breakpoints": true
-    },
-    {
       "idx": 22,
       "version": "6",
       "when": 1718840029007,
       "tag": "0022_burly_nightcrawler",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1718856238460,
+      "tag": "0023_tired_ozymandias",
+      "breakpoints": false
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1718892351040,
+      "tag": "0024_crazy_famine",
       "breakpoints": true
     }
   ]

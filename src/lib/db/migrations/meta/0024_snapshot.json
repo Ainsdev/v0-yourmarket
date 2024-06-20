@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "96b79a87-369f-4cbf-a795-6963e9c8d8b4",
-  "prevId": "2c8b32dc-a9f7-4766-9862-fdf0aafa9685",
+  "id": "647a1280-49f1-479f-b32d-a6bdf625aced",
+  "prevId": "f89714ed-81ea-4bcd-bcf5-5804fa9b7f1c",
   "tables": {
     "session": {
       "name": "session",
@@ -217,12 +217,13 @@
           "notNull": true,
           "autoincrement": false
         },
-        "sku": {
-          "name": "sku",
-          "type": "text",
+        "stock": {
+          "name": "stock",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": 1
         },
         "category_id": {
           "name": "category_id",

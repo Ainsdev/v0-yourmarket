@@ -1,0 +1,1 @@
+ALTER TABLE `posts` ADD `stock` integer DEFAULT 1;
