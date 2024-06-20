@@ -110,7 +110,7 @@ const Store = ({ store }: { store: CompleteStore }) => {
         <div className="flex gap-4 justify-end items-center sm:flex-col lg:flex-row">
           <Button variant="link" asChild>
             <Link
-              href={"/stores/" + store.slug}
+              href={"/stores/" + store.id}
               className="flex items-center space-x-1"
             >
               <span className="text-xs flex gap-2">

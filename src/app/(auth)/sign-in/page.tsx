@@ -19,7 +19,7 @@ export default function SignInPage() {
   });
 
   return (
-    <main className="max-w-lg mx-auto my-4 bg-popover p-10 rounded-xl">
+    <main className="min-w-96 max-w-2xl mx-auto my-4 bg-card-foreground/20 backdrop-blur-md p-10 rounded-xl flex flex-col gap-4">
       <h1 className="text-2xl font-bold text-center">
         Inicia sesion en YourMarket
       </h1>
@@ -36,7 +36,7 @@ export default function SignInPage() {
         <Input type="password" name="password" id="password" required />
         <br />
         <div className="flex flex-col items-center justify-center gap-4">
-          <Button variant="outline" className="w-full" asChild>
+          <Button variant="outline" className="w-full hover:scale-95" asChild>
             <Link href="/sign-in/google">
               <GoogleLogo className="mr-2 h-5 w-5" />
               Inicia sesion con Google
@@ -61,11 +61,7 @@ export default function SignInPage() {
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   return (
-    <Button
-      className="w-full"
-      type="submit"
-      disabled={pending}
-    >
+    <Button className="w-full hover:scale-95" type="submit" disabled={pending}>
       {pending ? <AnimatedSpinner /> : "Iniciar Sesion"}
     </Button>
   );

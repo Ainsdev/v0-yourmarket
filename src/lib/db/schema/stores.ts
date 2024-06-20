@@ -34,10 +34,10 @@ export const stores = sqliteTable(
     instagram: text("instagram"),
     createdAt: text("created_at")
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`(CURRENT_TIMESTAMP)`),
     updatedAt: text("updated_at")
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`(CURRENT_TIMESTAMP)`)
   },
   (stores) => {
     return {

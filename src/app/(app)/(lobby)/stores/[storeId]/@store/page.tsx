@@ -20,15 +20,15 @@ export default async function StorePage({
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="xl:px-12 sm:px-10 px-4 py-4 bg-secondary rounded-lg min-w-2xl max-w-5xl flex flex-col gap-4">
+      <div className="xl:px-12 sm:px-10 px-4 py-4 bg-secondary rounded-lg w-full max-w-4xl flex flex-col gap-4">
         <div className="flex items-start justify-between w-full gap-2">
           <div className="flex items-center justify-start gap-4">
             <Image
               src={store.image || "/images/placeholder.jpg"}
               alt={store.slug}
-              width={80}
-              height={80}
-              className="rounded-lg"
+              width={90}
+              height={90}
+              className="rounded-full"
             />
             <div className="grid gap-1">
               <div className="flex flex-col justify-center items-start">

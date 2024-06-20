@@ -103,6 +103,8 @@ const formSchema = storeBaseSchema
     sold: true,
     discountPercentage: true,
     discountPrice: true,
+    pinned: true,
+    stock: true,
   });
 
 const PostForm = ({
@@ -219,6 +221,8 @@ const PostForm = ({
       sold: post?.sold ?? false,
       discountPercentage: 0,
       discountPrice: 0,
+      stock: 1,
+      pinned: false,
       //DO WORK THIS
     };
     try {
@@ -808,7 +812,7 @@ const PostForm = ({
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            defaultValue={store.instagram || store.phone?.toString()}
                           >
                             <FormControl>
                               <SelectTrigger>
