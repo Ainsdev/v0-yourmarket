@@ -116,7 +116,7 @@ const PostForm = ({
   postSuccess,
 }: {
   post?: Post | null;
-  store: Store;
+  store?: Store;
   storeId?: StoreId;
   openModal?: (post?: Post) => void;
   closeModal?: () => void;
@@ -138,7 +138,7 @@ const PostForm = ({
       condition: post?.condition,
       mainImage: post?.mainImage,
       contact:
-        post?.contact || store.phone?.toString() || store.instagram || "",
+        post?.contact || store?.phone?.toString() || store?.instagram || "",
       // rangePrice: post?.rangePrice,
     },
   });
@@ -216,7 +216,7 @@ const PostForm = ({
       price: parseInt(cleanClp(data.price), 10),
       images: data.images ?? "[]",
       mainImage: data.mainImage ?? "",
-      region: store.city,
+      region: store?.city || "",
       name: refinedName.toString(),
       sold: post?.sold ?? false,
       discountPercentage: 0,
@@ -812,7 +812,7 @@ const PostForm = ({
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={store.instagram || store.phone?.toString()}
+                            defaultValue={store?.instagram || store?.phone?.toString()}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -820,14 +820,14 @@ const PostForm = ({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {store.phone && (
-                                <SelectItem value={store.phone.toString()}>
-                                  {"Telefono: " + store.phone}
+                              {store?.phone && (
+                                <SelectItem value={store?.phone.toString()}>
+                                  {"Telefono: " + store?.phone}
                                 </SelectItem>
                               )}
-                              {store.instagram && (
-                                <SelectItem value={store.instagram}>
-                                  {"IG: " + store.instagram}
+                              {store?.instagram && (
+                                <SelectItem value={store?.instagram}>
+                                  {"IG: " + store?.instagram}
                                 </SelectItem>
                               )}
                             </SelectContent>

@@ -12,6 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardIcon, TableIcon } from "@radix-ui/react-icons";
 import { ProductsGalleryView } from "@/components/posts/post-gallery/data-gallery";
 import { SkeletonCard } from "@/components/posts/post-gallery/data-gallery-skeleton";
+import { DrawerDialog } from "@/components/DrawerDialog";
+import PostForm from "@/components/posts/PostForm";
+import NewPostComponent from "@/components/posts/add-new";
 
 interface ProductsPageProps {
   params: {
@@ -80,22 +83,26 @@ export default async function ProductsPage({
     order
   );
 
+
   return (
     <div className="space-y-6 w-full">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between max-w-xl">
         <h2 className="text-2xl font-bold tracking-tight">Productos</h2>
       </div>
       <Tabs defaultValue="gallery" className="w-full h-max">
-        {/* <div className="w-full flex justify-center items-start"> */}
-        <TabsList className="p-4">
-          <TabsTrigger value="gallery" className="flex gap-1">
-            <DashboardIcon /> Vista normal
-          </TabsTrigger>
-          <TabsTrigger value="table" className="flex gap-1">
-            <TableIcon /> Vista Avanzada
-          </TabsTrigger>
-        </TabsList>
-        {/* </div> */}
+        <div className="w-full flex gap-2 justify-between items-start">
+          <TabsList className="p-4">
+            <TabsTrigger value="gallery" className="flex gap-1">
+              <DashboardIcon /> Vista normal
+            </TabsTrigger>
+            <TabsTrigger value="table" className="flex gap-1">
+              <TableIcon /> Vista Avanzada
+            </TabsTrigger>
+          </TabsList>
+          <NewPostComponent
+            storeId={storeId}
+          />
+        </div>
         <TabsContent value="gallery">
           <React.Suspense fallback={<SkeletonCard />}>
             <ProductsGalleryView
