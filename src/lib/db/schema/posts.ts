@@ -1,10 +1,9 @@
-import { SQL, relations, sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   text,
   integer,
   sqliteTable,
   uniqueIndex,
-  AnySQLiteColumn,
 } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -12,11 +11,6 @@ import { type getPosts } from "@/lib/api/posts/queries";
 
 import { nanoid, timestamps } from "@/lib/utils";
 import { stores } from "./stores";
-
-// custom lower function
-export function lower(email: AnySQLiteColumn): SQL {
-  return sql`lower(${email})`;
-}
 
 export const posts = sqliteTable(
   "posts",
@@ -62,10 +56,10 @@ export const posts = sqliteTable(
   },
   (posts) => {
     return {
-      brandIndex: uniqueIndex("brand_idx").on(lower(posts.brand)),
-      sizeIndex: uniqueIndex("size_idx").on(lower(posts.size)),
-      conditionIndex: uniqueIndex("condition_idx").on(lower(posts.condition)),
-      categoryIndex: uniqueIndex("category_idx").on(lower(posts.categoryId)),
+      brandIndex: uniqueIndex("brand_idx").on(posts.brand),
+      sizeIndex: uniqueIndex("size_idx").on(posts.size),
+      conditionIndex: uniqueIndex("condition_idx").on(posts.condition),
+      categoryIndex: uniqueIndex("category_idx").on(posts.categoryId),
     };
   }
 );
