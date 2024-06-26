@@ -83,7 +83,6 @@ export default async function ProductsPage({
     order
   );
 
-
   return (
     <div className="space-y-6 w-full">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between max-w-xl">
@@ -99,9 +98,7 @@ export default async function ProductsPage({
               <TableIcon /> Vista Avanzada
             </TabsTrigger>
           </TabsList>
-          <NewPostComponent
-            storeId={storeId}
-          />
+          <NewPostComponent storeId={storeId} />
         </div>
         <TabsContent value="gallery">
           <React.Suspense fallback={<SkeletonCard />}>
