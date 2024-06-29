@@ -5,6 +5,7 @@ import {
   sqliteTable,
   uniqueIndex,
   AnySQLiteColumn,
+  index,
 } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -41,7 +42,7 @@ export const stores = sqliteTable(
   },
   (stores) => {
     return {
-      cityIndex: uniqueIndex("city_idx").on(stores.city),
+      cityIndex: index("city_idx").on(stores.city),
     };
   }
 );

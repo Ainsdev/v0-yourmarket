@@ -4,6 +4,7 @@ import {
   integer,
   sqliteTable,
   uniqueIndex,
+  index,
 } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -56,10 +57,10 @@ export const posts = sqliteTable(
   },
   (posts) => {
     return {
-      brandIndex: uniqueIndex("brand_idx").on(posts.brand),
-      sizeIndex: uniqueIndex("size_idx").on(posts.size),
-      // conditionIndex: uniqueIndex("condition_idx").on(posts.condition),
-      categoryIndex: uniqueIndex("category_idx").on(posts.categoryId),
+      brandIndex: index("brand_idx").on(posts.brand),
+      sizeIndex: index("size_idx").on(posts.size),
+      conditionIndex: index("condition_idx").on(posts.condition),
+      categoryIndex: index("category_idx").on(posts.categoryId),
     };
   }
 );
