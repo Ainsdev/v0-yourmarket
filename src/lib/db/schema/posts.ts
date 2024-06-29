@@ -58,7 +58,7 @@ export const posts = sqliteTable(
     return {
       brandIndex: uniqueIndex("brand_idx").on(posts.brand),
       sizeIndex: uniqueIndex("size_idx").on(posts.size),
-      conditionIndex: uniqueIndex("condition_idx").on(posts.condition),
+      // conditionIndex: uniqueIndex("condition_idx").on(posts.condition),
       categoryIndex: uniqueIndex("category_idx").on(posts.categoryId),
     };
   }
