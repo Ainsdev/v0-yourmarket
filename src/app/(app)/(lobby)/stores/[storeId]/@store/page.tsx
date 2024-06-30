@@ -29,7 +29,7 @@ export default async function StorePage({
               width={90}
               height={90}
               className="rounded-2xl"
-            />
+            />  ``
             <div className="grid gap-1">
               <div className="flex flex-col justify-center items-start">
                 <h2 className="text-2xl font-bold">{store.name}</h2>
