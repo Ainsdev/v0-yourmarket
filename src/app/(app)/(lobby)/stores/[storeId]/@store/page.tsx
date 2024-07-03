@@ -43,7 +43,7 @@ export default async function StorePage({
                   <StarIcon className="w-5 h-5" />
                   <StarIcon className="w-5 h-5" />
                   <StarIcon className="w-5 h-5" />
-                  <StarIcon className="w-5 h-5 text-gray-300 dark:text-gray-600" />
+                  <StarIcon className="w-5 h-5 text-gray-300" />
                 </div>
               </div>
               <span className="text-sm text-muted-foreground">
