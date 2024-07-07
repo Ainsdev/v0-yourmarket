@@ -47,7 +47,7 @@ export default async function StorePage({
                 </div>
               </div>
               <span className="text-sm text-muted-foreground">
-                4.8 (126 Ventas)
+                4.8 (125 Ventas)
               </span>
             </div>
           </div>
