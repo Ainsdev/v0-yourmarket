@@ -27,7 +27,9 @@ export const GalleryImagePost = (props: GalleryImagePostProps) => {
       }}
       className="w-56 h-56 group"
     >
-      <Link href="" className=" h-full text-3xl text-white bg-black w-full">
+      <Link href={
+        `/posts/${props.id}`
+      } className=" h-full text-3xl text-white bg-black w-full">
         <div>
           <Image
             src={

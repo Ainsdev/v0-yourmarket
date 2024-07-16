@@ -28,7 +28,7 @@ export default async function StorePage({
               alt={store.slug}
               width={90}
               height={90}
-              className="rounded-2xl"
+              className="rounded-full w-24 h-24"
             />
             <div className="grid gap-1">
               <div className="flex flex-col justify-center items-start">

@@ -16,12 +16,17 @@ export const getPostById = async (id: PostId) => {
   console.log("getPostById", id);
   const { id: postId } = postIdSchema.parse({ id });
   const [row] = await db
-    .select({ post: posts, store: stores })
+    .select({
+      post: posts,
+      //  store: stores
+    })
     .from(posts)
-    .where(eq(posts.id, postId))
-    .leftJoin(stores, eq(posts.storeId, stores.id));
+    .where(eq(posts.id, postId));
+  // .leftJoin(stores, eq(posts.storeId, stores.id));
   if (row === undefined) return {};
-  const p = { ...row.post, store: row.store };
+  const p = {
+    ...row.post,
+    //  store: row.store
+  };
   return { post: p };
 };
-

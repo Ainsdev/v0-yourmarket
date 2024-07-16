@@ -27,6 +27,7 @@ type AwaitedProduct = Pick<
   | "createdAt"
   | "brand"
   | "mainImage"
+  | "size"
 >;
 
 interface ProductsGalleryShellProps {
@@ -83,7 +84,7 @@ export function ProductsGalleryView({
                 name={product.name}
                 price={product.price}
                 image={product.mainImage}
-                size={product.brand}
+                size={product.size}
               />
             ))
           : "No hay publicaciones aun"}
