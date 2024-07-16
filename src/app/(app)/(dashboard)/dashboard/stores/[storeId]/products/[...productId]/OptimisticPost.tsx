@@ -143,7 +143,7 @@ export default function OptimisticPost({
             Editar
           </Button>
         </div>
-        <DefaultPostView post={} />
+        <DefaultPostView post={optimisticPost} />
       </div>
     </div>
   );

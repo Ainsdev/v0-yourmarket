@@ -21,11 +21,11 @@ export default async function PostPage({
 
 const Post = async ({ id }: { id: string }) => {
   const { post } = await getPostById(id);
-  if (!post || post.active == false || post.sold) notFound();
+  if (!post ) notFound();
 
   return (
     <Suspense fallback={<Loading />}>
-      <DefaultPostView optimisticPost={} />
+      <DefaultPostView post={post} />
     </Suspense>
   );
 };

@@ -10,7 +10,9 @@ import {
 } from "../ui/carousel";
 import Image from "next/image";
 
-export default function DefaultPostView(post: Post) {
+export default function DefaultPostView(
+    { post }: { post: Post }
+) {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_2fr] md:gap-8 mt-4 sm:py-12 sm:border sm:border-muted rounded-md sm:px-2">
       <div className="p-10 w-full">

@@ -1,39 +1,31 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import Loading from "@/app/loading";
 
-import { useRouter } from "next/navigation";
 
-const AddQuoteModal = () => {
-  const router = useRouter();
+import { getPostById } from "@/lib/api/posts/queries";
+
+import { notFound, useRouter } from "next/navigation";
+import { Suspense } from "react";
+import DrawerPost from "./drawer";
+
+export default function PostPageModal({
+  params,
+}: {
+  params: { postId: string };
+}) {
   return (
-    <Drawer
-      open={true}
-      onOpenChange={(open) => {
-        if (!open) {
-          router.back();
-        }
-      }}
-    >
-      <DrawerTrigger>Open</DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-          <DrawerDescription>This action cannot be undone.</DrawerDescription>
-        </DrawerHeader>
-        <DrawerFooter>Sumbit</DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+    <main className="overflow-auto">
+      <Post id={params.postId} />
+    </main>
   );
 };
 
-export default AddQuoteModal;
+const Post = async ({ id }: { id: string }) => {
+  const { post } = await getPostById(id);
+  if (!post ) notFound();
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <DrawerPost post={post} />
+    </Suspense>
+  );
+};
