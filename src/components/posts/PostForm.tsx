@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { useState, useTransition } from "react";
+import { TransitionStartFunction, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -10,11 +10,11 @@ import {
   numberToClp,
   cleanClp,
   isArrayOfFile,
+  fileWithPreviewArrayFunction,
 } from "@/lib/utils";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
 
 import {
@@ -72,9 +72,11 @@ import { FileWithPreview } from "@/lib/types";
 import { FileDialog } from "../file-dialog";
 import { Switch } from "../ui/switch";
 import { createPostAction, updatePostAction } from "@/lib/actions/posts";
+import { ClientUploadedFileData } from "uploadthing/types";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
+// Form Schema for validations
 const formSchema = storeBaseSchema
   .extend({
     active: z.coerce.boolean(),
@@ -90,9 +92,9 @@ const formSchema = storeBaseSchema
     imagesArray: z
       .array(
         z.any({
-          required_error: "Selecciona al menos una imagen",
-          invalid_type_error: "Debes seleccionar un archivo de imagen",
-          description: "Imagenes",
+          // required_error: "Selecciona al menos una imagen",
+          // invalid_type_error: "Debes seleccionar un archivo de imagen",
+          // description: "Imagenes",
         })
       )
       .min(0, "Selecciona al menos una imagen")
@@ -139,46 +141,27 @@ const PostForm = ({
       mainImage: post?.mainImage,
       contact:
         post?.contact || store?.phone?.toString() || store?.instagram || "",
-      // rangePrice: post?.rangePrice,
     },
   });
-  //IMAGES UPLOAD
-  //convert the string of images to an array
-  const fileWithPreviewArray = post?.images
-    ? (post.images.split(",").map((url: string) => ({
-        url,
-        preview: url,
-        file: null,
-        name: url.split("/").pop() as string,
-      })) as unknown as FileWithPreview[])
-    : null;
 
-  const { isUploading, startUpload } = useUploadThing("productImages");
+  //IMAGES UPLOAD START
+  const fileWithPreviewArray = fileWithPreviewArrayFunction(post); //convert the string of images to an array
+  const { isUploading, startUpload } = useUploadThing("productImages", {
+    skipPolling: true,
+  });
   const [files, setFiles] = useState<FileWithPreview[] | null>(
     fileWithPreviewArray
   );
   const [viewImage, setViewImage] = useState<string | null>(
     post?.mainImage ?? ""
   );
-
+  //IMAGES UPLOAD END
   const editing = !!post?.id;
   // const [brandInName, setBrandInName] = useState(post?.brand ?? "");
   // const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
-
   const router = useRouter();
   const backpath = useBackPath("posts");
-
-  //provisional
-  const handleErrors = (e: unknown) => {
-    const errMsg = "Error, please try again.";
-    if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
-    if (e && typeof e === "object" && "error" in e) {
-      const errAsStr = e.error as string;
-      return errAsStr.length > 0 ? errAsStr : errMsg;
-    }
-    return errMsg;
-  };
 
   const onSuccess = (
     action: Action,
@@ -198,128 +181,18 @@ const PostForm = ({
     }
   };
 
-  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    // closeModal && closeModal();
-    //refined name: Make the first letter upercasse
-    const refinedName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
-
-    const pendingPost: Post = {
-      updatedAt:
-        post?.updatedAt ??
-        new Date().toISOString().slice(0, 19).replace("T", " "),
-      createdAt:
-        post?.createdAt ??
-        new Date().toISOString().slice(0, 19).replace("T", " "),
-      id: post?.id as string,
-      ...data,
-      storeId: storeId as number,
-      price: parseInt(cleanClp(data.price), 10),
-      images: data.images ?? "[]",
-      mainImage: data.mainImage ?? "",
-      region: store?.city || "",
-      name: refinedName.toString(),
-      sold: post?.sold ?? false,
-      discountPercentage: 0,
-      discountPrice: 0,
-      stock: 1,
-      pinned: false,
-      //DO WORK THIS
-    };
-    try {
-      startMutation(async () => {
-        //Check if is editing or creating
-        if (editing) {
-          const error = await updatePostAction(
-            JSON.parse(
-              JSON.stringify({
-                ...pendingPost,
-                id: post?.id ?? "",
-                active: data.active,
-                gender: data.gender,
-              })
-            )
-          );
-          const errorFormatted = {
-            error: error ?? "Error",
-            values: pendingPost,
-          };
-          onSuccess(
-            editing ? "update" : "create",
-            error ? errorFormatted : undefined
-          );
-          //creating
-        } else {
-          //with images
-          if (isArrayOfFile(data.imagesArray)) {
-            toast.promise(
-              startUpload(data.imagesArray)
-                .then((res) => {
-                  const formattedImages = res?.map((image) => ({
-                    id: image.key,
-                    name: image.key.split("_")[1] as string,
-                    url: image.url,
-                  }));
-                  return formattedImages ?? null;
-                })
-                .then(async (images) => {
-                  // make an array of urls in string
-                  const imagesString = `${images?.map((image) => image.url)}`;
-                  //Select the index image based on the viewImage or the first image
-                  const indexMainImage =
-                    files?.findIndex((file) => file.preview === viewImage) || 0;
-                  return await createPostAction(
-                    JSON.parse(
-                      JSON.stringify({
-                        ...pendingPost,
-                        images: imagesString,
-                        mainImage: images?.[indexMainImage]?.url as string,
-                        active: data.active,
-                        gender: data.gender,
-                      })
-                    )
-                  );
-                })
-                .catch((e) => {
-                  return { error: e.message };
-                }),
-              {
-                loading: "Subiendo Imagenes...",
-                success: "Producto agregado exitosamente.",
-                error: "Error, algo salio mal.",
-              }
-            );
-            // without images
-          } else {
-            const error = await createPostAction(
-              JSON.parse(
-                JSON.stringify({
-                  ...pendingPost,
-                  active: data.active,
-                  gender: data.gender,
-                })
-              )
-            );
-            const errorFormatted = {
-              error: error ?? "Error",
-              values: pendingPost,
-            };
-            onSuccess(
-              editing ? "update" : "create",
-              error ? errorFormatted : undefined
-            );
-            toast.success("Producto agregado exitosamente.");
-          }
-        }
-        closeModal && closeModal();
-      });
-    } catch (e: any) {
-      if (e instanceof z.ZodError) {
-        toast.error("Algo salio mal, revisa tus datos.");
-      } else {
-        toast.error(e.message);
-      }
-    }
-  };
+  const handleSubmit = handlePostSubmission(
+    post,
+    storeId,
+    store,
+    startMutation,
+    editing,
+    onSuccess,
+    startUpload,
+    files,
+    viewImage,
+    closeModal
+  );
 
   return (
     <Form {...form}>
@@ -596,7 +469,7 @@ const PostForm = ({
                       <FormLabel>Condicion</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={field.value || "new"}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -687,6 +560,7 @@ const PostForm = ({
           </CardContent>
         </Card>
         <div className="flex flex-col sm:flex-row gap-3 w-full">
+          {/* Images */}
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Imagenes</CardTitle>
@@ -745,10 +619,11 @@ const PostForm = ({
                     disabled={pending}
                   />
                 </FormControl>
-                <UncontrolledFormMessage message="Selecciona al menos una imagen" />
+                {}
               </FormItem>
             </CardContent>
           </Card>
+          {/* Price, contact & public or not */}
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Precio</CardTitle>
@@ -812,7 +687,9 @@ const PostForm = ({
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={store?.instagram || store?.phone?.toString()}
+                            defaultValue={
+                              store?.instagram || store?.phone?.toString()
+                            }
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -841,7 +718,7 @@ const PostForm = ({
               </CardContent>
             </CardHeader>
           </Card>
-          {JSON.stringify(form.formState.errors, null, 2)}
+          {/* {JSON.stringify(form.formState.errors, null, 2)} */}
         </div>
         {/* Schema fields end */}
         <div className="w-full h-full flex flex-col gap-4 justify-center items-center">
@@ -876,3 +753,139 @@ const PostForm = ({
 };
 
 export default PostForm;
+function handlePostSubmission(
+  post: Post | undefined | null,
+  storeId: number | undefined,
+  store: Store | undefined,
+  startMutation: any,
+  editing: boolean,
+  onSuccess: (action: Action, data?: { error: string; values: Post }) => void,
+  startUpload: {
+    (files: File[], input?: undefined): Promise<any[] | undefined>;
+    (arg0: File[]): Promise<any>;
+  },
+  files: FileWithPreview[] | null,
+  viewImage: string | null,
+  closeModal: (() => void) | undefined
+) {
+  return async (data: z.infer<typeof formSchema>) => {
+    //refined name: Make the first letter upercasse
+    const refinedName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+
+    const pendingPost: Post = {
+      updatedAt:
+        post?.updatedAt ??
+        new Date().toISOString().slice(0, 19).replace("T", " "),
+      createdAt:
+        post?.createdAt ??
+        new Date().toISOString().slice(0, 19).replace("T", " "),
+      id: post?.id as string,
+      ...data,
+      storeId: storeId as number,
+      price: parseInt(cleanClp(data.price), 10),
+      images: data.images ?? "[]",
+      mainImage: data.mainImage ?? "",
+      region: store?.city || "",
+      name: refinedName.toString(),
+      sold: post?.sold ?? false,
+      discountPercentage: 0,
+      discountPrice: 0,
+      stock: 1,
+      pinned: false,
+      //DO WORK THIS FOR UPDATE IMAGES
+    };
+    try {
+      startMutation(async () => {
+        //Check if is editing or creating
+        if (editing) {
+          const error = await updatePostAction(
+            JSON.parse(
+              JSON.stringify({
+                ...pendingPost,
+                id: post?.id ?? "",
+              })
+            )
+          );
+          const errorFormatted = {
+            error: error ?? "Error",
+            values: pendingPost,
+          };
+          onSuccess(
+            editing ? "update" : "create",
+            error ? errorFormatted : undefined
+          );
+          //creating
+        } else {
+          //with images
+          if (isArrayOfFile(data.imagesArray)) {
+            toast.promise(
+              startUpload(data.imagesArray)
+                .then((res) => {
+                  const formattedImages = res?.map((image) => ({
+                    id: image.key,
+                    name: image.key.split("_")[1] as string,
+                    url: image.url,
+                  }));
+                  return formattedImages ?? null;
+                })
+                .then(async (images) => {
+                  // make an array of urls in string
+                  const imagesString = `${images?.map((image) => image.url)}`;
+                  //Select the index image based on the viewImage or the first image
+                  const indexMainImage = files?.findIndex(
+                    (file) => file.preview === viewImage
+                  );
+                  return await createPostAction(
+                    JSON.parse(
+                      JSON.stringify({
+                        ...pendingPost,
+                        images: imagesString,
+                        mainImage: images?.[indexMainImage || 0]?.url as string,
+                        active: data.active,
+                        gender: data.gender,
+                      })
+                    )
+                  );
+                })
+                .catch((e) => {
+                  return { error: e.message };
+                }),
+              {
+                loading: "Subiendo Imagenes...",
+                success: "Producto agregado exitosamente.",
+                error: "Error, algo salio mal.",
+              }
+            );
+            // without images
+          } else {
+            const error = await createPostAction(
+              JSON.parse(
+                JSON.stringify({
+                  ...pendingPost,
+                  active: data.active,
+                  gender: data.gender,
+                })
+              )
+            );
+            const errorFormatted = {
+              error: error ?? "Error",
+              values: pendingPost,
+            };
+            onSuccess(
+              editing ? "update" : "create",
+              error ? errorFormatted : undefined
+            );
+            toast.success("Producto agregado exitosamente.");
+          }
+        }
+        closeModal && closeModal();
+      });
+    } catch (e: any) {
+      if (e instanceof z.ZodError) {
+        toast.error("Algo salio mal, revisa tus datos.");
+      } else {
+        toast.error(e.message);
+      }
+    }
+  };
+}

@@ -24,7 +24,7 @@ export const ourFileRouter = {
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId, url: file.url };
     }),
-  productImages: f({ image: { maxFileSize: "2MB", maxFileCount: 4 } })
+  productImages: f({ image: { maxFileCount: 3 } })
     .middleware(async ({ req }) => {
       const { session } = await getUserAuth();
       if (!session) throw new UploadThingError("Unauthorized");

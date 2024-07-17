@@ -46,8 +46,8 @@ export default function DrawerPost({ post }: { post: Post }) {
           </DrawerDescription>
           <DrawerClose />
         </DrawerHeader>
-        <div className="grid grid-cols-1 px-4 gap-6 md:grid-cols-3 mt-4 sm:py-12 sm:border sm:border-muted rounded-md sm:px-2 overflow-auto">
-          <div className="p-10 w-full">
+        <div className="grid grid-cols-1 px-4 gap-6 md:grid-cols-3 pb-2 sm:py-12 sm:border sm:border-muted rounded-md sm:px-2 overflow-auto">
+          <div className="px-10 w-full">
             <Carousel>
               <CarouselContent>
                 {post.images.split(",").map((image, index) => (

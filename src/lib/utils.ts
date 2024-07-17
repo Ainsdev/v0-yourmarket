@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { toast } from "sonner";
+import { FileWithPreview } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -177,4 +178,15 @@ export function toSentenceCase(str: string) {
   return str
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (str) => str.toUpperCase())
+}
+
+export function fileWithPreviewArrayFunction(post: { id: string; brand: string; name: string; description: string | null; active: boolean | null; condition: string | null; mainImage: string; images: string; price: number; sold: boolean | null; gender: number | null; size: string; region: string | null; contact: string; stock: number | null; categoryId: number; subcategory: string; pinned: boolean | null; discountPercentage: number | null; discountPrice: number | null; createdAt: string; updatedAt: string; storeId: number; } | null | undefined) {
+  return post?.images
+    ? (post.images.split(",").map((url: string) => ({
+      url,
+      preview: url,
+      file: null,
+      name: url.split("/").pop() as string,
+    })) as unknown as FileWithPreview[])
+    : null;
 }

@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import AuthFormError from "@/components/auth/AuthFormError";
 import { AnimatedSpinner, GoogleLogo } from "@/components/icons";
-import { Input } from "@/components/animated/ui/input";
+import { Input } from "@/components/ui/input";
+
 
 export default function SignInPage() {
   const [state, formAction] = useFormState(signInAction, {

@@ -23,7 +23,7 @@ export const posts = sqliteTable(
     description: text("description"),
     active: integer("active", { mode: "boolean" }),
     brand: text("brand").notNull(),
-    condition: text("condition").notNull(),
+    condition: text("condition"),
     mainImage: text("main_image").notNull(),
     images: text("images").notNull(), // Array of strings
     price: integer("price").notNull(),
@@ -31,7 +31,7 @@ export const posts = sqliteTable(
     // rangePrice: text("range_price"),
     gender: integer("gender"), // 0: Hombre, 1: Mujer, 2: Unisex, 3: Niños
     size: text("size").notNull(),
-    region: text("region").notNull(),
+    region: text("region"),
     contact: text("contact").notNull(),
     stock: integer("stock").default(1),  
     // sku: text("sku"),

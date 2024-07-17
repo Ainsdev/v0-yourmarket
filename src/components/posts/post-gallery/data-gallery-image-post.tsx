@@ -25,7 +25,7 @@ export const GalleryImagePost = (props: GalleryImagePostProps) => {
         rotate: props.rotate || "1.5deg",
         scale: props.scale || 1.05,
       }}
-      className="w-56 h-56 group"
+      className="w-56 h-56 group relative"
     >
       <Link href={
         `/posts/${props.id}`
