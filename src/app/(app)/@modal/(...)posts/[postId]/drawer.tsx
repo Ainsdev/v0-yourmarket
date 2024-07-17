@@ -41,7 +41,7 @@ export default function DrawerPost({ post }: { post: Post }) {
           <DrawerTitle>{post.name}</DrawerTitle>
           <DrawerDescription>
             {productCategories[post.categoryId].title +
-              " - " +
+              "-" +
               post.subcategory}
           </DrawerDescription>
           <DrawerClose />
