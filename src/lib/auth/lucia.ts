@@ -41,7 +41,7 @@ interface DatabaseUserAttributes {
 export const google = new Google(
   env.GOOGLE_CLIENT_ID,
   env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:3000/sign-in/google/callback"
+  "http://v0-yourmarket.vercel.app/sign-in/google/callback"
 );
 
 declare module "lucia" {
