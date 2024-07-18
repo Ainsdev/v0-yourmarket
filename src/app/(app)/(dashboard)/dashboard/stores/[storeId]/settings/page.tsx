@@ -47,7 +47,7 @@ export default function SettingsStorePage({ params }: SettingsStorePage) {
 
   return (
     <div className="flex flex-col justify-start items-center gap-8 p-4 w-full">
-      <div className="w-full flex flex-col gap-4 justify-center items-start md:flex-row xl:px-20">
+      <div className=" flex flex-col gap-4 justify-center items-start md:flex-row xl:px-20">
         <Card className="w-full bg-gradient-to-br from-[#6366F1] to-[#9333EA] p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex items-start gap-4">
             <div className="bg-white/20 p-3 rounded-lg">

@@ -26,7 +26,7 @@ const Posts = async () => {
   const { stores } = await getStores();
   return (
     <Suspense fallback={<Loading />}>
-      <PostList posts={posts} stores={stores} />
+      <PostList posts={posts}  />
     </Suspense>
   );
 };

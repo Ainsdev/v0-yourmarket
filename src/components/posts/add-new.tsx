@@ -28,7 +28,7 @@ export default function NewPostComponent(params: { storeId: number }) {
         className="flex gap-1 justify-center items-center"
         onClick={() => openModal()}
       >
-        <PlusCircledIcon className="hidden sm:flex"/> Agregar Producto
+        <PlusCircledIcon className="hidden sm:flex"/> Nuevo Producto
       </Button>
     </>
   );

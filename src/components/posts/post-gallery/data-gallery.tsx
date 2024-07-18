@@ -67,7 +67,7 @@ export function ProductsGalleryView({
         </Accordion>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {admin
           ? // For admin dashboard
             posts.length > 0
@@ -75,7 +75,7 @@ export function ProductsGalleryView({
                 <DataGalleryPost key={product.id} data={product} />
               ))
             : "No hay resultados"
-          : // For store page
+          : // For store view page
           posts.length > 0
           ? posts.map((product) => (
               <GalleryImagePost

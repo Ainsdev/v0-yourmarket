@@ -89,7 +89,7 @@ export default async function ProductsPage({
         <h2 className="text-2xl font-bold tracking-tight">Productos</h2>
       </div>
       <Tabs defaultValue="gallery" className="w-full h-max">
-        <div className="w-full flex gap-2 justify-between items-start">
+        <div className="w-full flex flex-col gap-2 justify-between items-start">
           <TabsList className="p-4">
             <TabsTrigger value="gallery" className="flex gap-1">
               <DashboardIcon /> Vista normal

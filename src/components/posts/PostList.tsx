@@ -105,7 +105,7 @@ export default function PostList({
             onClick={() => openModal()}
             variant={"outline"}
           >
-            <PlusCircledIcon /> Agregar Producto
+            <PlusCircledIcon /> Nuevo Producto
           </Button>
         </div>
       )}

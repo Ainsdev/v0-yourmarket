@@ -10,7 +10,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useRouter } from "next/navigation";
-import DefaultPostView from "@/components/posts/DefaultViewPost";
 import { type Post } from "@/lib/db/schema/posts";
 import Image from "next/image";
 import {
@@ -23,6 +22,8 @@ import {
 import { cn, numberToClp } from "@/lib/utils";
 import { genders, productCategories } from "@/config/categories";
 import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+import { Loader } from "lucide-react";
 
 export default function DrawerPost({ post }: { post: Post }) {
   const router = useRouter();
@@ -40,9 +41,7 @@ export default function DrawerPost({ post }: { post: Post }) {
         <DrawerHeader>
           <DrawerTitle>{post.name}</DrawerTitle>
           <DrawerDescription>
-            {productCategories[post.categoryId].title +
-              "-" +
-              post.subcategory}
+            {productCategories[post.categoryId].title + "-" + post.subcategory}
           </DrawerDescription>
           <DrawerClose />
         </DrawerHeader>
@@ -50,17 +49,22 @@ export default function DrawerPost({ post }: { post: Post }) {
           <div className="px-10 w-full">
             <Carousel>
               <CarouselContent>
-                {post.images.split(",").map((image, index) => (
-                  <CarouselItem key={index}>
-                    <Image
-                      src={image}
-                      alt={post.name + ` image ${index}`}
-                      width={600}
-                      height={600}
-                      className={cn("rounded-md")}
-                    />
-                  </CarouselItem>
-                ))}
+                <Suspense fallback={
+                  <Loader className="w-10 h-10 text-primary-foreground" />
+                }>
+                  {post.images.split(",").map((image, index) => (
+                    <CarouselItem key={index}>
+                      <Image
+                        placeholder="empty"
+                        src={image}
+                        alt={post.name + ` image ${index}`}
+                        width={600}
+                        height={600}
+                        className={cn("rounded-md")}
+                      />
+                    </CarouselItem>
+                  ))}
+                </Suspense>
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />

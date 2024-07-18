@@ -21,6 +21,7 @@ import {
 import Link from "next/link";
 import { Share1Icon } from "@radix-ui/react-icons";
 import { Progress } from "@radix-ui/react-progress";
+import { SettingsIcon } from "lucide-react";
 
 type Analytics = {
   revenue: string | null;
@@ -80,8 +81,8 @@ export default function OptimisticStore({
                 size="icon"
                 className="absolute top-4 right-4"
               >
-                <Link href={`/stores/${optimisticStore.id}`}>
-                  <Share1Icon className="h-4 w-4" />
+                <Link href={`/dashboard/stores/${optimisticStore.id}/settings`}>
+                  <SettingsIcon className="h-4 w-4" />
                 </Link>
               </Button>
               <div className="flex justify-start items-start gap-4 w-full">
@@ -91,7 +92,9 @@ export default function OptimisticStore({
                 >
                   Editar Tienda
                 </Button>
-                <Button variant="secondary">Ver Tienda</Button>
+                <Button variant="secondary" asChild>
+                  <Link href={`/stores/${optimisticStore.id}`}>Ver Tienda</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>

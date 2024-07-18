@@ -1,9 +1,7 @@
 import { z } from "zod";
-
-import { TransitionStartFunction, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
 import {
   type Action,
   cn,
@@ -12,11 +10,9 @@ import {
   isArrayOfFile,
   fileWithPreviewArrayFunction,
 } from "@/lib/utils";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBackPath } from "@/components/shared/BackButton";
-
 import {
   Select,
   SelectContent,
@@ -25,12 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import {
-  type Post,
-  insertPostParams,
-  storeBaseSchema,
-  NewPostParams,
-} from "@/lib/db/schema/posts";
+import { type Post, storeBaseSchema } from "@/lib/db/schema/posts";
 import { type Store, type StoreId } from "@/lib/db/schema/stores";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -42,7 +33,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  UncontrolledFormMessage,
 } from "../ui/form";
 import {
   Card,
@@ -72,7 +62,6 @@ import { FileWithPreview } from "@/lib/types";
 import { FileDialog } from "../file-dialog";
 import { Switch } from "../ui/switch";
 import { createPostAction, updatePostAction } from "@/lib/actions/posts";
-import { ClientUploadedFileData } from "uploadthing/types";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
@@ -469,7 +458,7 @@ const PostForm = ({
                       <FormLabel>Condicion</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value || "new"}
+                        defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -770,7 +759,7 @@ function handlePostSubmission(
 ) {
   return async (data: z.infer<typeof formSchema>) => {
     //refined name: Make the first letter upercasse
-    const refinedName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+    const refinedName = data.name.charAt(0).toUpperCase() + data.name.slice(1); //TODO: add brand to the name?
 
     const pendingPost: Post = {
       updatedAt:
@@ -821,6 +810,7 @@ function handlePostSubmission(
             toast.promise(
               startUpload(data.imagesArray)
                 .then((res) => {
+                  console.log("OJO IMAGENES SUBIDAS", res);
                   const formattedImages = res?.map((image) => ({
                     id: image.key,
                     name: image.key.split("_")[1] as string,
@@ -830,17 +820,19 @@ function handlePostSubmission(
                 })
                 .then(async (images) => {
                   // make an array of urls in string
-                  const imagesString = `${images?.map((image) => image.url)}`;
+                  const imagesString = `${images?.map((image) => image.url)}`; //TODO: Save without the url prefix (less characters)
                   //Select the index image based on the viewImage or the first image
-                  const indexMainImage = files?.findIndex(
-                    (file) => file.preview === viewImage
+                  const indexMainImage = viewImage ? files?.findIndex((file) => file.preview == viewImage) : 0
+                  console.log(
+                    "OJO indexMainImage",
+                    images?.[indexMainImage as number]?.url
                   );
                   return await createPostAction(
                     JSON.parse(
                       JSON.stringify({
                         ...pendingPost,
                         images: imagesString,
-                        mainImage: images?.[indexMainImage || 0]?.url as string,
+                        mainImage: images?.[indexMainImage as number]?.url as string,
                         active: data.active,
                         gender: data.gender,
                       })

@@ -77,3 +77,5 @@ export const updateStatusPost = async (
     throw { error: message };
   }
 };
+
+//TODO: Add validation of user

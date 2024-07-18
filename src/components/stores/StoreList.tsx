@@ -22,6 +22,7 @@ import {
 } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Share1Icon } from "@radix-ui/react-icons";
+import { toast } from "sonner";
 
 type TOpenModal = (store?: Store) => void;
 
@@ -55,10 +56,11 @@ export default function StoreList({ stores }: { stores: CompleteStore[] }) {
       ) : (
         <section className="flex flex-col justify-center items-start gap-4">
           <Button
-          disabled={optimisticStores.length >= 2}
-          onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> Crear Tienda{" "}
-        </Button>
+            disabled={optimisticStores.length >= 2}
+            onClick={() => openModal()}
+          >
+            <PlusIcon className="h-4" /> Crear Tienda{" "}
+          </Button>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {optimisticStores.map((store) => (
               <Store store={store} key={store.id} />
@@ -108,16 +110,33 @@ const Store = ({ store }: { store: CompleteStore }) => {
           </span>
         </div>
         <div className="flex gap-4 justify-end items-center sm:flex-col lg:flex-row">
-          <Button variant="link" asChild>
-            <Link
-              href={"/stores/" + store.id}
-              className="flex items-center space-x-1"
-            >
-              <span className="text-xs flex gap-2">
-                <Share1Icon className="h-4" />
-                Compartir tienda
-              </span>
-            </Link>
+          <Button
+            variant="link"
+            asChild
+            className="flex items-center space-x-1"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigator.clipboard
+                .writeText(`http://localhost:3000/stores/${store.id}`) //TODO: Change to store.slug
+                .then(() => {
+                  toast.info("Link copiado", {
+                    position: "top-center",
+                    duration: 3000,
+                  });
+                })
+                .catch(() => {
+                  toast.error("No se pudo copiar el link", {
+                    position: "top-center",
+                    duration: 3000,
+                  });
+                });
+            }}
+          >
+            <span className="text-xs flex gap-2">
+              <Share1Icon className="h-4" />
+              Compartir tienda
+            </span>
           </Button>
           <Button asChild>
             <Link
