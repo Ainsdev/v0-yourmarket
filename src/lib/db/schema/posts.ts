@@ -23,7 +23,7 @@ export const posts = sqliteTable(
     description: text("description"),
     active: integer("active", { mode: "boolean" }),
     brand: text("brand").notNull(),
-    condition: text("condition"),
+    condition: text("condition").notNull(),
     mainImage: text("main_image").notNull(),
     images: text("images").notNull(), // Array of strings
     price: integer("price").notNull(),
