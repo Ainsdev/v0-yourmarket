@@ -14,19 +14,20 @@ export default async function PostsPage() {
         <div className="flex justify-between">
           <h1 className="font-semibold text-2xl my-2">Posts</h1>
         </div>
-        <Posts />
+        {/* <Posts /> */}
       </div>
     </main>
   );
 }
 
-const Posts = async () => {
+// const Posts = async () => {
   
-  const { posts } = await getPosts();
-  const { stores } = await getStores();
-  return (
-    <Suspense fallback={<Loading />}>
-      <PostList posts={posts}  />
-    </Suspense>
-  );
-};
+//   // const { posts } = await getPosts();
+//   // const { stores } = await getStores();
+//   return (
+//     <Suspense fallback={<Loading />}>
+//       {/* <PostList posts={posts}  /> */}
+
+//     </Suspense>
+//   );
+// };
