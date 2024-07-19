@@ -11,7 +11,7 @@ import { type Store, type StoreId } from "@/lib/db/schema/stores";
 
 import { Button } from "@/components/ui/button";
 import PostForm from "./PostForm";
-import { useOptimisticPosts } from "@/app/(app)/(lobby)/posts/useOptimisticPosts";
+
 import { DrawerDialog } from "../DrawerDialog";
 import {
   CopyIcon,
@@ -59,6 +59,7 @@ import {
 } from "@/components/ui/table";
 import { deletePostAction, updateStatusPostAction } from "@/lib/actions/posts";
 import { toast } from "sonner";
+import { useOptimisticPosts } from "./useOptimisticPosts";
 
 type TOpenModal = (post?: Post) => void;
 
