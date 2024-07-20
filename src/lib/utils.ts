@@ -190,3 +190,10 @@ export function fileWithPreviewArrayFunction(post: { id: string; brand: string; 
     })) as unknown as FileWithPreview[])
     : null;
 }
+
+export function toTitleCase(str: string) {
+  return str.replace(
+    /\w\S*/g,
+    (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()
+  )
+}
