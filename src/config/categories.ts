@@ -1,4 +1,4 @@
-import { Category, Option } from "@/lib/types";
+import { Category, Option, Subcategory } from "@/lib/types";
 import { BackpackIcon } from "@radix-ui/react-icons";
 
 export const sortOptions = [
@@ -689,13 +689,8 @@ export function getSubcategories(category?: string): Option[] {
   return subcategories;
 }
 
-export function getAllSubcategories(): Option[] {
-  return productCategories.reduce((acc, category) => {
-    const subcategories = category.subcategories.map((s) => ({
-      label: s.title,
-      value: s.slug,
-    }));
-
-    return [...acc, ...subcategories];
-  }, [] as Option[]);
+export function getSubcategory(slug: string): Subcategory | undefined {
+  return productCategories
+    .flatMap((c) => c.subcategories)
+    .find((s) => s.slug === slug);
 }
