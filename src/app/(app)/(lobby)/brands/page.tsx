@@ -32,7 +32,7 @@ export default function BrandsPage() {
       >
         <PageHeaderHeading size="sm">Marcas Destacadas</PageHeaderHeading>
         <PageHeaderDescription size="sm">
-          Estas son las Ultimas Marcas
+          Estas son las Mejores Marcas
         </PageHeaderDescription>
       </PageHeader>
       <div aria-labelledby="brands-page-heading" className="flex flex-col">
