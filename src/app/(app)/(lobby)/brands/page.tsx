@@ -11,9 +11,6 @@ import { Shell } from "@/components/shells/shell";
 import { brands } from "@/config/brands";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import Link from "next/link";
-import Image from "next/image";
 import { BrandCard } from "./brand-card";
 export default function BrandsPage() {
   //TODO: add brands sections and filter by sections

@@ -4,9 +4,18 @@ import {
   PageHeaderDescription,
 } from "@/components/shells/page-header";
 import { Shell } from "@/components/shells/shell";
-import { getSubcategory } from "@/config/categories";
+import { getSubcategory, productCategories } from "@/config/categories";
 import { Subcategory } from "@/lib/types";
 import { toTitleCase } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 interface SubcategoryPageProps {
   params: {
@@ -46,7 +55,27 @@ export default async function SubcategoryPage({
           {toTitleCase(subcategoryData.title)}
         </PageHeaderHeading>
         <PageHeaderDescription size="sm">
-          {`Compra ${subcategory}`}
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink>
+                  <Link href="/categories">Categorias</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink>
+                  <Link href={`/categories/${category}`}>{
+                    productCategories[Number(category)].title
+                  }</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{subcategory}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </PageHeaderDescription>
       </PageHeader>
       <h1>PRODUCTS</h1>

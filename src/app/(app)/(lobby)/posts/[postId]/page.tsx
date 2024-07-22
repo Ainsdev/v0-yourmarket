@@ -11,9 +11,9 @@ export default async function PostPage({
   params,
 }: {
   params: { postId: string };
-}) {
+}) { //TODO: add breadcrumbs
   return (
-    <main className="overflow-auto">
+    <main className="overflow-auto"> 
       <Post id={params.postId} />
     </main>
   );
