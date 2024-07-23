@@ -6,6 +6,7 @@ import {
   PageHeaderHeading,
   PageHeaderDescription,
 } from "@/components/shells/page-header";
+import { getProducts } from "@/lib/api/posts/queries";
 
 interface CategoryPageProps {
   params: {
@@ -39,6 +40,7 @@ export default async function CategoryPage({
   } = searchParams;
 
   // Products transaction
+  const products = getProducts(searchParams);
 
   return (
     <Shell>

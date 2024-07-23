@@ -86,6 +86,7 @@ export async function getProducts(input: SearchParams) {
         .select({
           id: posts.id,
           name: posts.name,
+          brand: posts.brand,
           price: posts.price,
           size: posts.size,
           mainImage: posts.mainImage, //TODO: get all the images?
@@ -94,6 +95,7 @@ export async function getProducts(input: SearchParams) {
           storeImage: stores.image,
           categoryId: posts.categoryId,
           subcategory: posts.subcategory,
+          //discounts
         })
         .from(posts)
         .limit(limit)
