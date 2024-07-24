@@ -7,9 +7,9 @@ export const getProductsSchema = z.object({
   categories: z.string().optional(),
   subcategory: z.string().optional(),
   region: z.string().optional(),
-  price_min: z.string().optional(),
-  price_max: z.string().optional(),
+  price_range: z.string().optional(),
   store_ids: z.string().optional(),
   store_page: z.coerce.number().default(1),
   active: z.string().optional().default("true"),
+  brand: z.string().optional(),
 });

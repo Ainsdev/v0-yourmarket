@@ -35,9 +35,9 @@ export default async function CategoryPage({
     sort,
     subcategories,
     price_range,
-    store_ids,
-    store_page,
-  } = searchParams;
+    region,
+    categoryIds,
+  } = searchParams
 
   // Products transaction
   const products = getProducts(searchParams);

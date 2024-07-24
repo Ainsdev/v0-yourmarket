@@ -76,10 +76,11 @@ export async function getProducts(input: SearchParams) {
       keyof Post | undefined,
       "asc" | "desc" | undefined
     ]) ?? ["createdAt", "desc"];
-    const minPrice = Number(search.price_min) ?? undefined;
-    const maxPrice = Number(search.price_max) ?? undefined;
+    const minPrice = Number(search.price_range?.split("-")[0]);
+    const maxPrice = Number(search.price_range?.split("-")[1]);
     const categoryIds = search.categories?.split(",").map(Number) ?? [];
     const region = search.region;
+    const brand = search.brand;
 
     const transaction = await db.transaction(async (tx) => {
       const data = await tx
@@ -103,6 +104,9 @@ export async function getProducts(input: SearchParams) {
         .leftJoin(stores, eq(posts.storeId, stores.id))
         .where(
           and(
+            //IMPORTANT: only show active and not sold posts always
+            eq(posts.active, true),
+            eq(posts.sold, false),
             categoryIds.length > 0
               ? inArray(posts.categoryId, categoryIds)
               : undefined,
@@ -112,9 +116,7 @@ export async function getProducts(input: SearchParams) {
             minPrice ? gte(posts.price, minPrice) : undefined,
             maxPrice ? lte(posts.price, maxPrice) : undefined,
             region ? eq(stores.region, region) : undefined,
-            //IMPORTANT: only show active and not sold posts always
-            eq(posts.active, true),
-            eq(posts.sold, false)
+            brand ? eq(posts.brand, brand) : undefined
           )
         )
         .groupBy(posts.id)
@@ -133,6 +135,9 @@ export async function getProducts(input: SearchParams) {
         .from(posts)
         .where(
           and(
+            //IMPORTANT: only show active and not sold posts always
+            eq(posts.active, true),
+            eq(posts.sold, false),
             categoryIds.length > 0
               ? inArray(posts.categoryId, categoryIds)
               : undefined,
@@ -142,9 +147,7 @@ export async function getProducts(input: SearchParams) {
             minPrice ? gte(posts.price, minPrice) : undefined,
             maxPrice ? lte(posts.price, maxPrice) : undefined,
             region ? eq(stores.region, region) : undefined,
-            //IMPORTANT: only show active and not sold posts always
-            eq(posts.active, true),
-            eq(posts.sold, false)
+            brand ? eq(posts.brand, brand) : undefined
           )
         )
         .execute()
@@ -165,4 +168,28 @@ export async function getProducts(input: SearchParams) {
       pageCount: 0,
     };
   }
+}
+
+export async function getProductCountByCategory({
+  categoryId,
+}: {
+  categoryId: number;
+}) {
+  return await cache(
+    async () => {
+      return db
+        .select({
+          count: count(posts.id),
+        })
+        .from(posts)
+        .where(eq(posts.categoryId, categoryId))
+        .execute()
+        .then((res) => res[0]?.count ?? 0);
+    },
+    [`product-count-${categoryId}`],
+    {
+      revalidate: 3600, // every hour
+      tags: [`product-count-${categoryId}`],
+    }
+  )();
 }
