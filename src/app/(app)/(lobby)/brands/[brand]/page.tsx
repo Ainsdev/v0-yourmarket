@@ -7,6 +7,7 @@ import {
   PageHeaderDescription,
 } from "@/components/shells/page-header";
 import { getProducts } from "@/lib/api/posts/queries";
+import { ProductsDefaultView } from "@/components/posts/default/posts-default";
 
 interface CategoryPageProps {
   params: {
@@ -37,10 +38,10 @@ export default async function CategoryPage({
     price_range,
     region,
     categoryIds,
-  } = searchParams
+  } = searchParams;
 
   // Products transaction
-  const products = getProducts(searchParams);
+  // const products = getProducts(searchParams);
 
   return (
     <Shell>
@@ -53,7 +54,27 @@ export default async function CategoryPage({
           {`Estas son las mejores tiendas que venden ${brand}`}
         </PageHeaderDescription>
       </PageHeader>
-      Products
+      <ProductsDefaultView
+        products={[
+          {
+            id: 1,
+            name: "Product",
+            price: 100,
+            mainImage: "https://via.placeholder.com/150",
+            categoryId: 1,
+            subcategory: "Subcategory",
+          },
+          {
+            id: 2,
+            name: "Product",
+            price: 100,
+            mainImage: "https://via.placeholder.com/150",
+            categoryId: 1,
+            subcategory: "Subcategory",
+          },
+        ]}
+        pageCount={0}
+      />
     </Shell>
   );
 }
