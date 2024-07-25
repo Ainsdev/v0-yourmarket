@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/react-icons";
 
 import { getSubcategories, sortOptions } from "@/config/categories";
-import { cn, toTitleCase, truncate } from "@/lib/utils";
+import { cn, numberToClp, toTitleCase, truncate } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -90,7 +90,7 @@ export function ProductsDefaultView({
 
   // Price filter
   const [priceRange, setPriceRange] = React.useState<[number, number]>([
-    0, 500,
+    0, 1500000,
   ]);
   const debouncedPrice = useDebounce(priceRange, 500);
 
@@ -189,14 +189,14 @@ export function ProductsDefaultView({
             <div className="flex flex-1 flex-col gap-5 overflow-hidden px-1">
               <div className="space-y-4">
                 <h3 className="text-sm font-medium tracking-wide text-foreground">
-                  Price range ($)
+                  Rango de precio: {numberToClp(`${priceRange[0]}`)} - {numberToClp(`${priceRange[1]}`)}
                 </h3>
                 <Slider
                   variant="range"
                   thickness="thin"
-                  defaultValue={[0, 500]}
-                  max={500}
-                  step={1}
+                  defaultValue={[0, 1500000]}
+                  max={1500000}
+                  step={10000}
                   value={priceRange}
                   onValueChange={(value: typeof priceRange) =>
                     setPriceRange(value)
@@ -220,7 +220,7 @@ export function ProductsDefaultView({
                     type="number"
                     inputMode="numeric"
                     min={priceRange[0]}
-                    max={500}
+                    max={1500000}
                     className="h-9"
                     value={priceRange[1]}
                     onChange={(e) => {
@@ -355,14 +355,14 @@ export function ProductsDefaultView({
                     startTransition(() => {
                       router.push(
                         `${pathname}?${createQueryString({
-                          price_range: 0 - 100,
+                          price_range: null,
                           store_ids: null,
                           categories: null,
                           subcategories: null,
                         })}`
                       );
 
-                      setPriceRange([0, 100]);
+                      setPriceRange([0, 1500000]);
                       setSelectedCategories(null);
                       setSelectedSubcategories(null);
                       setStoreIds(null);
@@ -370,7 +370,7 @@ export function ProductsDefaultView({
                   }}
                   disabled={isPending}
                 >
-                  Clear Filters
+                  Limpiar filtros
                 </Button>
               </SheetFooter>
             </div>

@@ -42,7 +42,13 @@ export default async function CategoryPage({
 
   // Products transaction
   // const products = getProducts(searchParams);
-
+  const minPrice = Number((price_range as string)?.split("-")[0]);
+  const maxPrice = Number((price_range as string)?.split("-")[1]);
+  const categoryIdslab = Array.isArray(categoryIds)
+    ? categoryIds.map(Number)
+    : categoryIds?.split(",").map(Number) ?? [];
+  const regionlab = region;
+  const brandlab = brand;
   return (
     <Shell>
       <PageHeader
@@ -52,6 +58,8 @@ export default async function CategoryPage({
         <PageHeaderHeading size="sm">{toTitleCase(brand)}</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           {`Estas son las mejores tiendas que venden ${brand}`}
+          Filters active: {minPrice}, {maxPrice}, {categoryIdslab}, {regionlab},{" "}
+          {brandlab}
         </PageHeaderDescription>
       </PageHeader>
       <ProductsDefaultView
@@ -74,6 +82,7 @@ export default async function CategoryPage({
           },
         ]}
         pageCount={0}
+        categories={["albu", "alba", "hala"]}
       />
     </Shell>
   );

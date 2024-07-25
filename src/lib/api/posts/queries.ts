@@ -78,7 +78,7 @@ export async function getProducts(input: SearchParams) {
     ]) ?? ["createdAt", "desc"];
     const minPrice = Number(search.price_range?.split("-")[0]);
     const maxPrice = Number(search.price_range?.split("-")[1]);
-    const categoryIds = search.categories?.split(",").map(Number) ?? [];
+    const categoryIds = search.categories?.split(".").map(Number) ?? [];
     const region = search.region;
     const brand = search.brand;
 
