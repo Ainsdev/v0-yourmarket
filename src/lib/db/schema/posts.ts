@@ -31,7 +31,7 @@ export const posts = sqliteTable(
     // rangePrice: text("range_price"),
     gender: integer("gender"), // 0: Hombre, 1: Mujer, 2: Unisex, 3: Niños
     size: text("size").notNull(),
-    region: text("region"),
+    region: text("region"), //TODO: add city
     contact: text("contact").notNull(),
     stock: integer("stock").default(1),  
     // sku: text("sku"),

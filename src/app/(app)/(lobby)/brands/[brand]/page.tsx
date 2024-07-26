@@ -8,6 +8,7 @@ import {
 } from "@/components/shells/page-header";
 import { getProducts } from "@/lib/api/posts/queries";
 import { ProductsDefaultView } from "@/components/posts/default/posts-default";
+import { getSubcategories, productCategories } from "@/config/categories";
 
 interface CategoryPageProps {
   params: {
@@ -49,6 +50,11 @@ export default async function CategoryPage({
     : categoryIds?.split(",").map(Number) ?? [];
   const regionlab = region;
   const brandlab = brand;
+  const categoriesList = productCategories.map((category) => ({
+    id: category.id,
+    title: category.title,
+  }));
+
   return (
     <Shell>
       <PageHeader
@@ -82,7 +88,7 @@ export default async function CategoryPage({
           },
         ]}
         pageCount={0}
-        categories={["albu", "alba", "hala"]}
+        categories={categoriesList}
       />
     </Shell>
   );

@@ -1,153 +1,316 @@
 "use client";
 
-import * as React from "react";
-import type { Option } from "@/lib/types";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { Command as CommandPrimitive } from "cmdk";
-
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import {
+  Command,
+  CommandItem,
+  CommandEmpty,
+  CommandList,
+} from "@/components/ui/command";
+import { productCategories } from "@/config/categories";
+import { cn } from "@/lib/utils";
+import { Command as CommandPrimitive } from "cmdk";
+import { X as RemoveIcon, Check } from "lucide-react";
+import React, {
+  KeyboardEvent,
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
-interface MultiSelectProps {
-  selected: Option[] | null;
-  setSelected: React.Dispatch<React.SetStateAction<Option[] | null>>;
-  onChange?: (value: Option[] | null) => void;
-  placeholder?: string;
-  options: Option[];
+type MultiSelectorProps = {
+  values: string[];
+  onValuesChange: (value: string[]) => void;
+  loop?: boolean;
+} & React.ComponentPropsWithoutRef<typeof CommandPrimitive>;
+
+interface MultiSelectContextProps {
+  value: string[];
+  onValueChange: (value: any) => void;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+  inputValue: string;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  activeIndex: number;
+  setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function MultiSelect({
-  selected,
-  setSelected,
-  onChange,
-  placeholder = "Select options",
-  options,
-}: MultiSelectProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [query, setQuery] = React.useState("");
+const MultiSelectContext = createContext<MultiSelectContextProps | null>(null);
 
-  // Register as input field to be used in react-hook-form
-  React.useEffect(() => {
-    if (onChange) onChange(selected?.length ? selected : null);
-  }, [onChange, selected]);
+const useMultiSelect = () => {
+  const context = useContext(MultiSelectContext);
+  if (!context) {
+    throw new Error("useMultiSelect must be used within MultiSelectProvider");
+  }
+  return context;
+};
 
-  const handleSelect = React.useCallback(
-    (option: Option) => {
-      setSelected((prev) => [...(prev ?? []), option]);
-    },
-    [setSelected]
-  );
+const MultiSelector = ({
+  values: value,
+  onValuesChange: onValueChange,
+  loop = false,
+  className,
+  children,
+  dir,
+  ...props
+}: MultiSelectorProps) => {
+  const [inputValue, setInputValue] = useState("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
 
-  const handleRemove = React.useCallback(
-    (option: Option) => {
-      setSelected((prev) => prev?.filter((item) => item !== option) ?? []);
-    },
-    [setSelected]
-  );
-
-  const handleKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!inputRef.current) return;
-
-      if (event.key === "Backspace" || event.key === "Delete") {
-        setSelected((prev) => prev?.slice(0, -1) ?? []);
-      }
-
-      // Blur input on escape
-      if (event.key === "Escape") {
-        inputRef.current.blur();
+  const onValueChangeHandler = useCallback(
+    (val: string) => {
+      if (value.includes(val)) {
+        onValueChange(value.filter((item) => item !== val));
+      } else {
+        onValueChange([...value, val]);
       }
     },
-    [setSelected]
+    [value]
   );
 
-  // Memoize filtered options to avoid unnecessary re-renders
-  const filteredOptions = React.useMemo(() => {
-    return options.filter((option) => {
-      if (selected?.find((item) => item.value === option.value)) return false;
+  // TODO : change from else if use to switch case statement
 
-      if (query.length === 0) return true;
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      const moveNext = () => {
+        const nextIndex = activeIndex + 1;
+        setActiveIndex(
+          nextIndex > value.length - 1 ? (loop ? 0 : -1) : nextIndex
+        );
+      };
 
-      return option.label.toLowerCase().includes(query.toLowerCase());
-    });
-  }, [options, query, selected]);
+      const movePrev = () => {
+        const prevIndex = activeIndex - 1;
+        setActiveIndex(prevIndex < 0 ? value.length - 1 : prevIndex);
+      };
+
+      if ((e.key === "Backspace" || e.key === "Delete") && value.length > 0) {
+        if (inputValue.length === 0) {
+          if (activeIndex !== -1 && activeIndex < value.length) {
+            onValueChange(value.filter((item) => item !== value[activeIndex]));
+            const newIndex = activeIndex - 1 < 0 ? 0 : activeIndex - 1;
+            setActiveIndex(newIndex);
+          } else {
+            onValueChange(
+              value.filter((item) => item !== value[value.length - 1])
+            );
+          }
+        }
+      } else if (e.key === "Enter") {
+        setOpen(true);
+      } else if (e.key === "Escape") {
+        if (activeIndex !== -1) {
+          setActiveIndex(-1);
+        } else {
+          setOpen(false);
+        }
+      } else if (dir === "rtl") {
+        if (e.key === "ArrowRight") {
+          movePrev();
+        } else if (e.key === "ArrowLeft" && (activeIndex !== -1 || loop)) {
+          moveNext();
+        }
+      } else {
+        if (e.key === "ArrowLeft") {
+          movePrev();
+        } else if (e.key === "ArrowRight" && (activeIndex !== -1 || loop)) {
+          moveNext();
+        }
+      }
+    },
+    [value, inputValue, activeIndex, loop]
+  );
 
   return (
-    <Command
-      onKeyDown={handleKeyDown}
-      className="overflow-visible bg-transparent"
+    <MultiSelectContext.Provider
+      value={{
+        value,
+        onValueChange: onValueChangeHandler,
+        open,
+        setOpen,
+        inputValue,
+        setInputValue,
+        activeIndex,
+        setActiveIndex,
+      }}
     >
-      <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-        <div className="flex flex-wrap gap-1">
-          {selected?.map((option) => {
-            return (
-              <Badge
-                key={option.value}
-                variant="secondary"
-                className="rounded hover:bg-secondary"
-              >
-                {option.label}
-                <Button
-                  aria-label="Remove option"
-                  size="sm"
-                  className="ml-2 h-auto bg-transparent p-0 text-primary hover:bg-transparent hover:text-destructive"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleRemove(option);
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClick={() => handleRemove(option)}
-                >
-                  <Cross2Icon className="h-3 w-3" aria-hidden="true" />
-                </Button>
-              </Badge>
-            );
-          })}
-          <CommandPrimitive.Input
-            ref={inputRef}
-            placeholder={placeholder}
-            className="flex-1 bg-transparent px-1 py-0.5 outline-none placeholder:text-muted-foreground"
-            value={query}
-            onValueChange={setQuery}
-            onBlur={() => setIsOpen(false)}
-            onFocus={() => setIsOpen(true)}
-          />
-        </div>
-      </div>
-      <div className="relative z-50 mt-2">
-        {isOpen && filteredOptions.length > 0 ? (
-          <div className="absolute top-0 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-            <CommandGroup className="h-full overflow-auto">
-              {filteredOptions.map((option) => {
-                return (
-                  <CommandItem
-                    key={option.value}
-                    className="px-2 py-1.5 text-sm"
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onSelect={() => {
-                      handleSelect(option);
-                      setQuery("");
-                    }}
-                  >
-                    {option.label}
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          </div>
-        ) : null}
-      </div>
-    </Command>
+      <Command
+        onKeyDown={handleKeyDown}
+        className={cn(
+          "overflow-visible bg-transparent flex flex-col space-y-2",
+          className
+        )}
+        dir={dir}
+        {...props}
+      >
+        {children}
+      </Command>
+    </MultiSelectContext.Provider>
   );
-}
+};
+
+const MultiSelectorTrigger = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children, ...props }, ref) => {
+  const { value, onValueChange, activeIndex } = useMultiSelect();
+
+  const mousePreventDefault = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-wrap gap-1 p-1 py-2 border border-muted rounded-lg bg-background",
+        className
+      )}
+      {...props}
+    >
+      {value.map((item, index) => (
+        <Badge
+          key={item}
+          className={cn(
+            "px-1 rounded-xl flex items-center gap-1",
+            activeIndex === index && "ring-2 ring-muted-foreground "
+          )}
+          variant={"secondary"}
+        >
+          <span className="text-xs">
+            {
+              productCategories.find((category) => category.id === Number(item))
+                ?.title
+            }
+          </span>
+          <button
+            aria-label={`Remove ${item} option`}
+            aria-roledescription="button to remove option"
+            type="button"
+            onMouseDown={mousePreventDefault}
+            onClick={() => onValueChange(item)}
+          >
+            <span className="sr-only">Remove {item} option</span>
+            <RemoveIcon className="h-4 w-4 hover:stroke-destructive" />
+          </button>
+        </Badge>
+      ))}
+      {children}
+    </div>
+  );
+});
+
+MultiSelectorTrigger.displayName = "MultiSelectorTrigger";
+
+const MultiSelectorInput = forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Input>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
+>(({ className, ...props }, ref) => {
+  const { setOpen, inputValue, setInputValue, activeIndex, setActiveIndex } =
+    useMultiSelect();
+  return (
+    <CommandPrimitive.Input
+      {...props}
+      ref={ref}
+      value={inputValue}
+      onValueChange={activeIndex === -1 ? setInputValue : undefined}
+      onBlur={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onClick={() => setActiveIndex(-1)}
+      className={cn(
+        "ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1 text-sm",
+        className,
+        activeIndex !== -1 && "caret-transparent"
+      )}
+    />
+  );
+});
+
+MultiSelectorInput.displayName = "MultiSelectorInput";
+
+const MultiSelectorContent = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ children }, ref) => {
+  const { open } = useMultiSelect();
+  return (
+    <div ref={ref} className="relative">
+      {open && children}
+    </div>
+  );
+});
+
+MultiSelectorContent.displayName = "MultiSelectorContent";
+
+const MultiSelectorList = forwardRef<
+  React.ElementRef<typeof CommandPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
+>(({ className, children }, ref) => {
+  return (
+    <CommandList
+      ref={ref}
+      className={cn(
+        "p-2 flex flex-col gap-2 rounded-md scrollbar-thin scrollbar-track-transparent transition-colors scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg w-full absolute bg-background shadow-md z-10 border border-muted top-0",
+        className
+      )}
+    >
+      {children}
+      <CommandEmpty>
+        <span className="text-muted-foreground">No results found</span>
+      </CommandEmpty>
+    </CommandList>
+  );
+});
+
+MultiSelectorList.displayName = "MultiSelectorList";
+
+const MultiSelectorItem = forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Item>,
+  { value: string } & React.ComponentPropsWithoutRef<
+    typeof CommandPrimitive.Item
+  >
+>(({ className, value, children, ...props }, ref) => {
+  const { value: Options, onValueChange, setInputValue } = useMultiSelect();
+
+  const mousePreventDefault = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const isIncluded = Options.includes(value);
+  return (
+    <CommandItem
+      ref={ref}
+      {...props}
+      onSelect={() => {
+        onValueChange(value);
+        setInputValue("");
+      }}
+      className={cn(
+        "rounded-md cursor-pointer px-2 py-1 transition-colors flex justify-between ",
+        className,
+        isIncluded && "opacity-50 cursor-default",
+        props.disabled && "opacity-50 cursor-not-allowed"
+      )}
+      onMouseDown={mousePreventDefault}
+    >
+      {children}
+      {isIncluded && <Check className="h-4 w-4" />}
+    </CommandItem>
+  );
+});
+
+MultiSelectorItem.displayName = "MultiSelectorItem";
+
+export {
+  MultiSelector,
+  MultiSelectorTrigger,
+  MultiSelectorInput,
+  MultiSelectorContent,
+  MultiSelectorList,
+  MultiSelectorItem,
+};
