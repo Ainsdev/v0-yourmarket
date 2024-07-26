@@ -55,3 +55,17 @@ export interface DataTableFilterableColumn<TData>
   extends DataTableSearchableColumn<TData> {
   options: Option[];
 }
+
+export interface ProductWithStore {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  size: string;
+  mainImage: string;
+  storeId: number;
+  storeName: string | null;
+  storeImage: string | null;
+  categoryId: number;
+  subcategory: string;
+}

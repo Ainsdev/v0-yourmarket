@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { Option } from "@/lib/types";
+import type { Option, ProductWithStore } from "@/lib/types";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -47,9 +47,10 @@ import {
 import { ProductCard } from "./post-card";
 import { PaginationButton } from "@/components/pagers/pagination-button";
 import { Slider } from "@/components/ui/slider";
+import { Post } from "@/lib/db/schema/posts";
 
 interface ProductsProps extends React.HTMLAttributes<HTMLDivElement> {
-  products: any[];
+  products: ProductWithStore[];
   pageCount: number;
   category?: any["category"];
   categories?: any["category"][];
@@ -185,7 +186,12 @@ export function ProductsDefaultView({
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
-            <Button aria-label="Filter products" size="sm" variant='outline' disabled={isPending}>
+            <Button
+              aria-label="Filter products"
+              size="sm"
+              variant="outline"
+              disabled={isPending}
+            >
               Filtrar
             </Button>
           </SheetTrigger>
@@ -385,7 +391,12 @@ export function ProductsDefaultView({
         </Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button aria-label="Sort products" size="sm" variant='outline' disabled={isPending}>
+            <Button
+              aria-label="Sort products"
+              size="sm"
+              variant="outline"
+              disabled={isPending}
+            >
               Ordenar por
               <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
@@ -418,16 +429,17 @@ export function ProductsDefaultView({
       </div>
       {!isPending && !products.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
-          <h1 className="text-center text-2xl font-bold">No se encontraron productos</h1>
+          <h1 className="text-center text-2xl font-bold">
+            No se encontraron productos
+          </h1>
           <p className="text-center text-muted-foreground">
             Intenta con otros filtros...
           </p>
         </div>
       ) : null}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => (
-          // <ProductCard key={product.id} product={product} />
-          <h1 key={product.id}>{product.name}</h1>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
       {products.length ? (

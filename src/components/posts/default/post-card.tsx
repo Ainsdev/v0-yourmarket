@@ -1,14 +1,18 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { CheckIcon, ComponentPlaceholderIcon, PlusIcon } from "@radix-ui/react-icons"
-import { toast } from "sonner"
+import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  CheckIcon,
+  ComponentPlaceholderIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
+import { toast } from "sonner";
 
-import { catchError, cn } from "@/lib/utils"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
+import { catchError, cn, numberToClp } from "@/lib/utils";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,14 +20,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { AnimatedSpinner } from "@/components/icons"
+} from "@/components/ui/card";
+import { AnimatedSpinner } from "@/components/icons";
+import { Post } from "@/lib/db/schema/posts";
+import { ProductWithStore } from "@/lib/types";
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  product: any
-  variant?: "default" | "switchable"
-  isAddedToCart?: boolean
-  onSwitch?: () => Promise<void>
+  product: ProductWithStore;
+  variant?: "default" | "switchable";
+  isAddedToCart?: boolean;
+  onSwitch?: () => Promise<void>;
 }
 
 export function ProductCard({
@@ -34,107 +40,43 @@ export function ProductCard({
   className,
   ...props
 }: ProductCardProps) {
-  const [isPending, startTransition] = React.useTransition()
+  const [isPending, startTransition] = React.useTransition();
 
   return (
     <Card
-      className={cn("h-full overflow-hidden rounded-sm", className)}
+      className={cn("h-full overflow-hidden border-none bg-secondary/20 p-2", className)}
       {...props}
     >
-      <Link href={`/product/${product.id}`}>
-        <CardHeader className="border-b p-0">
-          <AspectRatio ratio={4 / 3}>
-            {product?.images?.length ? (
-              <Image
-                src={
-                  product.images[0]?.url ?? "/images/product-placeholder.webp"
-                }
-                alt={product.images[0]?.name ?? product.name}
-                className="object-cover"
-                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-                fill
-                loading="lazy"
-              />
-            ) : (
-              <div
-                aria-label="Placeholder"
-                role="img"
-                aria-roledescription="placeholder"
-                className="flex h-full w-full items-center justify-center bg-secondary"
-              >
-                <ComponentPlaceholderIcon
-                  className="h-9 w-9 text-muted-foreground"
-                  aria-hidden="true"
-                />
-              </div>
-            )}
+      <Link href={`/posts/${product.id}`}>
+        <CardHeader className="p-0 relative">
+          <div className="absolute top-2 left-2 w-3/4 h-16 bg-white/20 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg z-50 flex items-center justify-center">
+            Hola
+          </div>
+          <AspectRatio ratio={3/4}>
+            <Image
+              src={product.mainImage ?? "/images/product-placeholder.webp"}
+              alt={product.name}
+              className="object-cover rounded-md"
+              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+              fill
+              loading="lazy"
+            />
           </AspectRatio>
         </CardHeader>
         <span className="sr-only">{product.name}</span>
       </Link>
-      <Link href={`/product/${product.id}`} tabIndex={-1}>
-        <CardContent className="grid gap-2.5 p-4">
-          <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+      <Link href={`/posts/${product.id}`} tabIndex={-1}>
+        <CardContent className="flex flex-col justify-center items-start gap-2 p-4 ">
           <CardDescription className="line-clamp-2">
-            {product.price}
+            <p className="text-sm text-muted-foreground">{product.brand}</p>
           </CardDescription>
+          <CardTitle className="line-clamp-1 text-lg">{product.name}</CardTitle>
         </CardContent>
       </Link>
-      <CardFooter className="p-4">
-        {variant === "default" ? (
-          <Button
-            aria-label="Add to cart"
-            size="sm"
-            className="h-8 w-full rounded-sm"
-            onClick={() => {
-            //   startTransition(async () => {
-            //     try {
-            //       await addToCartAction({
-            //         productId: product.id,
-            //         quantity: 1,
-            //       })
-            //       toast.success("Added to cart.")
-            //     } catch (err) {
-            //       catchError(err)
-            //     }
-            //   })
-            }}
-            disabled={isPending}
-          >
-            {isPending && (
-              <AnimatedSpinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            )}
-            Add to cart
-          </Button>
-        ) : (
-          <Button
-            aria-label={isAddedToCart ? "Remove from cart" : "Add to cart"}
-            size="sm"
-            className="h-8 w-full rounded-sm"
-            onClick={() => {
-              startTransition(async () => {
-                await onSwitch?.()
-              })
-            }}
-            disabled={isPending}
-          >
-            {isPending ? (
-              <AnimatedSpinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            ) : isAddedToCart ? (
-              <CheckIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-            ) : (
-              <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-            )}
-            {isAddedToCart ? "Added" : "Add to cart"}
-          </Button>
-        )}
+      <CardFooter className="p-4 flex justify-between">
+        {numberToClp(`${product.price}`)}
+        <Button size="sm">Comprar</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

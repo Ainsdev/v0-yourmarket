@@ -42,7 +42,7 @@ export default async function CategoryPage({
   } = searchParams;
 
   // Products transaction
-  // const products = getProducts(searchParams);
+  const {data,pageCount} = await getProducts(searchParams)
   const minPrice = Number((price_range as string)?.split("-")[0]);
   const maxPrice = Number((price_range as string)?.split("-")[1]);
   const categoryIdslab = Array.isArray(categoryIds)
@@ -69,25 +69,8 @@ export default async function CategoryPage({
         </PageHeaderDescription>
       </PageHeader>
       <ProductsDefaultView
-        products={[
-          {
-            id: 1,
-            name: "Product",
-            price: 100,
-            mainImage: "https://via.placeholder.com/150",
-            categoryId: 1,
-            subcategory: "Subcategory",
-          },
-          {
-            id: 2,
-            name: "Product",
-            price: 100,
-            mainImage: "https://via.placeholder.com/150",
-            categoryId: 1,
-            subcategory: "Subcategory",
-          },
-        ]}
-        pageCount={0}
+        products={data}
+        pageCount={pageCount}
         categories={categoriesList}
       />
     </Shell>
