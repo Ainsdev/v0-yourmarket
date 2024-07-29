@@ -24,6 +24,7 @@ import {
 import { AnimatedSpinner } from "@/components/icons";
 import { Post } from "@/lib/db/schema/posts";
 import { ProductWithStore } from "@/lib/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: ProductWithStore;
@@ -44,15 +45,27 @@ export function ProductCard({
 
   return (
     <Card
-      className={cn("h-full overflow-hidden border-none bg-secondary/20 p-2", className)}
+      className={cn(
+        "h-full overflow-hidden border-none bg-secondary/20 p-2",
+        className
+      )}
       {...props}
     >
       <Link href={`/posts/${product.id}`}>
         <CardHeader className="p-0 relative">
           <div className="absolute top-2 left-2 w-3/4 h-16 bg-white/20 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg z-50 flex items-center justify-center">
-            Hola
+            <Avatar>
+              <AvatarImage
+                src={product.storeImage ?? "/images/store-placeholder.webp"}
+                alt={product.storeName ?? "storename"}
+              />
+              <AvatarFallback>{product.storeName}</AvatarFallback>
+            </Avatar>
+            <p className="text-sm text-white font-semibold">
+              {product.storeName}
+            </p>
           </div>
-          <AspectRatio ratio={3/4}>
+          <AspectRatio ratio={3 / 4}>
             <Image
               src={product.mainImage ?? "/images/product-placeholder.webp"}
               alt={product.name}
