@@ -7,6 +7,10 @@ import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  GridIcon,
+  ImageIcon,
+  ListBulletIcon,
+  ViewHorizontalIcon,
 } from "@radix-ui/react-icons";
 
 import { getSubcategories, sortOptions } from "@/config/categories";
@@ -181,9 +185,13 @@ export function ProductsDefaultView({
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [storeIds]);
 
+  const [selectedView, setSelectedView] = React.useState<
+    "grid" | "list" | "images"
+  >("grid");
+
   return (
-    <section className="flex flex-col space-y-6" {...props}>
-      <div className="flex items-center space-x-2">
+    <section className="flex flex-col space-y-6 py-1" {...props}>
+      <div className="flex items-center space-x-2 w-full">
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -426,6 +434,44 @@ export function ProductsDefaultView({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="flex items-center bg-secondary rounded-md justify-self-end">
+          <Button
+            onClick={() => setSelectedView("grid")}
+            size="sm"
+            variant="ghost"
+            className={cn(
+              selectedView === "grid" &&
+                "text-secondary bg-secondary-foreground",
+              "transition-all ease-in-out"
+            )}
+          >
+            <GridIcon />
+          </Button>
+          <Button
+            onClick={() => setSelectedView("list")}
+            size="sm"
+            variant="ghost"
+            className={cn(
+              selectedView === "list" &&
+                "text-secondary bg-secondary-foreground",
+              "transition-all ease-in-out"
+            )}
+          >
+            <ViewHorizontalIcon />
+          </Button>
+          <Button
+            onClick={() => setSelectedView("images")}
+            size="sm"
+            variant="ghost"
+            className={cn(
+              selectedView === "images" &&
+                "text-secondary bg-secondary-foreground",
+              "transition-all ease-in-out"
+            )}
+          >
+            <ImageIcon />
+          </Button>
+        </div>
       </div>
       {!isPending && !products.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
@@ -437,9 +483,10 @@ export function ProductsDefaultView({
           </p>
         </div>
       ) : null}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-y-5 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-1 xl:gap-2">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard  
+          key={product.id} product={product} />
         ))}
       </div>
       {products.length ? (

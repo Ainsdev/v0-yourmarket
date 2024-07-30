@@ -44,52 +44,68 @@ export function ProductCard({
   const [isPending, startTransition] = React.useTransition();
 
   return (
-    <Card
-      className={cn(
-        "h-full overflow-hidden border-none bg-secondary/20 p-2",
-        className
-      )}
-      {...props}
-    >
-      <Link href={`/posts/${product.id}`}>
-        <CardHeader className="p-0 relative">
-          <div className="absolute top-2 left-2 w-3/4 h-16 bg-white/20 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg z-50 flex items-center justify-center">
-            <Avatar>
-              <AvatarImage
-                src={product.storeImage ?? "/images/store-placeholder.webp"}
-                alt={product.storeName ?? "storename"}
+    <div>
+      <Card className={cn("h-full overflow-hidden border-none bg-secondary/20 rounded-sm", className)} {...props}>
+        <Link href={`/posts/${product.id}`}>
+          <CardHeader className="p-0 relative space-y-0">
+            {/* Mobile */}
+            <div className="w-full px-2 py-1 bg-white/20 rounded-t-md bg-clip-padding backdrop-blur-sm z-50 flex items-center justify-start gap-2 sm:hidden">
+              <Avatar>
+                <AvatarImage
+                  src={product.storeImage ?? "/images/store-placeholder.webp"} //TODO: Change to store placeholder and add a link to the store
+                  alt={product.storeName ?? "storename"} //TODO: Add Location in a paragraph?
+                />
+                <AvatarFallback>{product.storeName}</AvatarFallback>
+              </Avatar>
+              <p className="text-xs text-white font-semibold">
+                @{product.storeName}
+              </p>
+            </div>
+            {/* Mobile */}
+            {/* Desktop */}
+            <div className="hidden absolute top-3 left-3 w-max p-2 bg-white/20 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm z-50 sm:flex items-center justify-start gap-2">
+              <Avatar>
+                <AvatarImage
+                  src={product.storeImage ?? "/images/store-placeholder.webp"} //TODO: Change to store placeholder
+                  alt={product.storeName ?? "storename"}
+                />
+                <AvatarFallback>{product.storeName}</AvatarFallback>
+              </Avatar>
+              <p className="text-xs text-white font-semibold">
+                @{product.storeName}
+              </p>
+            </div>
+            {/* Desktop */}
+            <AspectRatio ratio={1}>
+              <Image
+                src={product.mainImage ?? "/images/product-placeholder.webp"}
+                alt={product.name}
+                className="object-cover"
+                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+                fill
+                loading="lazy"
               />
-              <AvatarFallback>{product.storeName}</AvatarFallback>
-            </Avatar>
-            <p className="text-sm text-white font-semibold">
-              {product.storeName}
-            </p>
-          </div>
-          <AspectRatio ratio={3 / 4}>
-            <Image
-              src={product.mainImage ?? "/images/product-placeholder.webp"}
-              alt={product.name}
-              className="object-cover rounded-md"
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-              fill
-              loading="lazy"
-            />
-          </AspectRatio>
-        </CardHeader>
-        <span className="sr-only">{product.name}</span>
-      </Link>
-      <Link href={`/posts/${product.id}`} tabIndex={-1}>
-        <CardContent className="flex flex-col justify-center items-start gap-2 p-4 ">
-          <CardDescription className="line-clamp-2">
-            <p className="text-sm text-muted-foreground">{product.brand}</p>
-          </CardDescription>
-          <CardTitle className="line-clamp-1 text-lg">{product.name}</CardTitle>
-        </CardContent>
-      </Link>
-      <CardFooter className="p-4 flex justify-between">
-        {numberToClp(`${product.price}`)}
-        <Button size="sm">Comprar</Button>
-      </CardFooter>
-    </Card>
+            </AspectRatio>
+          </CardHeader>
+          <span className="sr-only">{product.name}</span>
+        </Link>
+        <Link href={`/posts/${product.id}`} tabIndex={-1}>
+          <CardContent className="flex flex-col justify-center items-start sm:gap-2 p-4 pb-0">
+            <CardDescription className="line-clamp-2">
+              <p className="text-sm text-muted-foreground">{product.brand}</p>
+            </CardDescription>
+            <CardTitle className="line-clamp-1 text-lg">
+              {product.name}
+            </CardTitle>
+          </CardContent>
+        </Link>
+        <CardFooter className="p-4 pt-0 flex items-start  flex-col sm:flex-row sm:justify-between sm:items-center">
+          {numberToClp(`${product.price}`)}
+          <Button className="self-end" size="sm">
+            Comprar
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
