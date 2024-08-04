@@ -476,7 +476,7 @@ export function ProductsDefaultView({
       {!isPending && !products.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
           <h1 className="text-center text-2xl font-bold">
-            No se encontraron productos
+            No se encontro ningun producto
           </h1>
           <p className="text-center text-muted-foreground">
             Intenta con otros filtros...
@@ -485,8 +485,7 @@ export function ProductsDefaultView({
       ) : null}
       <div className="grid grid-cols-2 gap-y-5 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-1 xl:gap-2">
         {products.map((product) => (
-          <ProductCard  
-          key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
       {products.length ? (
