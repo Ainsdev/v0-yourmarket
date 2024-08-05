@@ -476,7 +476,7 @@ export function ProductsDefaultView({
       {!isPending && !products.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
           <h1 className="text-center text-2xl font-bold">
-            No se encontro ningun producto
+            No existen productos ;(
           </h1>
           <p className="text-center text-muted-foreground">
             Intenta con otros filtros...
