@@ -45,7 +45,13 @@ export function ProductCard({
 
   return (
     <div>
-      <Card className={cn("h-full overflow-hidden border-none bg-secondary/20 rounded-sm", className)} {...props}>
+      <Card
+        className={cn(
+          "h-full overflow-hidden border-none bg-secondary/20 rounded-sm hover:scale-[1.01] transition-all ease-in-out ",
+          className
+        )}
+        {...props}
+      >
         <Link href={`/posts/${product.id}`}>
           <CardHeader className="p-0 relative space-y-0">
             {/* Mobile */}
