@@ -434,7 +434,7 @@ export function ProductsDefaultView({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="flex items-center bg-secondary rounded-md justify-self-end">
+        {/* <div className="flex items-center bg-secondary rounded-md justify-self-end">
           <Button
             onClick={() => setSelectedView("grid")}
             size="sm"
@@ -471,7 +471,7 @@ export function ProductsDefaultView({
           >
             <ImageIcon />
           </Button>
-        </div>
+        </div> */}
       </div>
       {!isPending && !products.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
