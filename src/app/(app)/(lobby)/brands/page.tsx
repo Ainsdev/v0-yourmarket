@@ -13,7 +13,6 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 import { BrandCard } from "./brand-card";
 export default function BrandsPage() {
-  //TODO: add brands sections and filter by sections
   const [searchTerm, setSearchTerm] = useState("");
   const filteredBrands = useMemo(() => {
     return brands.filter((brand) =>
