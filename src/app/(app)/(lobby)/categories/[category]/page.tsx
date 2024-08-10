@@ -20,6 +20,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { getProducts } from "@/lib/api/posts/queries";
 
 interface CategoryPageProps {
   params: {
@@ -53,6 +54,10 @@ export default async function CategoryPage({
   } = searchParams;
 
   // Products transaction
+  const { data, pageCount } = await getProducts({
+    ...searchParams,
+    categoryIds: category.toString(),
+  });
 
   return (
     <Shell className="overflow-hidden">
