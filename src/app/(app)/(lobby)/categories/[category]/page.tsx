@@ -21,6 +21,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getProducts } from "@/lib/api/posts/queries";
+import { ProductsDefaultView } from "@/components/posts/default/posts-default";
 
 interface CategoryPageProps {
   params: {
@@ -112,7 +113,7 @@ export default async function CategoryPage({
           ))}
         </div>
       </PageHeader>
-      <h1>PRODUCTS</h1>
+      <ProductsDefaultView products={data} pageCount={pageCount} />
     </Shell>
   );
 }
