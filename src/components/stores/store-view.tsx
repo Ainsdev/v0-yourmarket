@@ -46,41 +46,6 @@ export default function StoreView({ stores, searchParams }: StoreViewProps) {
   const [value, setValue] = React.useState(""); //TODO change this to the selected region
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
-      {/* <h3 className="text-2xl font-bold">Tiendas Destacadas</h3>
-        <div className="w-full flex flex-col gap-4 overflow-x-scroll py-6">
-          <div className="w-max flex gap-10">
-            <DirectionAwareHover
-              className="w-56 md:w-72"
-              imageClassName="opacity-70"
-              childrenClassName="flex flex-col items-start justify-center gap-2"
-              imageUrl={
-                "https://utfs.io/f/6f13283b-77a2-4e1c-aa58-737876be66ea-1ji407.jpg"
-              }
-            >
-              <p className="font-bold text-xl">YourMarket</p>
-              <p className="font-normal text-sm flex">
-                <SewingPinFilledIcon />
-                Maipu
-              </p>
-              <Button>Ver Tienda</Button>
-            </DirectionAwareHover>
-            <DirectionAwareHover
-              className="w-56 md:w-72"
-              imageClassName="opacity-70"
-              childrenClassName="flex flex-col items-start justify-center gap-2"
-              imageUrl={
-                "https://utfs.io/f/6f13283b-77a2-4e1c-aa58-737876be66ea-1ji407.jpg"
-              }
-            >
-              <p className="font-bold text-xl">YourMarket</p>
-              <p className="font-normal text-sm flex">
-                <SewingPinFilledIcon />
-                Maipu
-              </p>
-              <Button>Ver Tienda</Button>
-            </DirectionAwareHover>
-          </div>
-        </div> */}
       <h3 className="text-2xl font-bold">Tiendas Recientes</h3>
       <div className="w-full flex gap-4 p-4" id="store-filters">
         <Select
@@ -167,36 +132,6 @@ export default function StoreView({ stores, searchParams }: StoreViewProps) {
             </Button>
           </DirectionAwareHover>
         ))}
-        <DirectionAwareHover
-          imageClassName="opacity-70 p-4"
-          className="w-full"
-          childrenClassName="flex flex-col items-start justify-center gap-2"
-          imageUrl={
-            "https://pbs.twimg.com/profile_images/1471121187552083970/gzXvrRJL_400x400.jpg"
-          }
-        >
-          <p className="font-bold text-xl">YourMarket</p>
-          <p className="font-normal text-sm flex">
-            <SewingPinFilledIcon />
-            Maipu
-          </p>
-          <Button>Ver Tienda</Button>
-        </DirectionAwareHover>
-        <DirectionAwareHover
-          imageClassName="opacity-70 p-4"
-          className="w-full"
-          childrenClassName="flex flex-col items-start justify-center gap-2"
-          imageUrl={
-            "https://pbs.twimg.com/profile_images/1796324448666013696/m90MLYNJ_400x400.jpg"
-          }
-        >
-          <p className="font-bold text-xl">YourMarket</p>
-          <p className="font-normal text-sm flex">
-            <SewingPinFilledIcon />
-            Maipu
-          </p>
-          <Button>Ver Tienda</Button>
-        </DirectionAwareHover>
       </div>
     </div>
   );

@@ -13,8 +13,8 @@ import { revalidatePath } from "next/cache";
 interface StorePageParams {
   searchParams: SearchParams;
 }
-//TODO: Make a button ("Upload More") for change the limit and the offset of the shown stores. ANd make the query for that.
-const getProducts = (params: {
+//TODO: Make a button ("Upload More") for change the limit and the offset of the shown stores. ANd make the query for that adding filters like regions,cities.
+const getProducts = async (params: {
   region: any;
   mainCategory?: number | null;
 }) => {
