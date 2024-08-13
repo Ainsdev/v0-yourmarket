@@ -22,7 +22,6 @@ const getProducts = async (params: {
     params?.region ?? null,
     params?.mainCategory ?? null
   ).then((stores) => {
-    // console.log("revalidating stores with params: ", params);
     // revalidatePath("/stores");
     return stores;
   });
