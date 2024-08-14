@@ -1,33 +1,32 @@
-import { SidebarLink } from "@/components/SidebarItems";
-import { Cog, Globe, HomeIcon } from "lucide-react";
-
-type AdditionalLinks = {
-  title: string;
-  links: SidebarLink[];
-};
-
-export const defaultLinks: SidebarLink[] = [
-  { href: "/dashboard", title: "Home", icon: HomeIcon },
-  { href: "/account", title: "Account", icon: Cog },
-  { href: "/settings", title: "Settings", icon: Cog },
-];
-
-export const additionalLinks: AdditionalLinks[] = [
+export const mainNav = [
   {
-    title: "Entities",
-    links: [
-      {
-        href: "/posts",
-        title: "Posts",
-        icon: Globe,
-      },
-      {
-        href: "/stores",
-        title: "Stores",
-        icon: Globe,
-      },
-    ],
+    title: "Tu Tienda",
+    href: "/features/store",
+    description: "Usa el nombre de tu tienda, antes que alguien mas lo haga.",
   },
-
+  {
+    title: "Premium",
+    href: "/features/premium",
+    description: "Vende distinto y mas. Conoce las ventajas de ser premium.",
+  },
+  {
+    title: "Como funciona",
+    href: "/features/how",
+    description: "Conoce como vender en YourMarket.",
+  },
+  {
+    title: "Precios",
+    href: "/features/pricing",
+    description: "Es gratis, pero si quieres mas, tenemos planes para ti.",
+  },
+  {
+    title: "Red de clientes",
+    href: "/features/clients",
+    description: "Conoce a tus clientes y vende mas.",
+  },
+  {
+    title: "Seguridad",
+    href: "/features/security",
+    description: "Dale seguridad a tus clientes. Evita fraudes y estafas.",
+  },
 ];
-

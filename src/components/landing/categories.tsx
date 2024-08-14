@@ -6,6 +6,7 @@ import { AspectRatio } from "../ui/aspect-ratio"
 import { Button } from "../ui/button"
 
 function Categories() {
+  //TODO: Make dynamic categories changes based on the data
   return (
     <section id="categories" className="-mt-10 flex w-full flex-col-reverse gap-6 space-y-6 p-6 sm:gap-2 md:flex-col">
       <div className="grid grid-cols-2 gap-4  md:grid-cols-3 lg:grid-cols-4">

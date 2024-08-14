@@ -44,16 +44,19 @@ export async function getFeaturedPosts() {
         .select({
           id: posts.id,
           name: posts.name,
+          brand: posts.brand,
           price: posts.price,
           mainImage: posts.mainImage,
           categoryId: posts.categoryId,
           subcategory: posts.subcategory,
+          storeId: posts.storeId,
+          storeName: stores.name,
         })
         .from(posts)
-        .limit(10)
+        .limit(12)
         .leftJoin(stores, eq(posts.storeId, stores.id))
         .groupBy(posts.id)
-        .orderBy(desc(count(stores.id)), desc(posts.createdAt));
+        .orderBy(desc(posts.createdAt));
     },
     ["featured-products"],
     {
