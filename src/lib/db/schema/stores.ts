@@ -38,7 +38,7 @@ export const stores = sqliteTable(
       .default(sql`(CURRENT_TIMESTAMP)`),
     updatedAt: text("updated_at")
       .notNull()
-      .default(sql`(CURRENT_TIMESTAMP)`)
+      .default(sql`(CURRENT_TIMESTAMP)`),
   },
   (stores) => {
     return {
@@ -82,6 +82,7 @@ export type NewStore = z.infer<typeof insertStoreSchema>;
 export type NewStoreParams = z.infer<typeof insertStoreParams>;
 export type UpdateStoreParams = z.infer<typeof updateStoreParams>;
 export type StoreId = z.infer<typeof storeIdSchema>["id"];
+export type UniqueSlug = z.infer<typeof baseSchema>["slug"];
 
 // this type infers the return from getStores() - meaning it will include any joins
 export type CompleteStore = Awaited<

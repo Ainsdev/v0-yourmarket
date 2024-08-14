@@ -19,7 +19,7 @@ export default function MainTitle() {
         la marca que quieras.
       </p>
       <div className="mt-12 flex items-center justify-center gap-4 ">
-        <CustomButton title="Crea tu tienda" url="/signup/business" />
+        <CustomButton title="Crea tu tienda" url="/sign-in" />
         <CustomButton title="Ir a Comprar" url="/signup/client" />
       </div>
 

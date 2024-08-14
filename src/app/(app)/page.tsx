@@ -35,13 +35,18 @@ export default async function IndexPage() {
           </video> */}
         </div>
       </div>
-      <div className="group relative flex h-max w-full items-center justify-center px-2 sm:justify-start">
-        <section className=" flex h-96 w-full items-center justify-center gap-4 bg-secondary p-2 sm:mt-16 md:flex-row">
-          <div className="relative flex h-full w-full flex-col items-center justify-center  border-2 border-dashed border-primary p-4 ">
-            <HomePageViewPosts products={featuredProducts} />
-          </div>
-        </section>
-      </div>
+      <section className=" flex h-max w-full items-center justify-center gap-2 bg-secondary p-2 sm:mt-16  flex-col rounded-md">
+        <h2 className="text-xl font-semibold sm:text-3xl">
+          Productos destacados
+        </h2>
+        <Button size="lg" variant="link">
+          <Link href="/products">Ver todos</Link>
+        </Button>
+        <div className="relative flex h-full w-full items-center justify-center  border-2 border-dashed border-primary p-4 ">
+          <HomePageViewPosts products={featuredProducts} />
+        </div>
+      </section>
+
       <div className="group-landing-group m-10 my-20 mb-48 flex w-full flex-col items-center justify-center gap-6 border-2 border-border py-5 sm:w-3/4 sm:py-10 px-4">
         {/*  ANIMATE THIS */}
         <p className="text-lg font-bold sm:text-2xl">

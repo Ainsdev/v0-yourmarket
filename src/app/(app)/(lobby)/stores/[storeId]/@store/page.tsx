@@ -15,7 +15,12 @@ export default async function StorePage({
 }: {
   params: { storeId: string };
 }) {
-  const { store } = await getStoreForLobby(Number(params.storeId));
+  //Check if the slug (storeId) is a valid string
+  const slug =
+    isNaN(Number(params.storeId)) && params.storeId.length > 1
+      ? params.storeId
+      : undefined;
+  const { store } = await getStoreForLobby(Number(params.storeId), slug);
   if (!store) notFound();
 
   return (

@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db/index";
-import { eq, and, exists, count, sum } from "drizzle-orm";
+import { eq, and, exists, count, sum, like } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
 import { type StoreId, storeIdSchema, stores } from "@/lib/db/schema/stores";
 import { posts, type CompletePost } from "@/lib/db/schema/posts";
@@ -69,7 +69,7 @@ export const checkNameExists = async (name: string) => {
 
 export const getStoresForLobby = async (
   region: string | null,
-  mainCategory: number | null,
+  mainCategory: number | null
   // limit: number,
   // offset: number
 ) => {
@@ -87,10 +87,16 @@ export const getStoresForLobby = async (
   return { stores: rows };
 };
 
-export const getStoreForLobby = async (id: StoreId) => {
+export const getStoreForLobby = async (id?: StoreId, slug?: String) => {
   const { id: storeId } = storeIdSchema.parse({ id });
-  const [row] = await db.select().from(stores).where(eq(stores.id, storeId));
+  //CHeck if is a valid slug
+  const [row] = slug
+    ? await db
+        .select()
+        .from(stores)
+        .where(like(stores.slug, `%${slug}%`))
+    : await db.select().from(stores).where(eq(stores.id, storeId));
   if (row === undefined) return {};
   const s = row;
   return { store: s };
-}
+};

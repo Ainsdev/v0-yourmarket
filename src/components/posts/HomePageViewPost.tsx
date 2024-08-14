@@ -29,16 +29,21 @@ export default function HomePageViewPosts({
   products: FeaturedPost[];
 }) {
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 md:px-6 py-12">
+    <div className="w-full mx-auto px-4 md:px-6 py-12">
       <Carousel className="w-full">
         <CarouselContent>
           {products.map((product) => (
             <CarouselItem
               key={product.id}
-              className="md:basis-1/2 lg:basis-1/3"
+              className="md:basis-1/2 lg:basis-1/3 2xl:basis-1/4"
             >
-              <div className="p-4">
-                <Card>
+              <div className="p-2">
+                <Card className="relative">
+                  <div className="absolute top-0 left-0 p-1 w-1/3 h-max bg-white/50  bg-clip-padding backdrop-filter backdrop-blur-sm z-10 rounded-br-md rounded-tl-md">
+                    <Link href={`/stores/${product.storeId}`}>
+                      <p className="text-sm text-black">@{product.storeName}</p>
+                    </Link>
+                  </div>
                   <Image
                     src={product.mainImage}
                     alt={product.name}
