@@ -23,7 +23,7 @@ import { type Post } from "@/lib/db/schema/posts";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { deletePostAction } from "@/lib/actions/posts";
 import { DataTable } from "./data-table";
-import { getAllSubcategories, productCategories } from "@/config/categories";
+import { getSubcategories, productCategories } from "@/config/categories";
 
 type AwaitedProduct = Pick<
   Post,
@@ -263,7 +263,7 @@ export function ProductsTableShell({
         {
           id: "subcategory",
           title: "Subcategoria",
-          options: getAllSubcategories(),
+          options: getSubcategories(),
         },
         {
           id: "active",
