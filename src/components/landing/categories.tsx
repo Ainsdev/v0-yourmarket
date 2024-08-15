@@ -1,16 +1,19 @@
-import Image from "next/image"
-import Link from "next/link"
-import Balancer from "react-wrap-balancer"
+import Image from "next/image";
+import Link from "next/link";
+import Balancer from "react-wrap-balancer";
 
-import { AspectRatio } from "../ui/aspect-ratio"
-import { Button } from "../ui/button"
+import { AspectRatio } from "../ui/aspect-ratio";
+import { Button } from "../ui/button";
 
 function Categories() {
   //TODO: Make dynamic categories changes based on the data
   return (
-    <section id="categories" className="-mt-10 flex w-full flex-col-reverse gap-6 space-y-6 p-6 sm:gap-2 md:flex-col">
+    <section
+      id="categories"
+      className="-mt-10 flex w-full flex-col-reverse gap-6 space-y-6 p-6 sm:gap-2 md:flex-col"
+    >
       <div className="grid grid-cols-2 gap-4  md:grid-cols-3 lg:grid-cols-4">
-        <Link  href="/">
+        <Link href="/categories/1">
           <div className="group relative overflow-hidden rounded-md">
             <AspectRatio ratio={4 / 5}>
               <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
@@ -30,7 +33,7 @@ function Categories() {
             </div>
           </div>
         </Link>
-        <Link  href="/">
+        <Link href="/categories/0">
           <div className="group relative overflow-hidden rounded-md">
             <AspectRatio ratio={4 / 5}>
               <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
@@ -50,7 +53,7 @@ function Categories() {
             </div>
           </div>
         </Link>
-        <Link  href="/">
+        <Link href="/brands/nike">
           <div className="group relative overflow-hidden rounded-md">
             <AspectRatio ratio={4 / 5}>
               <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
@@ -70,7 +73,7 @@ function Categories() {
             </div>
           </div>
         </Link>
-        <Link  href="/">
+        <Link href="/">
           <div className="group relative overflow-hidden rounded-md">
             <AspectRatio ratio={4 / 5}>
               <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
@@ -98,14 +101,12 @@ function Categories() {
         <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
           Explora las categorias y marcas de productos que te estan esperando.
         </Balancer>
-        <Button variant='secondary' asChild size='lg' className="border-2">
-          <Link href="/">
-            Explorar categorias
-          </Link>
+        <Button variant="secondary" asChild size="lg" className="border-2">
+          <Link href="/">Explorar categorias</Link>
         </Button>
       </div>
     </section>
-  )
+  );
 }
 
-export default Categories
+export default Categories;
