@@ -88,7 +88,7 @@ function Categories() {
             </AspectRatio>
             <div className="absolute inset-0 z-20 flex items-center justify-center">
               <h3 className="text-3xl font-medium capitalize text-slate-100 md:text-2xl">
-                Marcas Chilenas
+               Ofertas
               </h3>
             </div>
           </div>
