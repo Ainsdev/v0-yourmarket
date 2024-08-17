@@ -40,7 +40,7 @@ export default async function IndexPage() {
           Productos destacados
         </h2>
         <Button size="lg" variant="link">
-          <Link href="/products">Ver todos</Link>
+          <Link href="/products">Ver mas</Link>
         </Button>
         <div className="relative flex h-full w-full items-center justify-center  border-2 border-dashed border-primary p-4 ">
           <HomePageViewPosts products={featuredProducts} />
