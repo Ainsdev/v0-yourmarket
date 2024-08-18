@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { InstagramLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@/components/ui/ThemeToggle";
 import { getFeaturedPosts } from "@/lib/api/posts/queries";
 import HomePageViewPosts from "@/components/posts/HomePageViewPost";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function IndexPage() {
   const featuredProducts = await getFeaturedPosts();
@@ -43,7 +44,19 @@ export default async function IndexPage() {
           <Link href="/products">Ver mas</Link>
         </Button>
         <div className="relative flex h-full w-full items-center justify-center  border-2 border-dashed border-primary p-4 ">
-          <HomePageViewPosts products={featuredProducts} />
+          <Suspense
+            fallback={
+              <div className="flex flex-col space-y-3">
+                <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              </div>
+            }
+          >
+            <HomePageViewPosts products={featuredProducts} />
+          </Suspense>
         </div>
       </section>
 

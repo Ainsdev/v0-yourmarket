@@ -9,6 +9,15 @@ import {
 import { getProducts } from "@/lib/api/posts/queries";
 import { ProductsDefaultView } from "@/components/posts/default/posts-default";
 import { getSubcategories, productCategories } from "@/config/categories";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 interface CategoryPageProps {
   params: {
@@ -54,10 +63,28 @@ export default async function CategoryPage({
         id="category-page-header"
         aria-labelledby="category-page-header-heading"
       >
-        <PageHeaderHeading size="sm">{toTitleCase(brand)}</PageHeaderHeading>
         <PageHeaderDescription size="sm">
-          {`Estas son las mejores tiendas que venden ${brand}`}
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink>
+                  <Link href="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink>
+                  <Link href="/brands">Marcas</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Nike</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </PageHeaderDescription>
+        <PageHeaderHeading size="sm">{toTitleCase(brand)}</PageHeaderHeading>
       </PageHeader>
       <ProductsDefaultView
         products={data}

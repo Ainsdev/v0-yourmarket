@@ -59,6 +59,7 @@ export default async function CategoryPage({
     ...searchParams,
     categoryIds: category.toString(),
   });
+  //TODO: Solve the query to only show the category
 
   return (
     <Shell className="overflow-hidden">
@@ -85,13 +86,13 @@ export default async function CategoryPage({
           </Breadcrumb>
           {/* {`Compra ${category} En las mejores tiendas`} */}
         </PageHeaderDescription>
-        <div className="mt-5 flex h-max w-full overflow-auto border border-dashed border-border p-5">
+        <div className="mt-5 flex h-max w-full overflow-auto border border-dashed border-border p-2">
           {productCategories[category].subcategories.map((subcategory) => (
             <Link
               key={subcategory.slug}
               href={`/categories/${category}/${subcategory.slug}`}
             >
-              <div className="card group relative m-4 h-36 w-36 cursor-pointer overflow-hidden rounded-lg border-r-2 border-t-2 border-border bg-gradient-to-tl from-card to-secondary text-gray-300 transition-all hover:from-secondary/50 hover:to-card hover:brightness-90 sm:h-[12vh] sm:w-[12vh]">
+              <div className="card group relative m-4 h-36 w-48 cursor-pointer overflow-hidden rounded-lg border-r-2 border-t-2 border-border bg-gradient-to-tl from-card to-secondary text-gray-300 transition-all hover:from-secondary/50 hover:to-card hover:brightness-90 sm:h-[12vh] sm:w-[12vh] lg:h-[16vh] lg:w-[16vh]">
                 <AspectRatio ratio={3 / 4}>
                   <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
                   <Image

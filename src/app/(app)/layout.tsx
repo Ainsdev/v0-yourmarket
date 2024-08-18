@@ -18,58 +18,58 @@ export default async function AppLayout(props: {
           <Header user={user} />
           {props.children}
           {props.modal}
+          <footer className="w-full py-4">
+            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+              <div className="text-sm">
+                &copy; 2024 YourMarket - All rights reserved
+              </div>
+              <div className="flex gap-4 mt-4 md:mt-0">
+                <Link
+                  href="#"
+                  className="hover:text-gray-200 transition-colors"
+                  prefetch={false}
+                >
+                  About
+                </Link>
+                <Link
+                  href="#"
+                  className="hover:text-gray-200 transition-colors"
+                  prefetch={false}
+                >
+                  Shop
+                </Link>
+                <Link
+                  href="#"
+                  className="hover:text-gray-200 transition-colors"
+                  prefetch={false}
+                >
+                  Contact
+                </Link>
+              </div>
+              <div className="flex gap-4 mt-4 md:mt-0 justify-center items-center">
+                <Link
+                  href="#"
+                  aria-label="Instagram"
+                  className="hover:text-gray-200 transition-colors"
+                  prefetch={false}
+                >
+                  <InstagramLogoIcon />
+                </Link>
+                <Link
+                  href="#"
+                  aria-label="Twitter"
+                  className="hover:text-gray-200 transition-colors"
+                  prefetch={false}
+                >
+                  <TwitterLogoIcon />
+                </Link>
+                <ModeToggle />
+              </div>
+            </div>
+          </footer>
         </main>
       </div>
       <Toaster richColors />
-      <footer className="w-full py-4">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-sm">
-            &copy; 2024 YourMarket - All rights reserved
-          </div>
-          <div className="flex gap-4 mt-4 md:mt-0">
-            <Link
-              href="#"
-              className="hover:text-gray-200 transition-colors"
-              prefetch={false}
-            >
-              About
-            </Link>
-            <Link
-              href="#"
-              className="hover:text-gray-200 transition-colors"
-              prefetch={false}
-            >
-              Shop
-            </Link>
-            <Link
-              href="#"
-              className="hover:text-gray-200 transition-colors"
-              prefetch={false}
-            >
-              Contact
-            </Link>
-          </div>
-          <div className="flex gap-4 mt-4 md:mt-0 justify-center items-center">
-            <Link
-              href="#"
-              aria-label="Instagram"
-              className="hover:text-gray-200 transition-colors"
-              prefetch={false}
-            >
-              <InstagramLogoIcon />
-            </Link>
-            <Link
-              href="#"
-              aria-label="Twitter"
-              className="hover:text-gray-200 transition-colors"
-              prefetch={false}
-            >
-              <TwitterLogoIcon />
-            </Link>
-            <ModeToggle />
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

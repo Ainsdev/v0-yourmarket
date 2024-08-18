@@ -98,16 +98,16 @@ export function DataGalleryPost<TData, TValue>({
           </Badge>
         )}
       </div>
-      <CardContent className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
+      <CardContent>
+        <div className="flex items-start justify-start w-full pt-2 sm:pt-4">
+          <div className="w-full">
             <h3 className="text-xl font-medium">{data.name}</h3>
             <p className="text-lg font-semibold">
               {numberToClp(`${data.price}`)}
             </p>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div className="flex items-center gap-2">
             <TagIcon className="h-5 w-5 " />
             <span className="text-sm">
@@ -132,7 +132,7 @@ export function DataGalleryPost<TData, TValue>({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between sm:justify-center xl:justify-between items-start p-4 gap-2 sm:flex-col 2xl:flex-row">
+      <CardFooter className="flex justify-between sm:justify-center xl:justify-between items-start p-4 gap-2 flex-col 2xl:flex-row">
         <div className="flex items-center gap-2">
           <TooltipProvider>
             <Tooltip>

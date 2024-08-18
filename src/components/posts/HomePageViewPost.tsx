@@ -54,14 +54,12 @@ export default function HomePageViewPosts({
                   />
                   <Link href={`/posts/${product.id}`} tabIndex={-1}>
                     <CardContent className="flex flex-col justify-center items-start sm:gap-2 p-4 pb-0">
-                      <CardDescription className="line-clamp-2">
-                        <p className="text-sm text-muted-foreground">
-                          {product.brand}
-                        </p>
-                      </CardDescription>
                       <CardTitle className="line-clamp-1 text-lg">
                         {product.name}
                       </CardTitle>
+                      <CardDescription className="line-clamp-2 text-sm text-muted-foreground">
+                        {product.brand}
+                      </CardDescription>
                     </CardContent>
                   </Link>
                   <CardFooter className="p-4 pt-0 flex items-start  flex-col sm:flex-row sm:justify-between sm:items-center">

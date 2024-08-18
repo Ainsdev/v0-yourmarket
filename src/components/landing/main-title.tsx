@@ -4,12 +4,12 @@ import CustomButton from "../ui/button-1";
 
 export default function MainTitle() {
   return (
-    <div className="relative flex h-[70vh] w-full flex-col items-center gap-8 sm:h-[80vh] ">
+    <div className="relative flex h-[70vh] w-full flex-col items-center gap-8 sm:h-[80vh]">
       <div className="flex flex-col items-center justify-center gap-6">
-        <h1 className="text-5xl font-extrabold leading-tight tracking-tighter md:text-9xl xl:text-[180px] 2xl:text-[200px]">
+        <h1 className="text-5xl font-extrabold leading-tight tracking-tighter md:text-9xl xl:text-[160px] 2xl:text-[200px]">
           Ropa y Sneakers
         </h1>
-        <h1 className="px-5 text-5xl font-extrabold leading-tight tracking-tighter md:text-9xl xl:text-[180px] 2xl:text-[200px]">
+        <h1 className="px-5 text-5xl font-extrabold leading-tight tracking-tighter md:text-9xl xl:text-[160px] 2xl:text-[200px]">
           <span className="bg-secondary">100%</span>
           Exclusivos
         </h1>

@@ -12,14 +12,7 @@ import { UserDropdown } from "./user-dropdown";
 import { MainNav } from "./mainNav";
 import { mainNav } from "@/config/nav";
 
-const routes = [
-  { name: "Home", href: "/" },
-  { name: "Features", href: "/#features" },
-  {
-    name: "Documentation",
-    href: "https://www.touha.dev/posts/simple-nextjs-t3-authentication-with-lucia",
-  },
-];
+
 
 export const Header = ({ user }: { user: User | null }) => {
   return (

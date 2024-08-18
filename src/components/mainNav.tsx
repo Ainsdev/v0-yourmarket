@@ -32,6 +32,7 @@ interface MainNavProps {
 export function MainNav({ items }: MainNavProps) {
   return (
     <div className="flex gap-6 font-mono md:gap-10">
+      {/* Mobile */}
       <Popover>
         <PopoverTrigger className="md:hidden">
           <Menu className="h-4 w-4" />
@@ -87,6 +88,7 @@ export function MainNav({ items }: MainNavProps) {
           </div>
         </PopoverContent>
       </Popover>
+      {/* Desktop */}
       <Link href="/" className="flex items-center space-x-2">
         <Icon className="h-6 w-6" />
         <span className="inline-block font-bold">YourMarket</span>
@@ -114,13 +116,13 @@ export function MainNav({ items }: MainNavProps) {
                     </a>
                   </NavigationMenuLink>
                 </li>
-                <ListItem href="/docs" title="Marcas Chilenas">
-                  Encuentra una gran variedad de marcas nacionales.
+                <ListItem href="/brands" title="Marcas">
+                  Encuentra una gran variedad de marcas.
                 </ListItem>
-                <ListItem href="/docs/installation" title="Ropa">
+                <ListItem href="/categories/0" title="Ropa">
                   Todo tipo de prendas unicas y de calidad.
                 </ListItem>
-                <ListItem href="/docs/primitives/typography" title="Sneakers">
+                <ListItem href="/categories/1" title="Sneakers">
                   Encuentra los mejores y utlimos modelos de zapatillas.
                 </ListItem>
               </ul>
