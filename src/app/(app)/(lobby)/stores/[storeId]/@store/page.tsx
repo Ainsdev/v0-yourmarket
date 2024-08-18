@@ -1,6 +1,6 @@
 import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
-import { getStoreForLobby } from "@/lib/api/stores/queries";
+import { getStore } from "@/lib/api/stores/queries";
 import { InstagramLogoIcon, Share1Icon, StarIcon } from "@radix-ui/react-icons";
 import { MapPinIcon } from "lucide-react";
 import Image from "next/image";
@@ -20,7 +20,7 @@ export default async function StorePage({
     isNaN(Number(params.storeId)) && params.storeId.length > 1
       ? params.storeId
       : undefined;
-  const { store } = await getStoreForLobby(Number(params.storeId), slug);
+  const { store } = await getStore(Number(params.storeId), slug);
   if (!store) notFound();
 
   return (

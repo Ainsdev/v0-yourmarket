@@ -87,7 +87,7 @@ export const getStoresForLobby = async (
   return { stores: rows };
 };
 
-export const getStoreForLobby = async (id?: StoreId, slug?: String) => {
+export const getStore= async (id?: StoreId, slug?: String) => {
   const { id: storeId } = storeIdSchema.parse({ id });
   //CHeck if is a valid slug
   const [row] = slug
