@@ -79,7 +79,7 @@ export default async function CategoryPage({
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Nike</BreadcrumbPage>
+                <BreadcrumbPage>{toTitleCase(brand)}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
