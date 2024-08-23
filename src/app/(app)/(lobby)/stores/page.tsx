@@ -38,7 +38,7 @@ export default async function StoresPage({ searchParams }: StorePageParams) {
       <PageHeader>
         <PageHeaderHeading size="sm">Tiendas</PageHeaderHeading>
         <PageHeaderDescription size="sm">
-          Las mejores tiendas: {searchParams.mainCategories}
+          Las mejores tiendas:
         </PageHeaderDescription>
       </PageHeader>
       <StoreView stores={storesPromise} searchParams={searchParams} />
